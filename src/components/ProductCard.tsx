@@ -48,7 +48,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
           {current ? (
             <img
               src={current.src}
-              alt={`${name} — ${current.label.toLowerCase()}`}
+              alt={`${name} — foto ${active + 1}`}
               width={784}
               height={1168}
               loading={priority ? "eager" : "lazy"}
@@ -74,7 +74,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
             <button
               type="button"
               className="card__nav card__nav--prev"
-              aria-label={`${name}: ângulo anterior`}
+              aria-label={`${name}: foto anterior`}
               onClick={() => setActive((i) => (i - 1 + images.length) % images.length)}
             >
               <Chevron direction="left" />
@@ -82,16 +82,17 @@ export function ProductCard({ product, index, priority = false }: Props) {
             <button
               type="button"
               className="card__nav card__nav--next"
-              aria-label={`${name}: próximo ângulo`}
+              aria-label={`${name}: próxima foto`}
               onClick={() => setActive((i) => (i + 1) % images.length)}
             >
               <Chevron direction="right" />
             </button>
 
             {/* Sem isso, quem usa leitor de tela clica na seta e não recebe
-                retorno nenhum de que a foto mudou. */}
+                retorno nenhum de que a foto mudou. As fotos não têm mais
+                rótulo de ângulo, então a posição é o que dá para anunciar. */}
             <p aria-live="polite" className="visually-hidden">
-              {current?.label}
+              Foto {active + 1} de {images.length}
             </p>
           </>
         )}
@@ -107,7 +108,11 @@ export function ProductCard({ product, index, priority = false }: Props) {
         {/* Empurrado para a base para que preço e tamanhos fiquem
             alinhados entre cards de descrição com alturas diferentes. */}
         <div className="card__foot">
-          <p className="card__price">{formatBRL(priceCents)}</p>
+          {/* Peça ainda sem preço não mostra preço nenhum: as donas
+              catalogam antes de precificar, e "R$ 0,00" seria mentira. */}
+          {priceCents !== undefined && (
+            <p className="card__price">{formatBRL(priceCents)}</p>
+          )}
 
           <ul className="card__sizes" aria-label={`Tamanhos de ${name}`}>
             {sizes.map((size) => (

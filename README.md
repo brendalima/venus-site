@@ -14,6 +14,7 @@ npm run dev
 | Comando | O que faz |
 |---|---|
 | `npm run dev` | Servidor de desenvolvimento |
+| `npm run catalogo` | Rebusca o catálogo no admin (roda sozinho antes do build) |
 | `npm run build` | Typecheck + build de produção em `dist/` |
 | `npm run preview` | Serve o build local, igual à produção |
 | `npm run lint` | oxlint |
@@ -29,30 +30,73 @@ O roteamento é no cliente. O arquivo [`public/_redirects`](public/_redirects) f
 
 ## Mexendo no catálogo
 
-Tudo vive em [`src/data/products.ts`](src/data/products.ts). Não há banco nem painel: editar o arquivo e dar push já publica.
+**O catálogo não se edita aqui.** Quem mexe nele é o admin
+(`../venus-admin`), que as donas da marca usam sozinhas, e as peças
+chegam na hora do build:
 
-```ts
-{
-  id: "7",
-  slug: "biquini-lua",          // único; nomeia a pasta das fotos
-  name: "Biquíni Lua",
-  priceCents: 18900,            // R$ 189,00 — centavos inteiros, nunca 189.00
-  sizes: ["P", "M", "G"],
-  images: [
-    { src: "/produtos/biquini-lua/frente.jpg", label: "Frente" },
-    { src: "/produtos/biquini-lua/costas.jpg", label: "Costas" },
-  ],
-  description: "Texto curto.",  // cortado em 2 linhas no card
-  details: ["Uma linha", "por característica"],  // só na página da peça
-  soldOut: false,               // opcional, mostra a tarja "Esgotado"
-}
+```
+admin salva → dona clica "Publicar"
+   → deploy hook da Cloudflare
+   → scripts/catalogo.mjs lê GET /api/products
+   → src/data/catalogo.json → vite build → site no ar (~1 min)
 ```
 
-**Preço é sempre em centavos inteiros.** Float quebra: `29.90 * 3` em JavaScript dá `89.69999999999999`. O `formatBRL()` cuida da exibição.
+O site continua **estático**: isso acontece uma vez, no build, nunca no
+carregamento da página. Admin dormindo, caído ou em deploy não derruba a
+loja.
+
+[`src/data/catalogo.json`](src/data/catalogo.json) é **gerado** — editar à
+mão não adianta, a próxima publicação desfaz. A cópia que está no
+repositório existe para `npm run dev` rodar sem o admin de pé.
+
+### Variáveis
+
+| Variável | Para quê |
+|---|---|
+| `ADMIN_API_URL` | Endereço do admin, ex. `https://admin.venusoasis.com.br` |
+| `API_TOKEN` | O mesmo valor do `API_TOKEN` no `fly secrets` do admin |
+
+As duas ficam nas *environment variables* do projeto na Cloudflare
+(`API_TOKEN` como **secret**). Localmente:
+
+```bash
+ADMIN_API_URL=http://localhost:8080 API_TOKEN=… npm run catalogo
+```
+
+Sem elas o script não faz nada e mantém o catálogo versionado — é o que
+permite desenvolver offline. **No build da Cloudflare (`CF_PAGES`) as
+duas são obrigatórias**, senão a loja republicaria com o catálogo de
+ontem sem ninguém perceber.
+
+### Quando a API não responde
+
+O script tenta 5 vezes, com espera dobrando a cada tentativa (2s, 4s, 8s,
+16s): a máquina do admin no Fly dorme quando ociosa e o Postgres do Neon
+suspende, e os dois acordam na primeira requisição.
+
+Se ainda assim não responder, **o build falha de propósito** e a
+Cloudflare mantém o deploy anterior no ar. A loja fica de pé com o
+catálogo bom e o aviso "Há alterações não publicadas" continua aceso no
+admin — o sinal honesto de que a publicação não foi. A alternativa,
+publicar o catálogo antigo e dizer que deu certo, esconde a falha.
+
+### Preço
+
+**Sempre em centavos inteiros.** Float quebra: `29.90 * 3` em JavaScript
+dá `89.69999999999999`. O `formatBRL()` cuida da exibição.
+
+Peça ainda sem preço vem **sem `priceCents`** (o admin omite o campo
+enquanto ninguém precificou) e o site **não mostra preço nenhum**: nem
+"R$ 0,00", nem "Consulte". A peça continua listada, só sem a linha de
+preço, e a nota "Preço informativo" some junto na página da peça.
 
 ### Fotos
 
-Uma pasta por peça em `public/produtos/<slug>/`. Cada entrada em `images` precisa de um `label` dizendo o ângulo — ele vira o botão de troca no card, o rótulo da miniatura e o alt text da imagem. Por isso vale escrever "Costas" ou "Perfil", e não "Imagem 2".
+As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card e na miniatura, `srcGrande` (1200w) na foto grande da página da peça.
+
+**Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N". As miniaturas não têm legenda; quem usa leitor de tela recebe "Foto 2 de 3" ao trocar.
+
+**O repositório não guarda foto de produto.** As do protótipo saíram quando o admin entrou no ar — eram 2,1 MB de JPEG para avaliar o design antes de haver catálogo de verdade. A cópia versionada de `catalogo.json` aponta para duas fotos do **bucket de desenvolvimento** (`venusoasis-fotos-dev`), para `npm run dev` continuar parecido com produção sem peso nenhum no repositório. Se alguém apagar aquelas peças no admin de dev, as URLs quebram: é só rodar `npm run catalogo` de novo contra o admin.
 
 A primeira imagem é a capa do card. Recorte **2:3 (retrato)**; outras proporções funcionam mas são cortadas.
 
@@ -115,12 +159,20 @@ A fonte de display é uma serifada de alto contraste (Didot → Bodoni MT → Ge
 
 ## Publicando
 
-Estático, sem servidor. No Cloudflare Pages:
+Estático, sem servidor, no **Cloudflare Pages** (projeto `venus-site`,
+ligado a `brendalima/venus-site`):
 
 - Build: `npm run build`
 - Diretório de saída: `dist`
+- Variáveis: `ADMIN_API_URL` e `API_TOKEN` (ver acima)
 
-Cada push na branch principal republica sozinho.
+Cada push na branch principal republica sozinho. O admin republica pelo
+botão "Publicar alterações", que faz POST num **deploy hook** criado em
+*Settings > Builds > Deploy hooks*; a URL vai para o Fly em
+`DEPLOY_HOOK_URL`.
+
+Como é o build que busca o catálogo, publicar pelo admin e publicar por
+push fazem exatamente a mesma coisa.
 
 ## Ainda falta
 
