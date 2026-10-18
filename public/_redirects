@@ -1,0 +1,4 @@
+# O roteamento é no cliente, então o servidor precisa devolver o index.html
+# para qualquer caminho. Sem isso, abrir /produto/biquini-aurora direto —
+# ou dar F5 nela — retorna 404 no Cloudflare Pages.
+/*  /index.html  200

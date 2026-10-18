@@ -1,0 +1,80 @@
+.catalog {
+  padding-block: var(--space-12);
+}
+
+.catalog__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-8);
+  border-bottom: 1px solid var(--line);
+}
+
+.catalog__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.catalog__count {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* auto-fill + minmax dá 2 colunas no celular e 3–4 no desktop
+   sem precisar de media query. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-6) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-12) var(--space-6);
+  }
+}
+
+.catalog__more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-12);
+}
+
+/* Não é redundante com o scroll: conteúdo que só aparece ao rolar fica
+   inalcançável por teclado e leitor de tela. */
+.catalog__button {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.7rem 1.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.catalog__button:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.catalog__end {
+  margin-top: var(--space-12);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}

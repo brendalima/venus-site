@@ -1,0 +1,25 @@
+/* O arquivo da logo tem fundo preto chapado, e o fundo do site é #08090a.
+   Coladas cruas, apareceria um retângulo preto ligeiramente diferente ao
+   redor da marca.
+
+   mix-blend-mode: screen resolve sem editar a imagem: screen com preto
+   (0) devolve exatamente o pixel de baixo, então o fundo some, e a arte
+   dourada/turquesa continua idêntica. Também funciona por cima do brilho
+   do hero, onde um recorte com transparência mostraria borda dura. */
+.logo {
+  display: block;
+  height: auto;
+  mix-blend-mode: screen;
+}
+
+.logo--sm {
+  width: 116px;
+}
+
+.logo--md {
+  width: 150px;
+}
+
+.logo--lg {
+  width: clamp(196px, 52vw, 300px);
+}

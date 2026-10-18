@@ -1,0 +1,104 @@
+/* Vênus Oasis — tokens da marca.
+   Único lugar a mexer para ajustar a identidade.
+
+   A paleta sai da logo: um degradê que vai do dourado champagne (à
+   esquerda) ao turquesa (à direita), sobre preto. */
+
+:root {
+  /* Fundo e superfície.
+     Preto levemente frio, com viés de turquesa nas linhas — combina com
+     o lado frio da logo e evita o cinza neutro de fábrica. */
+  --bg: #08090a;
+  --surface: #111417;
+  --surface-2: #171b1f;
+  --line: #232a2e;
+  --line-soft: #1a1f22;
+
+  /* Texto. Off-white levemente quente, puxando para o dourado — branco
+     puro sobre preto vibra e destoa do tom da marca. */
+  --text: #f1eee8;
+  --text-muted: #9ba2a3;
+  --text-faint: #6b7375;
+
+  /* Dourado — lado quente da logo */
+  --gold-deep: #8a6a30;
+  --gold: #c9a44c;
+  --gold-light: #e8ce96;
+  --gold-pale: #f3e4bd;
+
+  /* Turquesa — lado frio da logo */
+  --teal-deep: #1e6f72;
+  --teal: #45a9aa;
+  --teal-light: #7fd0ce;
+  --teal-pale: #b3e6e3;
+
+  --accent: var(--gold);
+  --accent-alt: var(--teal);
+
+  /* O degradê da logo, para filetes e detalhes. */
+  --brand-gradient: linear-gradient(
+    90deg,
+    var(--gold-deep) 0%,
+    var(--gold) 22%,
+    var(--gold-pale) 45%,
+    var(--teal-light) 68%,
+    var(--teal-deep) 100%
+  );
+
+  /* Versão sem o champagne do meio. O --brand-gradient passa por um tom
+     quase branco, que desaparece quando o fundo é claro — como o rodapé
+     branco das fotos de produto. Esta mantém contraste sobre claro. */
+  --brand-gradient-deep: linear-gradient(
+    90deg,
+    var(--gold-deep) 0%,
+    var(--gold) 30%,
+    var(--teal) 66%,
+    var(--teal-deep) 100%
+  );
+
+  /* Mesma transição, mas apagando nas pontas — um filete que atravessa a
+     tela inteira e bate seco nas bordas parece corte, não acabamento. */
+  --brand-rule: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-deep) 9%,
+    var(--gold) 27%,
+    var(--gold-pale) 47%,
+    var(--teal-light) 67%,
+    var(--teal-deep) 88%,
+    transparent 100%
+  );
+
+  /* Tipografia.
+     A logo é uma serifada de alto contraste, então o display acompanha.
+     Didot existe no macOS e Bodoni MT em máquinas com Office; as demais
+     caem em Georgia, que é o fallback realista em qualquer lugar.
+     Nenhuma webfont: uma requisição a menos e zero risco de FOUT. */
+  --font-display:
+    Didot, "Bodoni MT", "Playfair Display", "Hoefler Text", Garamond,
+    Georgia, "Times New Roman", serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* Ritmo */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  --radius: 4px;
+  --page-max: 1200px;
+  --page-pad: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-pad: 2rem;
+  }
+}

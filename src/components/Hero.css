@@ -1,0 +1,66 @@
+.hero {
+  overflow: hidden;
+  /* A divisória vem do filete da marca (.brand-rule), não de border. */
+}
+
+/* Brilho difuso ao fundo, nos dois tons da logo: quente à esquerda,
+   frio à direita. É o único momento de cor forte da página. */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: 50%;
+  width: min(150vw, 1000px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(
+      circle at 35% 50%,
+      rgba(201, 164, 76, 0.14) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      circle at 65% 55%,
+      rgba(69, 169, 170, 0.13) 0%,
+      transparent 58%
+    );
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  text-align: center;
+  padding-block: var(--space-16) var(--space-12);
+}
+
+.hero__tagline {
+  max-width: 34ch;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.hero__meta {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+@media (min-width: 768px) {
+  .hero__inner {
+    padding-block: var(--space-24) var(--space-16);
+    gap: var(--space-8);
+  }
+
+  .hero__tagline {
+    font-size: 1.1rem;
+  }
+}

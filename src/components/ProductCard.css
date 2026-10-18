@@ -1,0 +1,297 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  /* Estica até a altura da linha do grid para o rodapé poder alinhar. */
+  height: 100%;
+}
+
+.card__media {
+  position: relative;
+  /* 2:3 acompanha o formato das fotos (784x1168). Usar 3:4 aqui cortaria
+     cabeça e pés no object-fit: cover. */
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.card__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.card__media img,
+.card__media .placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card__media img {
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card__media img {
+  transform: scale(1.03);
+}
+
+.card__flag {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: rgba(8, 9, 10, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 3px 9px;
+  backdrop-filter: blur(4px);
+}
+
+/* ---------- onda no rodapé da foto ----------
+
+   Duas camadas com velocidades e alturas diferentes: uma onda só lê como
+   uma faixa deslizando, duas em ritmos distintos criam a sensação de
+   água. O formato vem de uma máscara SVG e a cor vem do degradê da
+   marca, então a onda é literalmente a paleta recortada em onda.
+
+   Fica escondida por padrão e só aparece no hover. */
+.card__wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.card__wave-layer {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: var(--brand-gradient-deep);
+
+  /* Um comprimento de onda inteiro por ladrilho, com amplitude baixa:
+     crista em y=5, cava em y=17, de 24 de altura. Onda curta e alta lê
+     como desenho infantil; aberta e rasa lê como maresia. */
+  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath d='M0 11 Q25 5 50 11 T100 11 L100 24 L0 24 Z' fill='%23fff'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--wave);
+  mask-image: var(--wave);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: var(--tile) 100%;
+  mask-size: var(--tile) 100%;
+
+  animation: card-wave linear infinite;
+  animation-play-state: paused;
+}
+
+.card__wave-layer--back {
+  --tile: 240px;
+  height: 34px;
+  opacity: 0.3;
+  animation-duration: 14s;
+}
+
+.card__wave-layer--front {
+  --tile: 165px;
+  height: 24px;
+  opacity: 0.6;
+  animation-duration: 9s;
+  animation-direction: reverse;
+}
+
+/* Desliza a máscara exatamente um ladrilho, e não o elemento inteiro.
+   Como a máscara é repeat-x, deslocá-la um ladrilho é contínuo em
+   qualquer largura de card — enquanto mover o elemento só fecharia o
+   ciclo se a largura fosse múltiplo do ladrilho, o que não dá para
+   garantir num grid responsivo.
+   De quebra, o degradê fica parado: se o elemento se movesse, a cor
+   escorregaria junto e voltaria ao lugar de repente no fim do ciclo. */
+@keyframes card-wave {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: var(--tile) 0;
+    mask-position: var(--tile) 0;
+  }
+}
+
+@media (hover: hover) {
+  .card:hover .card__wave {
+    opacity: 1;
+  }
+
+  /* Só anima enquanto está visível — seis cards animando o tempo todo
+     custam bateria à toa. */
+  .card:hover .card__wave-layer {
+    animation-play-state: running;
+  }
+}
+
+/* Com movimento reduzido a onda continua aparecendo, parada. O efeito
+   visual se mantém e ninguém leva movimento que não pediu. */
+@media (prefers-reduced-motion: reduce) {
+  .card__wave-layer {
+    animation: none;
+  }
+}
+
+/* Setas de troca de ângulo, sobre a foto. */
+.card__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  /* 36px é o mínimo confortável para toque; abaixo disso erra o alvo. */
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(245, 245, 247, 0.22);
+  border-radius: 100px;
+  background: rgba(8, 9, 10, 0.6);
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition:
+    opacity 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.card__nav--prev {
+  left: var(--space-2);
+}
+.card__nav--next {
+  right: var(--space-2);
+}
+
+/* No desktop as setas só aparecem quando há intenção — no hover do card
+   ou com foco de teclado. Em telas de toque não existe hover, então
+   ficam sempre visíveis, senão viram um controle invisível.
+   O :hover fica aqui dentro de propósito: no celular ele "gruda" depois
+   do toque e a seta continua destacada até tocar em outro lugar. */
+@media (hover: hover) {
+  .card__nav {
+    opacity: 0;
+  }
+
+  .card:hover .card__nav,
+  .card__nav:focus-visible {
+    opacity: 1;
+  }
+
+  .card__nav:hover {
+    background: rgba(8, 9, 10, 0.85);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+}
+
+/* Em telas de toque a seta fica sempre visível, então pesa menos:
+   mantém os 36px de alvo, mas com fundo mais discreto. */
+@media (hover: none) {
+  .card__nav {
+    background: rgba(8, 9, 10, 0.42);
+    border-color: rgba(245, 245, 247, 0.16);
+  }
+
+  .card__nav:active {
+    background: rgba(8, 9, 10, 0.8);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.card__foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-1);
+}
+
+.card__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.card__name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card__name a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--gold);
+}
+
+/* Limita a 2 linhas: descrições de tamanhos muito diferentes desalinham
+   a grade e fazem o catálogo parecer improvisado. */
+.card__desc {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.card__price {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-light);
+}
+
+.card__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card__size {
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 2px 7px;
+}
+
+@media (min-width: 768px) {
+  .card__name {
+    font-size: 1.2rem;
+  }
+  .card__desc {
+    font-size: 0.86rem;
+  }
+}
