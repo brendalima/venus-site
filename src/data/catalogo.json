@@ -10,12 +10,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-aurora/frente.jpg",
-        "srcGrande": "/produtos/biquini-aurora/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-aurora/costas.jpg",
-        "srcGrande": "/produtos/biquini-aurora/costas.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       }
     ],
     "soldOut": false,
@@ -40,12 +40,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-eclipse/frente.jpg",
-        "srcGrande": "/produtos/biquini-eclipse/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-eclipse/perfil.jpg",
-        "srcGrande": "/produtos/biquini-eclipse/perfil.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       }
     ],
     "soldOut": false,
@@ -69,12 +69,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-orion/frente.jpg",
-        "srcGrande": "/produtos/biquini-orion/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-orion/corpo-inteiro.jpg",
-        "srcGrande": "/produtos/biquini-orion/corpo-inteiro.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       }
     ],
     "soldOut": false,
@@ -99,12 +99,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-vega/frente.jpg",
-        "srcGrande": "/produtos/biquini-vega/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-vega/perfil.jpg",
-        "srcGrande": "/produtos/biquini-vega/perfil.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       }
     ],
     "soldOut": false,
@@ -128,12 +128,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-lyra/frente.jpg",
-        "srcGrande": "/produtos/biquini-lyra/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-lyra/perfil.jpg",
-        "srcGrande": "/produtos/biquini-lyra/perfil.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       }
     ],
     "soldOut": false,
@@ -158,12 +158,12 @@
     ],
     "images": [
       {
-        "src": "/produtos/biquini-nova/frente.jpg",
-        "srcGrande": "/produtos/biquini-nova/frente.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
       },
       {
-        "src": "/produtos/biquini-nova/costas.jpg",
-        "srcGrande": "/produtos/biquini-nova/costas.jpg"
+        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       }
     ],
     "soldOut": false,

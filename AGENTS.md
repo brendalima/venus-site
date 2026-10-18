@@ -78,6 +78,9 @@ Para regerar os recortes a partir de um original novo:
 - Produto sem foto cai num placeholder gerado. A escolha é **no dado**
   (`images: []`), não numa flag — assim some sozinho quando a foto
   chegar, sem código morto.
+- **O repositório não guarda foto de produto.** Elas vêm do R2 pelo
+  catálogo. A cópia versionada de `catalogo.json` aponta para o bucket de
+  dev só para o `npm run dev` não ficar sem imagem.
 
 ## Dados dos produtos
 
@@ -124,6 +127,8 @@ miniatura, `srcGrande` (1200w) na foto grande da página da peça.
 
 ## Pendente
 
-Otimizar as fotos: 2,1 MB de JPEG, o maior peso da página. WebP em duas
-larguras corta uns 60%. Não feito porque adiciona dependência e passo de
-build — decisão da dona do projeto.
+WebP. As fotos hoje vêm do admin já redimensionadas em 600w e 1200w (o
+600w pesa uns 45 KB, contra 250 KB dos JPEGs do protótipo), então o
+problema encolheu bastante. WebP ainda cortaria uns 60% em cima disso,
+mas o trabalho agora é no admin (`../venus-admin`, processamento em Go
+puro), não aqui.
