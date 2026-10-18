@@ -14,9 +14,15 @@ credibilidade à marca enquanto a venda acontece por indicação e WhatsApp.
 
 O site é **estático** e não depende de backend em tempo de requisição.
 
-Quando o admin (`../venus-admin`) entrar, os produtos virão da API **no
-build**, não no carregamento da página. O que isso compra: backend
-dormindo, caído ou em deploy não derruba a loja.
+Os produtos vêm da API do admin (`../venus-admin`) **no build**, não no
+carregamento da página: `scripts/catalogo.mjs` reescreve
+`src/data/catalogo.json` antes de cada `vite build`. O que isso compra:
+backend dormindo, caído ou em deploy não derruba a loja.
+
+Se a API não responder, **o build falha de propósito** e a Cloudflare
+mantém o deploy anterior no ar. Publicar o catálogo de ontem dizendo que
+deu certo é pior do que não publicar: o aviso "Há alterações não
+publicadas" no admin continua aceso e denuncia a falha.
 
 Qualquer proposta de buscar dados em tempo de execução quebra essa
 propriedade. Pode vir a ser a decisão certa — mas diga isso em voz alta,
@@ -75,11 +81,24 @@ Para regerar os recortes a partir de um original novo:
 
 ## Dados dos produtos
 
-`src/data/products.ts`, tipado. **Preço em centavos inteiros**, nunca
-float: `29.90 * 3` dá `89.69999999999999`.
+`src/data/catalogo.json` é **gerado** pelo build a partir de
+`GET /api/products`. Não edite à mão. A cópia versionada existe só para
+`npm run dev` rodar sem o admin de pé; `src/data/products.ts` apenas a
+tipa como `Product[]`, e o `tsc` reprova um JSON fora do tipo (verificado
+plantando um campo errado).
 
-Cada imagem precisa de um `label` dizendo o ângulo. Ele vira o rótulo da
-miniatura e o alt text, então escreva "Costas", não "Imagem 2".
+**Preço em centavos inteiros**, nunca float: `29.90 * 3` dá
+`89.69999999999999`.
+
+**Peça sem preço não mostra preço nenhum.** O admin omite `price_cents`
+enquanto a peça não foi precificada — as donas catalogam antes de
+precificar. Nada de "R$ 0,00" nem "Consulte": a peça fica listada, sem a
+linha de preço. Decidido com a dona do projeto.
+
+**As fotos não têm rótulo de ângulo.** O que importa é a ordem, e a
+primeira é a capa. O alt text é "<nome> — foto N" e a miniatura não tem
+legenda. Cada foto vem em duas larguras: `src` (600w) no card e na
+miniatura, `srcGrande` (1200w) na foto grande da página da peça.
 
 ## Acessibilidade
 

@@ -51,8 +51,8 @@ export function ProductPage() {
           <div className="product__stage">
             {current ? (
               <img
-                src={current.src}
-                alt={`${name} — ${current.label.toLowerCase()}`}
+                src={current.srcGrande}
+                alt={`${name} — foto ${active + 1}`}
                 width={784}
                 height={1168}
                 decoding="async"
@@ -67,13 +67,14 @@ export function ProductPage() {
             <div
               className="product__thumbs"
               role="group"
-              aria-label={`Ângulos de ${name}`}
+              aria-label={`Fotos de ${name}`}
             >
               {images.map((image, i) => (
                 <button
                   key={image.src}
                   type="button"
                   className={`product__thumb ${i === active ? "is-active" : ""}`}
+                  aria-label={`Foto ${i + 1} de ${name}`}
                   aria-pressed={i === active}
                   onClick={() => setActive(i)}
                 >
@@ -85,7 +86,6 @@ export function ProductPage() {
                     loading="lazy"
                     decoding="async"
                   />
-                  <span>{image.label}</span>
                 </button>
               ))}
             </div>
@@ -97,7 +97,10 @@ export function ProductPage() {
 
           {description && <p className="product__desc">{description}</p>}
 
-          <p className="product__price">{formatBRL(priceCents)}</p>
+          {/* Sem preço, nada aqui — ver o comentário em ProductCard. */}
+          {priceCents !== undefined && (
+            <p className="product__price">{formatBRL(priceCents)}</p>
+          )}
 
           <div className="product__block">
             <h2 className="product__label">Tamanhos</h2>
@@ -122,8 +125,8 @@ export function ProductPage() {
           )}
 
           <p className="product__note">
-            Catálogo para consulta — este site não realiza vendas. Preço
-            informativo, sujeito a alteração.
+            Catálogo para consulta — este site não realiza vendas.
+            {priceCents !== undefined && " Preço informativo, sujeito a alteração."}
           </p>
         </div>
       </div>

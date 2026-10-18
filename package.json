@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "catalogo": "node scripts/catalogo.mjs",
+    "prebuild": "npm run catalogo",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

@@ -1,0 +1,179 @@
+[
+  {
+    "id": "1",
+    "slug": "biquini-aurora",
+    "name": "Biquíni Aurora",
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-aurora/frente.jpg",
+        "srcGrande": "/produtos/biquini-aurora/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-aurora/costas.jpg",
+        "srcGrande": "/produtos/biquini-aurora/costas.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 18900,
+    "description": "Triângulo com amarração no pescoço e calcinha de laço lateral.",
+    "details": [
+      "Verde esmeralda liso",
+      "Top triângulo deslizante, ajusta no pescoço e nas costas",
+      "Calcinha de amarrar dos dois lados",
+      "Forro duplo na frente"
+    ]
+  },
+  {
+    "id": "2",
+    "slug": "biquini-eclipse",
+    "name": "Biquíni Eclipse",
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-eclipse/frente.jpg",
+        "srcGrande": "/produtos/biquini-eclipse/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-eclipse/perfil.jpg",
+        "srcGrande": "/produtos/biquini-eclipse/perfil.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 17900,
+    "description": "Cortininha preta com calcinha asa delta de cavado alto.",
+    "details": [
+      "Preto liso",
+      "Top cortininha com alça fina regulável",
+      "Calcinha asa delta, cavada",
+      "Tecido com toque acetinado"
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "biquini-orion",
+    "name": "Biquíni Órion",
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-orion/frente.jpg",
+        "srcGrande": "/produtos/biquini-orion/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-orion/corpo-inteiro.jpg",
+        "srcGrande": "/produtos/biquini-orion/corpo-inteiro.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 21900,
+    "description": "Azul marinho com viés branco contrastante e alça fina.",
+    "details": [
+      "Azul marinho com acabamento em viés branco",
+      "Top triângulo fixo, alça fina regulável",
+      "Calcinha de cintura média",
+      "Forro duplo"
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "biquini-vega",
+    "name": "Biquíni Vega",
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-vega/frente.jpg",
+        "srcGrande": "/produtos/biquini-vega/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-vega/perfil.jpg",
+        "srcGrande": "/produtos/biquini-vega/perfil.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 22900,
+    "description": "Coral com argola dourada no top e na lateral da calcinha.",
+    "details": [
+      "Coral liso",
+      "Argola metálica dourada no centro do top",
+      "Calcinha com detalhe de argola nas laterais",
+      "Top triângulo com amarração no pescoço"
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "biquini-lyra",
+    "name": "Biquíni Lyra",
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-lyra/frente.jpg",
+        "srcGrande": "/produtos/biquini-lyra/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-lyra/perfil.jpg",
+        "srcGrande": "/produtos/biquini-lyra/perfil.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 19900,
+    "description": "Lilás com franzido no top e na lateral da calcinha.",
+    "details": [
+      "Lilás liso",
+      "Top triângulo franzido no centro, alça fina",
+      "Calcinha com franzido lateral",
+      "Modelagem de cobertura média"
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "biquini-nova",
+    "name": "Biquíni Nova",
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "images": [
+      {
+        "src": "/produtos/biquini-nova/frente.jpg",
+        "srcGrande": "/produtos/biquini-nova/frente.jpg"
+      },
+      {
+        "src": "/produtos/biquini-nova/costas.jpg",
+        "srcGrande": "/produtos/biquini-nova/costas.jpg"
+      }
+    ],
+    "soldOut": false,
+    "priceCents": 23900,
+    "description": "Tomara que caia canelado com calcinha de cintura alta.",
+    "details": [
+      "Off-white em malha canelada",
+      "Top tomara que caia com silicone antideslizante",
+      "Calcinha de cintura alta, cobertura média",
+      "Tecido encorpado, não transparenta"
+    ]
+  }
+]
