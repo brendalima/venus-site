@@ -124,9 +124,11 @@ export function ProductPage() {
             </div>
           )}
 
+          {/* Sem condicional no preço: o convite a entrar em contato serve
+              tanto para a peça precificada quanto para a que ainda não foi. */}
           <p className="product__note">
-            Catálogo para consulta — este site não realiza vendas.
-            {priceCents !== undefined && " Preço informativo, sujeito a alteração."}
+            Catálogo para consulta — este site não realiza vendas. Entre em
+            contato para se informar sobre preços e pagamento.
           </p>
         </div>
       </div>
