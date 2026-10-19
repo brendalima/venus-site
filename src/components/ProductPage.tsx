@@ -32,7 +32,7 @@ export function ProductPage() {
   const current = images[active];
 
   return (
-    <div className="page product">
+    <div className={`page product${soldOut ? " product--esgotada" : ""}`}>
       <nav className="product__top brand-rule brand-rule--bottom">
         <Link
           to="/"
@@ -76,6 +76,7 @@ export function ProductPage() {
                   className={`product__thumb ${i === active ? "is-active" : ""}`}
                   aria-label={`Foto ${i + 1} de ${name}`}
                   aria-pressed={i === active}
+                  disabled={soldOut}
                   onClick={() => setActive(i)}
                 >
                   <img
@@ -127,6 +128,14 @@ export function ProductPage() {
           {/* Sem condicional no preço: o convite a entrar em contato serve
               tanto para a peça precificada quanto para a que ainda não foi. */}
           <p className="product__note">
+            {/* O aviso de esgotado vem antes e em contraste cheio: é o que
+                muda a decisão de quem está lendo. */}
+            {soldOut && (
+              <strong className="product__esgotado">
+                Esta peça está esgotada — fale com a gente para saber se
+                volta.{" "}
+              </strong>
+            )}
             Catálogo para consulta — este site não realiza vendas. Entre em
             contato para se informar sobre preços e pagamento.
           </p>

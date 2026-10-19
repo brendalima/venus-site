@@ -39,12 +39,16 @@ export function ProductCard({ product, index, priority = false }: Props) {
   const current = images[active];
 
   return (
-    <article className="card">
+    <article className={soldOut ? "card card--esgotada" : "card"}>
       <div className="card__media">
         {/* O link envolve só a imagem. Os controles de perspectiva ficam
             como irmãos, nunca dentro da âncora: botão dentro de link é
             HTML inválido e confunde leitor de tela. */}
-        <Link to={href} className="card__link" aria-label={`Ver ${name}`}>
+        <Link
+          to={href}
+          className="card__link"
+          aria-label={soldOut ? `Ver ${name} — esgotado` : `Ver ${name}`}
+        >
           {current ? (
             <img
               src={current.src}
@@ -67,6 +71,10 @@ export function ProductCard({ product, index, priority = false }: Props) {
           <span className="card__wave-layer card__wave-layer--front" />
         </span>
 
+        {/* A peça esgotada continua clicável: catálogo pequeno, e quem
+            chegou por link do Instagram ainda quer ver a peça e
+            perguntar no WhatsApp se ela volta. O que muda é a foto
+            esmaecida, a tarja e as setas desabilitadas. */}
         {soldOut && <span className="card__flag">Esgotado</span>}
 
         {images.length > 1 && (
@@ -75,6 +83,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
               type="button"
               className="card__nav card__nav--prev"
               aria-label={`${name}: foto anterior`}
+              disabled={soldOut}
               onClick={() => setActive((i) => (i - 1 + images.length) % images.length)}
             >
               <Chevron direction="left" />
@@ -83,6 +92,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
               type="button"
               className="card__nav card__nav--next"
               aria-label={`${name}: próxima foto`}
+              disabled={soldOut}
               onClick={() => setActive((i) => (i + 1) % images.length)}
             >
               <Chevron direction="right" />

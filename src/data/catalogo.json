@@ -48,7 +48,7 @@
         "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       }
     ],
-    "soldOut": false,
+    "soldOut": true,
     "priceCents": 17900,
     "description": "Cortininha preta com calcinha asa delta de cavado alto.",
     "details": [
@@ -166,7 +166,7 @@
         "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
       }
     ],
-    "soldOut": false,
+    "soldOut": true,
     "priceCents": 23900,
     "description": "Tomara que caia canelado com calcinha de cintura alta.",
     "details": [
