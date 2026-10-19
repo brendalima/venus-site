@@ -88,6 +88,28 @@
   backdrop-filter: blur(4px);
 }
 
+/* ---------- peça esgotada ----------
+
+   Mesmo tratamento do card: esmaece e dessatura só as fotos. Descrição,
+   preço, tamanhos e detalhes continuam legíveis — é o motivo de a peça
+   seguir clicável, e esmaecer o texto junto cairia abaixo do mínimo de
+   contraste. A tarja fica fora da regra, em contraste cheio. */
+.product--esgotada .product__stage img,
+.product--esgotada .product__stage .placeholder,
+.product--esgotada .product__thumb img {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.product--esgotada .product__thumb {
+  cursor: default;
+}
+
+/* Sem isto a miniatura desabilitada ainda clarearia a borda no ponteiro. */
+.product--esgotada .product__thumb:hover img {
+  border-color: var(--line);
+}
+
 .product__thumbs {
   display: flex;
   gap: var(--space-3);
@@ -134,6 +156,12 @@
 }
 
 .product__thumb.is-active img {
+  border-color: var(--gold);
+}
+
+/* A miniatura ativa continua marcada em dourado mesmo esgotada: é a
+   única pista de qual foto está no palco. */
+.product--esgotada .product__thumb.is-active img {
   border-color: var(--gold);
 }
 
@@ -235,4 +263,11 @@
   line-height: 1.5;
   color: var(--text-faint);
   max-width: 44ch;
+}
+
+/* Contraste cheio dentro de uma nota esmaecida: a frase do esgotado é
+   informação sobre a peça, não letra miúda de rodapé. */
+.product__esgotado {
+  color: var(--text);
+  font-weight: 500;
 }

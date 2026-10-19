@@ -54,6 +54,52 @@
   backdrop-filter: blur(4px);
 }
 
+/* ---------- peça esgotada ----------
+
+   Só a foto esmaece e dessatura. Nome, preço, tamanhos e a tarja ficam
+   em contraste cheio: esmaecer o texto junto derrubaria a legibilidade
+   abaixo do mínimo de acessibilidade, e a informação continua valendo —
+   quem chega numa peça esgotada ainda quer saber qual é e quanto custa.
+
+   A onda acompanha a foto porque fica por cima dela: em contraste cheio
+   sobre uma foto apagada, a decoração ficaria mais forte que o produto. */
+.card--esgotada .card__link {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+/* A onda é apagada por filter, nunca pela propriedade opacity: é opacity
+   que a mantém escondida até o hover, e um valor fixo aqui venceria por
+   especificidade e deixaria a onda acesa o tempo todo na peça esgotada.
+   Já aconteceu: uma faixa do degradê aparecia no pé da foto. */
+.card--esgotada .card__wave-layer {
+  filter: grayscale(0.4) opacity(0.55);
+}
+
+/* O zoom é um convite, e não há o que convidar numa peça esgotada. */
+.card--esgotada:hover .card__media img {
+  transform: none;
+}
+
+/* Seta desabilitada: mudar cor e borda, nunca opacity — os blocos @media
+   abaixo usam opacity para esconder a seta até o hover do card, e um
+   valor fixo aqui venceria por especificidade e deixaria a seta da peça
+   esgotada sempre acesa no desktop. */
+.card__nav:disabled {
+  cursor: default;
+  color: var(--text-faint);
+  border-color: rgba(245, 245, 247, 0.1);
+}
+
+/* Sem isto a seta desabilitada herdaria o realce dourado do :hover e do
+   :active mais abaixo, e pareceria viva. */
+.card__nav:disabled:hover,
+.card__nav:disabled:active {
+  background: rgba(8, 9, 10, 0.42);
+  border-color: rgba(245, 245, 247, 0.1);
+  color: var(--text-faint);
+}
+
 /* ---------- onda no rodapé da foto ----------
 
    Duas camadas com velocidades e alturas diferentes: uma onda só lê como
