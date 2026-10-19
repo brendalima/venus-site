@@ -8,14 +8,56 @@
       "M",
       "G"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+        "id": "1-1",
+        "name": "Verde esmeralda",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 1
+          },
+          {
+            "size": "M",
+            "quantity": 2
+          },
+          {
+            "size": "G",
+            "quantity": 0
+          }
+        ]
       },
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+        "id": "1-2",
+        "name": "Areia",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 0
+          },
+          {
+            "size": "M",
+            "quantity": 1
+          },
+          {
+            "size": "G",
+            "quantity": 3
+          }
+        ]
       }
     ],
     "soldOut": false,
@@ -38,14 +80,64 @@
       "G",
       "GG"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+        "id": "2-1",
+        "name": "Preto",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 0
+          },
+          {
+            "size": "M",
+            "quantity": 0
+          },
+          {
+            "size": "G",
+            "quantity": 0
+          },
+          {
+            "size": "GG",
+            "quantity": 0
+          }
+        ]
       },
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+        "id": "2-2",
+        "name": "Grafite",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 0
+          },
+          {
+            "size": "M",
+            "quantity": 0
+          },
+          {
+            "size": "G",
+            "quantity": 0
+          },
+          {
+            "size": "GG",
+            "quantity": 0
+          }
+        ]
       }
     ],
     "soldOut": true,
@@ -67,14 +159,22 @@
       "M",
       "G"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
-      },
-      {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+        "id": "3-1",
+        "name": "Azul marinho",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          }
+        ],
+        "tracksStock": false,
+        "stock": []
       }
     ],
     "soldOut": false,
@@ -97,14 +197,88 @@
       "G",
       "GG"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+        "id": "4-1",
+        "name": "Coral",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 2
+          },
+          {
+            "size": "M",
+            "quantity": 2
+          },
+          {
+            "size": "G",
+            "quantity": 1
+          },
+          {
+            "size": "GG",
+            "quantity": 1
+          }
+        ]
       },
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+        "id": "4-2",
+        "name": "Preto",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 0
+          },
+          {
+            "size": "M",
+            "quantity": 1
+          },
+          {
+            "size": "G",
+            "quantity": 1
+          },
+          {
+            "size": "GG",
+            "quantity": 0
+          }
+        ]
+      },
+      {
+        "id": "4-3",
+        "name": "Off-white",
+        "images": [],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 1
+          },
+          {
+            "size": "M",
+            "quantity": 0
+          },
+          {
+            "size": "G",
+            "quantity": 0
+          },
+          {
+            "size": "GG",
+            "quantity": 0
+          }
+        ]
       }
     ],
     "soldOut": false,
@@ -126,14 +300,35 @@
       "M",
       "G"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
-      },
-      {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+        "id": "5-1",
+        "name": "Lilás",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          }
+        ],
+        "tracksStock": true,
+        "stock": [
+          {
+            "size": "P",
+            "quantity": 3
+          },
+          {
+            "size": "M",
+            "quantity": 0
+          },
+          {
+            "size": "G",
+            "quantity": 2
+          }
+        ]
       }
     ],
     "soldOut": false,
@@ -156,14 +351,22 @@
       "G",
       "GG"
     ],
-    "images": [
+    "colours": [
       {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
-      },
-      {
-        "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
-        "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+        "id": "6-1",
+        "name": "Off-white",
+        "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          }
+        ],
+        "tracksStock": false,
+        "stock": []
       }
     ],
     "soldOut": true,

@@ -215,18 +215,111 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
+/* Botão, não mais item de lista: o tamanho é escolhível e é a escolha
+   que acende a linha de disponibilidade. A aparência é a mesma de antes
+   — ficha retangular — mas o alvo cresceu para os 36px de toque. */
 .product__size {
   font-family: var(--font-sans);
   font-size: 0.8rem;
   color: var(--text);
+  background: none;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 6px 14px;
+  padding: 8px 16px;
+  min-height: 36px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+@media (hover: hover) {
+  .product__size:hover:not(:disabled) {
+    border-color: rgba(245, 245, 247, 0.4);
+  }
+}
+
+.product__size.is-active {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* Tamanho que acabou na cor escolhida. Continua clicável: é clicando que
+   a pessoa recebe o "Indisponível" por escrito, e sumir da grade
+   esconderia que o tamanho existe na peça. */
+.product__size--fora {
+  color: var(--text-faint);
+  border-color: var(--line-soft);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
+}
+
+/* A escolha vence o risco: dourado, para a ficha clicada continuar
+   claramente a que está em foco mesmo estando indisponível. */
+.product__size--fora.is-active {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* min-height reserva a linha mesmo vazia. Sem isso, escolher um tamanho
+   faz o texto nascer e empurrar detalhes e nota para baixo — layout
+   shift disparado por clique, com o CLS que vem junto. */
+.product__disponibilidade {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  min-height: 1.5em;
+  color: var(--text);
+}
+
+/* ---------- seletor de cor ----------
+
+   Fichas de texto, não amostras: o admin guarda o nome que as donas
+   escreveram ("Bege"), nunca um valor de cor. */
+.product__cores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.product__cor {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 7px 15px;
+  min-height: 36px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+@media (hover: hover) {
+  .product__cor:hover:not(:disabled) {
+    color: var(--text);
+    border-color: rgba(245, 245, 247, 0.4);
+  }
+}
+
+.product__cor.is-active {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* Peça esgotada: cores e tamanhos continuam legíveis — dizem em que
+   cores e tamanhos a peça sai, e isso segue valendo para quem vai
+   perguntar no WhatsApp se ela volta. Só não aceitam toque. Nada de
+   opacity aqui: derrubaria o contraste do texto, que é o motivo de só a
+   foto esmaecer. */
+.product__cor:disabled,
+.product__size:disabled {
+  cursor: default;
 }
 
 .product__details {

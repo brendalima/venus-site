@@ -314,6 +314,57 @@
   color: var(--gold-light);
 }
 
+/* ---------- fichas de cor ----------
+
+   Texto, não amostras de cor: o admin guarda um nome ("Bege"), nunca um
+   valor. Pedir um hex por cor seria mais um campo para as donas
+   preencherem, e um hex errado engana mais que a palavra certa.
+
+   A borda dourada marca a escolhida — o mesmo dourado da miniatura ativa
+   na página da peça, para "ativo" ter uma cor só no site inteiro. */
+.card__cores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.card__cor {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  /* Ficha estreita demais erra o toque; 6px/11px dá um alvo honesto sem
+     a ficha virar botão de formulário. */
+  padding: 4px 11px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.card__cor.is-active {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+@media (hover: hover) {
+  .card__cor:hover:not(:disabled) {
+    color: var(--text);
+    border-color: rgba(245, 245, 247, 0.4);
+  }
+}
+
+/* Peça esgotada: a ficha continua legível (ainda diz em que cores a peça
+   sai) mas não aceita toque. Sem opacity, que derrubaria o contraste do
+   texto abaixo do mínimo — o mesmo motivo de só a foto esmaecer. */
+.card__cor:disabled {
+  cursor: default;
+  color: var(--text-muted);
+}
+
 .card__sizes {
   display: flex;
   flex-wrap: wrap;
@@ -331,6 +382,17 @@
   border: 1px solid var(--line);
   border-radius: 3px;
   padding: 2px 7px;
+}
+
+/* Tamanho que acabou na cor escolhida. Risco e cor apagada, não
+   remoção: sumir da lista faria a grade da peça encolher a cada troca de
+   cor, e quem olha não saberia se o tamanho nunca existiu ou se acabou.
+   O "indisponível" escondido no HTML é o que o leitor de tela ouve. */
+.card__size--fora {
+  color: var(--text-faint);
+  border-color: var(--line-soft);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
 }
 
 @media (min-width: 768px) {

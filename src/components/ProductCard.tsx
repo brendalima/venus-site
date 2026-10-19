@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../types";
 import { formatBRL } from "../lib/format";
+import { disponivel } from "../lib/estoque";
 import { PlaceholderImage } from "./PlaceholderImage";
 import "./ProductCard.css";
 
@@ -32,11 +33,25 @@ type Props = {
 };
 
 export function ProductCard({ product, index, priority = false }: Props) {
-  const { slug, name, priceCents, sizes, images, description, soldOut } = product;
+  const { slug, name, priceCents, sizes, colours, description, soldOut } =
+    product;
+  const [cor, setCor] = useState(0);
   const [active, setActive] = useState(0);
 
   const href = `/produto/${slug}`;
+  // Um card por peça, não um por cor: é a cor escolhida que manda na
+  // galeria. Toda peça tem ao menos uma cor, mas o `?? []` evita que um
+  // catálogo torto derrube a página inteira.
+  const corAtual = colours[cor];
+  const images = corAtual?.images ?? [];
   const current = images[active];
+
+  function escolherCor(i: number) {
+    setCor(i);
+    // A nova cor tem outras fotos, e a de índice 3 da anterior não quer
+    // dizer nada aqui. Volta para a capa.
+    setActive(0);
+  }
 
   return (
     <article className={soldOut ? "card card--esgotada" : "card"}>
@@ -74,7 +89,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
         {/* A peça esgotada continua clicável: catálogo pequeno, e quem
             chegou por link do Instagram ainda quer ver a peça e
             perguntar no WhatsApp se ela volta. O que muda é a foto
-            esmaecida, a tarja e as setas desabilitadas. */}
+            esmaecida, a tarja e os controles desabilitados. */}
         {soldOut && <span className="card__flag">Esgotado</span>}
 
         {images.length > 1 && (
@@ -124,12 +139,58 @@ export function ProductCard({ product, index, priority = false }: Props) {
             <p className="card__price">{formatBRL(priceCents)}</p>
           )}
 
-          <ul className="card__sizes" aria-label={`Tamanhos de ${name}`}>
-            {sizes.map((size) => (
-              <li key={size} className="card__size">
-                {size}
-              </li>
-            ))}
+          {/* As fichas ficam aqui no card__body, fora do <Link> da foto:
+              botão dentro de âncora é HTML inválido.
+
+              Peça de uma cor só não ganha seletor — não há o que
+              escolher, e o backfill do admin batizou essas de "Única",
+              que não diz nada a ninguém. */}
+          {colours.length > 1 && (
+            <div
+              className="card__cores"
+              role="group"
+              aria-label={`Cores de ${name}`}
+            >
+              {colours.map((c, i) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`card__cor ${i === cor ? "is-active" : ""}`}
+                  aria-pressed={i === cor}
+                  disabled={soldOut}
+                  onClick={() => escolherCor(i)}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Tamanhos continuam informativos — sem número, que é coisa da
+              página da peça. O que a cor muda aqui é quais deles estão
+              apagados. */}
+          <ul
+            className="card__sizes"
+            aria-label={
+              corAtual && colours.length > 1
+                ? `Tamanhos de ${name} em ${corAtual.name}`
+                : `Tamanhos de ${name}`
+            }
+          >
+            {sizes.map((size) => {
+              const tem = corAtual ? disponivel(corAtual, size) : true;
+              return (
+                <li
+                  key={size}
+                  className={tem ? "card__size" : "card__size card__size--fora"}
+                >
+                  {size}
+                  {/* Riscado é pista visual e nada mais: sem isto, quem
+                      usa leitor de tela ouve a mesma lista de sempre. */}
+                  {!tem && <span className="visually-hidden"> indisponível</span>}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
