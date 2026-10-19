@@ -29,6 +29,10 @@
 
 .product__layout {
   display: grid;
+  /* minmax(0, 1fr) em vez de 1fr: item de grade tem min-width auto, e a
+     fileira de miniaturas (que não cabe em 360px) esticava a coluna —
+     a foto grande saía mais larga que a tela. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-8);
 }
 
@@ -47,6 +51,10 @@
     position: sticky;
     top: var(--space-8);
   }
+}
+
+.product__gallery {
+  min-width: 0;
 }
 
 .product__stage {
@@ -84,11 +92,23 @@
   display: flex;
   gap: var(--space-3);
   margin-top: var(--space-3);
+  /* Em 360px não cabem mais de três miniaturas. Rolagem horizontal, não
+     quebra de linha: mantém a ordem das fotos legível numa fileira só.
+     Alcançável por teclado — o Tab passa por cada botão e o navegador
+     rola até ele. */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  /* Espaço para o anel de foco (outline-offset: 3px) não ser cortado. */
+  padding: 3px;
+  margin-inline: -3px;
 }
 
 .product__thumb {
   display: block;
   flex: 0 0 92px;
+  scroll-snap-align: start;
   padding: 0;
   background: none;
   border: none;
