@@ -98,6 +98,25 @@ enquanto a peça não foi precificada — as donas catalogam antes de
 precificar. Nada de "R$ 0,00" nem "Consulte": a peça fica listada, sem a
 linha de preço. Decidido com a dona do projeto.
 
+**Cor é dona das fotos e do estoque**, não a peça. Trocar a cor no site
+troca a galeria, e o seletor some quando a peça tem uma cor só — não há
+o que escolher, e as peças anteriores às cores se chamam "Única".
+
+**"Não contada" não é "zerada".** `tracksStock` falso quer dizer que
+ninguém contou aquela cor: mostre os tamanhos sem número. Zero, ou
+tamanho sem lançamento numa cor contada, é "Indisponível". `soldOut`
+vence tudo. A tradução dos três estados mora em `src/lib/estoque.ts` e
+só deveria existir lá — ler `stock.length` solto num componente é como o
+erro volta.
+
+**`sizes` é a grade da peça**, não o que tem em estoque. O tamanho que
+acabou aparece riscado, nunca sumido: sumindo, ninguém sabe se ele nunca
+existiu ou se esgotou.
+
+**O número que o site mostra pode estar velho.** Dar baixa no admin só
+acende o aviso de publicação, não republica. É o motivo de a nota da
+página da peça pedir confirmação no WhatsApp — não tire.
+
 **As fotos não têm rótulo de ângulo.** O que importa é a ordem, e a
 primeira é a capa. O alt text é "<nome> — foto N" e a miniatura não tem
 legenda. Cada foto vem em duas larguras: `src` (600w) no card e na

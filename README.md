@@ -23,8 +23,8 @@ npm run dev
 
 | Rota | O que é |
 |---|---|
-| `/` | Hero + catálogo, com troca de ângulo no card e scroll infinito |
-| `/produto/:slug` | Página da peça: galeria, preço, tamanhos, detalhes |
+| `/` | Hero + catálogo, com seletor de cor e troca de foto no card e scroll infinito |
+| `/produto/:slug` | Página da peça: seletor de cor, galeria da cor, preço, seletor de tamanho com disponibilidade, detalhes |
 
 O roteamento é no cliente. O arquivo [`public/_redirects`](public/_redirects) faz o servidor devolver o `index.html` em qualquer caminho — **sem ele, abrir `/produto/...` direto ou dar F5 retorna 404** no Cloudflare Pages.
 
@@ -90,9 +90,52 @@ enquanto ninguém precificou) e o site **não mostra preço nenhum**: nem
 "R$ 0,00", nem "Consulte". A peça continua listada, só sem a linha de
 preço, e a nota "Preço informativo" some junto na página da peça.
 
+### Cores, tamanhos e estoque
+
+Uma peça sai em uma ou mais **cores**, e é a cor que tem as fotos e as
+quantidades — não a peça. Trocar de cor no site troca a galeria.
+
+O catálogo chega com três estados que não podem ser confundidos, e
+[`src/lib/estoque.ts`](src/lib/estoque.ts) é o único lugar que os traduz:
+
+| No dado | No site |
+|---|---|
+| `tracksStock: false` | Tamanhos sem número nenhum. **Ninguém contou** essa cor — não quer dizer que acabou. |
+| `quantity` ≥ 1 | "3 peças em estoque" na página da peça |
+| `quantity` 0, ou tamanho sem lançamento | "Indisponível", e o tamanho sai riscado |
+| `soldOut` | Vence tudo: é a chave manual das donas, por cima de qualquer contagem |
+
+O erro fácil é ler "não contada" como "zerada", que esgotaria no site
+toda peça que as donas ainda não contaram — elas catalogam antes de
+contar, como catalogam antes de precificar.
+
+`sizes` é a **grade da peça**, não o que tem em estoque: o seletor
+renderiza dela, e o tamanho que acabou aparece riscado em vez de sumir.
+Sumindo, ninguém saberia se o tamanho nunca existiu ou se esgotou.
+
+**No card** a cor troca a foto e apaga os tamanhos que faltam, mas
+**não** mostra número — número só na página da peça, onde há espaço para
+o aviso de que ele pode estar velho. É um card por peça, com seletor,
+não um card por cor.
+
+**Peça de uma cor só não ganha seletor.** Não há o que escolher, e as
+peças que existiam antes das cores foram batizadas de "Única" pelo
+admin, que não diz nada a ninguém.
+
+As fichas de cor são **texto, não amostras**: o admin guarda o nome que
+as donas escreveram ("Bege"), nunca um valor. Um hex seria mais um campo
+por cor para preencherem, e um hex errado engana mais que a palavra
+certa.
+
+**O número pode estar velho.** Dar baixa no estoque pelo admin só acende
+o aviso "Há alterações não publicadas" — não republica sozinho. Entre a
+venda e a publicação o site mostra o número de antes, e é por isso que a
+nota da página da peça diz que quantidades e preço são informativos e
+pede confirmação no WhatsApp.
+
 ### Fotos
 
-As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card e na miniatura, `srcGrande` (1200w) na foto grande da página da peça.
+As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card e na miniatura, `srcGrande` (1200w) na foto grande da página da peça. **As fotos são da cor**, não da peça: cada cor tem a sua lista, e a primeira da cor é a capa.
 
 **Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N". As miniaturas não têm legenda; quem usa leitor de tela recebe "Foto 2 de 3" ao trocar.
 
@@ -100,7 +143,7 @@ As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.
 
 A primeira imagem é a capa do card. Recorte **2:3 (retrato)**; outras proporções funcionam mas são cortadas.
 
-Se `images` ficar vazio, a peça cai num placeholder gerado — gradiente determinístico com as iniciais e o rótulo "foto em breve". Não é uma flag: assim que o array tiver conteúdo, aquele produto passa a mostrar a foto sozinho.
+Se a cor escolhida ficar sem fotos, ela cai num placeholder gerado — gradiente determinístico com as iniciais e o rótulo "foto em breve". Não é uma flag: assim que a cor tiver foto, ela passa a mostrá-la sozinha.
 
 ### Logo
 
