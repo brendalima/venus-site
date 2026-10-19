@@ -11,6 +11,58 @@
   padding-block: var(--space-12);
 }
 
+/* ---------- redes ---------- */
+
+.footer__redes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+}
+
+/* Rótulo junto do ícone: o desenho sozinho não diz para onde leva, e a
+   maior parte do tráfego vem do Instagram, ou seja, celular — sem hover
+   para revelar um title. */
+.footer__rede {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  /* 44px de alvo de toque com a altura da linha do rótulo. */
+  padding: 10px 18px;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.footer__rede svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.footer__rede:hover,
+.footer__rede:focus-visible {
+  color: var(--text);
+  border-color: var(--gold);
+}
+
+/* ---------- textos ---------- */
+
 .footer__note {
   max-width: 40ch;
   font-size: 0.82rem;
