@@ -155,14 +155,18 @@
   border-color: rgba(245, 245, 247, 0.4);
 }
 
-.product__thumb.is-active img {
-  border-color: var(--gold);
-}
+/* A miniatura no palco leva o mesmo anel de marca das fichas de cor e
+   tamanho (.brand-ring, em global.css): na página da peça "escolhido"
+   tem de ter uma cara só, senão a borda dourada da miniatura e o anel em
+   degradê das fichas parecem dizer coisas diferentes.
 
-/* A miniatura ativa continua marcada em dourado mesmo esgotada: é a
-   única pista de qual foto está no palco. */
+   A borda aqui mora no <img>, não no botão, e a foto cobre só o
+   padding-box — então a faixa da borda continua mostrando o degradê.
+
+   A miniatura ativa continua marcada mesmo na peça esgotada: é a única
+   pista de qual foto está no palco. */
 .product--esgotada .product__thumb.is-active img {
-  border-color: var(--gold);
+  border-color: transparent;
 }
 
 /* ---------- coluna de texto ---------- */
@@ -241,26 +245,53 @@
   }
 }
 
+/* A borda do escolhido vem do .brand-ring (global.css), em degradê.
+   Aqui fica só a cor do texto. */
 .product__size.is-active {
   color: var(--gold-light);
-  border-color: var(--gold);
 }
 
 /* Tamanho que acabou na cor escolhida. Continua clicável: é clicando que
    a pessoa recebe o "Indisponível" por escrito, e sumir da grade
-   esconderia que o tamanho existe na peça. */
+   esconderia que o tamanho existe na peça.
+
+   O risco atravessa o botão inteiro, não a palavra. Riscar só a letra
+   some num "P" de três pixels de largura — foi o que aconteceu, e de
+   relance a ficha parecia normal. */
 .product__size--fora {
+  position: relative;
   color: var(--text-faint);
   border-color: var(--line-soft);
-  text-decoration: line-through;
-  text-decoration-color: var(--text-faint);
 }
 
-/* A escolha vence o risco: dourado, para a ficha clicada continuar
-   claramente a que está em foco mesmo estando indisponível. */
+/* O traço é um gradiente de borda dura, e não um pseudo-elemento
+   rotacionado: rotação precisaria da diagonal do botão, que muda com o
+   texto ("P" e "GG" não têm a mesma largura). A 45° o traço entra e sai
+   pelas bordas em vez de cravar nos cantos, e atravessa o botão todo em
+   qualquer largura.
+
+   currentColor de propósito: o traço acompanha o texto, inclusive
+   quando o botão está escolhido e fica dourado. */
+.product__size--fora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 0.5px),
+    currentColor calc(50% - 0.5px),
+    currentColor calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+/* A escolha vence o risco: dourado no texto e anel de marca na borda,
+   para a ficha clicada continuar sendo claramente a que está em foco
+   mesmo estando indisponível. */
 .product__size--fora.is-active {
   color: var(--gold-light);
-  border-color: var(--gold);
 }
 
 /* min-height reserva a linha mesmo vazia. Sem isso, escolher um tamanho
@@ -276,12 +307,14 @@
 /* ---------- seletor de cor ----------
 
    Fichas de texto, não amostras: o admin guarda o nome que as donas
-   escreveram ("Bege"), nunca um valor de cor. */
+   escreveram ("Bege"), nunca um valor de cor.
+
+   Vive num .product__block logo acima dos tamanhos, então o espaçamento
+   vem do bloco — nada de margem própria aqui. */
 .product__cores {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-bottom: var(--space-3);
 }
 
 .product__cor {
@@ -307,9 +340,9 @@
   }
 }
 
+/* Borda em degradê pelo .brand-ring; aqui só a cor do texto. */
 .product__cor.is-active {
   color: var(--gold-light);
-  border-color: var(--gold);
 }
 
 /* Peça esgotada: cores e tamanhos continuam legíveis — dizem em que

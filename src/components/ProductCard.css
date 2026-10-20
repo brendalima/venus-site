@@ -345,9 +345,10 @@
     color 0.18s ease;
 }
 
+/* A borda do escolhido vem do .brand-ring (global.css), em degradê —
+   o mesmo da página da peça. Aqui fica só a cor do texto. */
 .card__cor.is-active {
   color: var(--gold-light);
-  border-color: var(--gold);
 }
 
 @media (hover: hover) {
@@ -387,12 +388,31 @@
 /* Tamanho que acabou na cor escolhida. Risco e cor apagada, não
    remoção: sumir da lista faria a grade da peça encolher a cada troca de
    cor, e quem olha não saberia se o tamanho nunca existiu ou se acabou.
-   O "indisponível" escondido no HTML é o que o leitor de tela ouve. */
+   O "indisponível" escondido no HTML é o que o leitor de tela ouve.
+
+   O traço atravessa a ficha inteira, como na página da peça: riscar só
+   a letra, numa ficha de 0.66rem, vira um borrão que não se distingue
+   de uma disponível. Mesmo gradiente de borda dura, mesma razão de não
+   ser pseudo-elemento rotacionado — ver ProductPage.css. */
 .card__size--fora {
+  position: relative;
   color: var(--text-faint);
   border-color: var(--line-soft);
-  text-decoration: line-through;
-  text-decoration-color: var(--text-faint);
+}
+
+.card__size--fora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 0.5px),
+    currentColor calc(50% - 0.5px),
+    currentColor calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
 }
 
 @media (min-width: 768px) {

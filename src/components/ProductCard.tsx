@@ -155,7 +155,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
                 <button
                   key={c.id}
                   type="button"
-                  className={`card__cor ${i === cor ? "is-active" : ""}`}
+                  className={`card__cor ${i === cor ? "is-active brand-ring" : ""}`}
                   aria-pressed={i === cor}
                   disabled={soldOut}
                   onClick={() => escolherCor(i)}

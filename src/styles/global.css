@@ -87,6 +87,40 @@ button {
   top: 0;
 }
 
+/* Anel com o degradê da marca, para a opção escolhida — a ficha de cor,
+   o botão de tamanho. Mesma espessura de antes (1px): quem desenha a
+   borda continua sendo o `border` do próprio componente, esta classe só
+   troca a cor dele por degradê.
+
+   `border` não aceita gradiente, então quem faz o trabalho é o fundo:
+   uma camada chapada presa ao padding-box por cima do degradê preso ao
+   border-box deixa à mostra só a faixa da borda. Por isso a camada de
+   baixo é --bg, e o anel só funciona sobre o fundo da página.
+
+   Usa --brand-gradient e não --brand-rule, que é o do filete: aquele
+   apaga nas pontas para não bater seco na borda da tela, e numa ficha de
+   40px o apagamento comeria metade do anel.
+
+   Irmã do .brand-rule, mas com outro trabalho: o filete marca fronteira
+   de contexto, o anel marca escolha. Nenhum dos dois é enfeite — se
+   borda com degradê começar a aparecer em elemento que não foi
+   escolhido, os dois param de significar alguma coisa. */
+.brand-ring {
+  border-color: transparent;
+  background-image: linear-gradient(var(--bg), var(--bg)), var(--brand-gradient);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* Para o anel que encosta em foto, e não no fundo da página: a
+   miniatura escolhida. O --brand-gradient passa por um champagne quase
+   branco que some sobre o fundo branco das fotos de produto, e o anel
+   ficaria partido no meio. Mesmo motivo do --brand-gradient-deep na
+   onda do card. */
+.brand-ring--deep {
+  background-image: var(--brand-gradient-deep);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

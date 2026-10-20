@@ -113,6 +113,13 @@ contar, como catalogam antes de precificar.
 renderiza dela, e o tamanho que acabou aparece riscado em vez de sumir.
 Sumindo, ninguém saberia se o tamanho nunca existiu ou se esgotou.
 
+Na página da peça o seletor de cor fica **acima do de tamanho**, na
+ordem em que a escolha acontece: primeiro qual peça, depois se ela
+serve. A opção escolhida — cor, tamanho, miniatura no palco — leva o
+anel com o degradê da marca (`.brand-ring`, em
+[`global.css`](src/styles/global.css)), e o tamanho que acabou leva um
+traço atravessando o botão inteiro.
+
 **No card** a cor troca a foto e apaga os tamanhos que faltam, mas
 **não** mostra número — número só na página da peça, onde há espaço para
 o aviso de que ele pode estar velho. É um card por peça, com seletor,

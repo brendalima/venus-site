@@ -88,33 +88,6 @@ export function ProductPage() {
 
       <div className="product__layout">
         <div className="product__gallery">
-          {/* O seletor fica colado na galeria, acima dela, porque é a
-              galeria que ele muda. Lá embaixo, junto dos tamanhos,
-              trocar de cor pareceria não ter efeito nenhum.
-
-              Peça de uma cor só não ganha seletor: não há escolha, e o
-              backfill do admin chamou essas de "Única". */}
-          {colours.length > 1 && (
-            <div
-              className="product__cores"
-              role="group"
-              aria-label={`Cores de ${name}`}
-            >
-              {colours.map((c, i) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={`product__cor ${i === cor ? "is-active" : ""}`}
-                  aria-pressed={i === cor}
-                  disabled={soldOut}
-                  onClick={() => escolherCor(i)}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
-          )}
-
           <div className="product__stage">
             {current ? (
               <img
@@ -151,6 +124,7 @@ export function ProductPage() {
                   onClick={() => setActive(i)}
                 >
                   <img
+                    className={i === active ? "brand-ring brand-ring--deep" : ""}
                     src={image.src}
                     alt=""
                     width={784}
@@ -174,6 +148,38 @@ export function ProductPage() {
             <p className="product__price">{formatBRL(priceCents)}</p>
           )}
 
+          {/* Cor antes de tamanho: é a ordem em que a escolha acontece —
+              primeiro qual peça, depois se ela serve — e deixa os dois
+              seletores um sobre o outro, em vez de um deles no alto da
+              galeria. Quem troca a cor vê a galeria mudar ao lado (no
+              desktop) ou logo acima (no celular).
+
+              Peça de uma cor só não ganha seletor: não há escolha, e o
+              backfill do admin chamou essas de "Única". */}
+          {colours.length > 1 && (
+            <div className="product__block">
+              <h2 className="product__label">Cor</h2>
+              <div
+                className="product__cores"
+                role="group"
+                aria-label={`Cores de ${name}`}
+              >
+                {colours.map((c, i) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={`product__cor ${i === cor ? "is-active brand-ring" : ""}`}
+                    aria-pressed={i === cor}
+                    disabled={soldOut}
+                    onClick={() => escolherCor(i)}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="product__block">
             <h2 className="product__label">Tamanhos</h2>
             {/* A grade inteira vira botão, inclusive o tamanho sem
@@ -186,9 +192,9 @@ export function ProductPage() {
                   <button
                     key={size}
                     type="button"
-                    className={`product__size ${size === tamanho ? "is-active" : ""} ${
-                      tem ? "" : "product__size--fora"
-                    }`}
+                    className={`product__size ${
+                      size === tamanho ? "is-active brand-ring" : ""
+                    } ${tem ? "" : "product__size--fora"}`}
                     aria-pressed={size === tamanho}
                     disabled={soldOut}
                     onClick={() => setTamanho(size)}
