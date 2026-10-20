@@ -50,6 +50,14 @@ definidas.** Nada de hex solto em componente.
 - O filete com degradê (`.brand-rule`) marca **fronteiras estruturais** —
   cabeçalho/corpo, corpo/rodapé. Divisões internas usam linha lisa. Se
   tudo virar degradê, ele deixa de significar "aqui muda de contexto".
+- O anel com degradê (`.brand-ring`) marca **a opção escolhida** — ficha
+  de cor, botão de tamanho, miniatura no palco. É o segundo e último uso
+  do degradê: filete é fronteira, anel é escolha. Borda com degradê em
+  elemento que não foi escolhido tira o sentido dos dois. Decidido com a
+  dona do projeto, que pediu o degradê no lugar do dourado chapado.
+  `border` não aceita gradiente, então o anel é feito de fundo em duas
+  camadas (padding-box por cima de border-box) — a espessura continua
+  sendo a do `border` do componente.
 - `--brand-gradient-deep` existe para fundo claro: o degradê normal passa
   por um champagne quase branco que some sobre as fotos.
 - A fonte de display é serifada sem webfont. Sem requisição externa e sem
@@ -97,6 +105,27 @@ plantando um campo errado).
 enquanto a peça não foi precificada — as donas catalogam antes de
 precificar. Nada de "R$ 0,00" nem "Consulte": a peça fica listada, sem a
 linha de preço. Decidido com a dona do projeto.
+
+**Cor é dona das fotos e do estoque**, não a peça. Trocar a cor no site
+troca a galeria, e o seletor some quando a peça tem uma cor só — não há
+o que escolher, e as peças anteriores às cores se chamam "Única".
+
+**"Não contada" não é "zerada".** `tracksStock` falso quer dizer que
+ninguém contou aquela cor: mostre os tamanhos sem número. Zero, ou
+tamanho sem lançamento numa cor contada, é "Indisponível". `soldOut`
+vence tudo. A tradução dos três estados mora em `src/lib/estoque.ts` e
+só deveria existir lá — ler `stock.length` solto num componente é como o
+erro volta.
+
+**`sizes` é a grade da peça**, não o que tem em estoque. O tamanho que
+acabou aparece riscado, nunca sumido: sumindo, ninguém sabe se ele nunca
+existiu ou se esgotou. O risco **atravessa o botão inteiro**, não a
+palavra: riscar só a letra some num "P" de três pixels e a ficha parece
+disponível de relance.
+
+**O número que o site mostra pode estar velho.** Dar baixa no admin só
+acende o aviso de publicação, não republica. É o motivo de a nota da
+página da peça pedir confirmação no WhatsApp — não tire.
 
 **As fotos não têm rótulo de ângulo.** O que importa é a ordem, e a
 primeira é a capa. O alt text é "<nome> — foto N" e a miniatura não tem

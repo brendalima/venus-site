@@ -73,12 +73,19 @@ async function buscar(url, token) {
 /**
  * Converte a resposta do admin (snake_case) para o tipo do site.
  *
- * Duas diferenças que importam:
+ * Três diferenças que importam:
  * - `price_cents` vem ausente quando a peça ainda não tem preço
  *   (o admin usa `omitzero`). Ausente aqui vira ausente lá, e o site
  *   simplesmente não mostra preço — nunca "R$ 0,00".
  * - cada foto vem como url_600/url_1200, sem rótulo de ângulo. A ordem
  *   é que importa, e a primeira é a capa.
+ * - as fotos e o estoque são **da cor**, não da peça. O admin ainda
+ *   manda um `images` achatado no topo, para o site ter podido migrar no
+ *   ritmo dele; daqui em diante ele é ignorado, e sai da API na fase
+ *   seguinte do plano.
+ *
+ * Tudo que não bater com isso derruba o build de propósito: é melhor a
+ * Cloudflare manter o deploy anterior do que publicar um catálogo torto.
  */
 function converter(recebido) {
   if (!Array.isArray(recebido)) {
@@ -94,24 +101,34 @@ function converter(recebido) {
       }
     }
     if (!Array.isArray(p.sizes)) throw erro(`${onde}: "sizes" não é uma lista`);
-    if (!Array.isArray(p.images)) throw erro(`${onde}: "images" não é uma lista`);
     if (p.price_cents !== undefined && !Number.isInteger(p.price_cents)) {
       throw erro(`${onde}: "price_cents" não é inteiro (${p.price_cents})`);
     }
+
+    // A resposta antiga, de antes das cores, tinha "images" no topo e
+    // nada mais. Vale um erro com nome próprio: sem ele o build morre
+    // dizendo só que falta um campo, e a causa de verdade — admin mais
+    // velho que o site — leva meia hora para aparecer.
+    if (p.colours === undefined && Array.isArray(p.images)) {
+      throw erro(
+        `${onde}: a resposta não tem "colours", só o "images" antigo. ` +
+          `O admin está mais velho que o site: suba a versão do admin com ` +
+          `cores em /api/products antes de publicar.`,
+      );
+    }
+    if (!Array.isArray(p.colours)) throw erro(`${onde}: "colours" não é uma lista`);
+    // Lista vazia passa de propósito. O admin exige ao menos uma cor por
+    // peça, então na prática não acontece — e se acontecer é o mesmo caso
+    // de uma peça sem foto, que o placeholder já resolve. Derrubar a
+    // publicação inteira por causa disso deixaria as donas sem publicar
+    // nada.
 
     const produto = {
       id: p.id,
       slug: p.slug,
       name: p.name,
       sizes: p.sizes,
-      images: p.images.map((img, j) => {
-        for (const campo of ["url_600", "url_1200"]) {
-          if (typeof img?.[campo] !== "string" || img[campo] === "") {
-            throw erro(`${onde}, foto ${j + 1}: falta "${campo}"`);
-          }
-        }
-        return { src: img.url_600, srcGrande: img.url_1200 };
-      }),
+      colours: converterCores(p.colours, p.sizes, onde),
       soldOut: Boolean(p.sold_out),
     };
 
@@ -122,6 +139,67 @@ function converter(recebido) {
     if (Array.isArray(p.details) && p.details.length > 0) produto.details = p.details;
 
     return produto;
+  });
+}
+
+function converterCores(cores, sizes, onde) {
+  const nomes = new Set();
+
+  return cores.map((c, j) => {
+    const ondeCor = `${onde}, cor ${j + 1}${typeof c?.name === "string" && c.name ? ` (${c.name})` : ""}`;
+
+    for (const campo of ["id", "name"]) {
+      if (typeof c?.[campo] !== "string" || c[campo] === "") {
+        throw erro(`${ondeCor}: falta "${campo}"`);
+      }
+    }
+    // O admin já recusa duas cores de mesmo nome na peça. Se duas
+    // chegarem aqui, o seletor do site mostraria duas fichas idênticas e
+    // ninguém saberia qual é qual.
+    const nome = c.name.trim().toLowerCase();
+    if (nomes.has(nome)) throw erro(`${ondeCor}: nome de cor repetido na peça`);
+    nomes.add(nome);
+
+    if (!Array.isArray(c.images)) throw erro(`${ondeCor}: "images" não é uma lista`);
+    if (typeof c.tracks_stock !== "boolean") {
+      throw erro(`${ondeCor}: "tracks_stock" não é booleano (${c.tracks_stock})`);
+    }
+    if (!Array.isArray(c.stock)) throw erro(`${ondeCor}: "stock" não é uma lista`);
+    // Cor não contada com lançamento é contradição: o site mostraria os
+    // tamanhos sem número e jogaria a quantidade fora em silêncio.
+    if (!c.tracks_stock && c.stock.length > 0) {
+      throw erro(`${ondeCor}: "tracks_stock" é falso mas vieram ${c.stock.length} lançamentos`);
+    }
+
+    const tamanhos = new Set();
+    const stock = c.stock.map((s) => {
+      if (!sizes.includes(s?.size)) {
+        throw erro(`${ondeCor}: tamanho "${s?.size}" fora da grade da peça (${sizes.join(", ")})`);
+      }
+      if (tamanhos.has(s.size)) throw erro(`${ondeCor}: tamanho "${s.size}" lançado duas vezes`);
+      tamanhos.add(s.size);
+      // Zero é "indisponível" e tem de sobreviver à viagem — um zero
+      // sumido vira "não contado", que é o oposto.
+      if (!Number.isInteger(s.quantity) || s.quantity < 0) {
+        throw erro(`${ondeCor}, tamanho ${s.size}: "quantity" não é inteiro não-negativo (${s.quantity})`);
+      }
+      return { size: s.size, quantity: s.quantity };
+    });
+
+    return {
+      id: c.id,
+      name: c.name,
+      images: c.images.map((img, k) => {
+        for (const campo of ["url_600", "url_1200"]) {
+          if (typeof img?.[campo] !== "string" || img[campo] === "") {
+            throw erro(`${ondeCor}, foto ${k + 1}: falta "${campo}"`);
+          }
+        }
+        return { src: img.url_600, srcGrande: img.url_1200 };
+      }),
+      tracksStock: c.tracks_stock,
+      stock,
+    };
   });
 }
 
@@ -155,9 +233,12 @@ async function main() {
   await writeFile(DESTINO, `${JSON.stringify(produtos, null, 2)}\n`, "utf8");
 
   const semPreco = produtos.filter((p) => p.priceCents === undefined).length;
-  const semFoto = produtos.filter((p) => p.images.length === 0).length;
+  const semFoto = produtos.filter((p) =>
+    p.colours.every((c) => c.images.length === 0),
+  ).length;
+  const cores = produtos.reduce((n, p) => n + p.colours.length, 0);
   console.log(
-    `[catálogo] ${produtos.length} produtos gravados` +
+    `[catálogo] ${produtos.length} produtos gravados, ${cores} cores` +
       (semPreco ? `, ${semPreco} sem preço` : "") +
       (semFoto ? `, ${semFoto} sem foto` : ""),
   );
