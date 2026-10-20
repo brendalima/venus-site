@@ -79,10 +79,10 @@ async function buscar(url, token) {
  *   simplesmente não mostra preço — nunca "R$ 0,00".
  * - cada foto vem como url_600/url_1200, sem rótulo de ângulo. A ordem
  *   é que importa, e a primeira é a capa.
- * - as fotos e o estoque são **da cor**, não da peça. O admin ainda
- *   manda um `images` achatado no topo, para o site ter podido migrar no
- *   ritmo dele; daqui em diante ele é ignorado, e sai da API na fase
- *   seguinte do plano.
+ * - as fotos e o estoque são **da cor**, não da peça. O admin mandou
+ *   um `images` achatado no topo enquanto o site migrava; desde a fase 5
+ *   do plano ele não vem mais, e a única coisa que ainda olha para ele é
+ *   o erro nomeado abaixo.
  *
  * Tudo que não bater com isso derruba o build de propósito: é melhor a
  * Cloudflare manter o deploy anterior do que publicar um catálogo torto.
@@ -108,7 +108,9 @@ function converter(recebido) {
     // A resposta antiga, de antes das cores, tinha "images" no topo e
     // nada mais. Vale um erro com nome próprio: sem ele o build morre
     // dizendo só que falta um campo, e a causa de verdade — admin mais
-    // velho que o site — leva meia hora para aparecer.
+    // velho que o site — leva meia hora para aparecer. Continua valendo
+    // depois da fase 5: um admin revertido para antes das cores responde
+    // exatamente assim, e é aí que este erro paga o aluguel.
     if (p.colours === undefined && Array.isArray(p.images)) {
       throw erro(
         `${onde}: a resposta não tem "colours", só o "images" antigo. ` +
