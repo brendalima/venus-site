@@ -1,0 +1,38 @@
+/* O botão vive sempre dentro de uma .faixa-escura (hero ou faixa de
+   navegação), então os tokens que ele lê são os do tema escuro nos dois
+   temas — e a aparência dele não muda quando a página clareia. É de
+   propósito: o controle que troca o tema não deveria piscar junto. */
+.botao-tema {
+  display: grid;
+  place-items: center;
+  /* 44px de alvo de toque. A maior parte do tráfego vem do Instagram,
+     ou seja, celular, e não há hover para ajudar a acertar. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.botao-tema svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) {
+  .botao-tema:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+}

@@ -44,10 +44,11 @@ button {
   color: inherit;
 }
 
-/* Foco visível em tudo que recebe teclado. Turquesa destaca bem tanto
-   sobre o preto do fundo quanto sobre o branco das fotos. */
+/* Foco visível em tudo que recebe teclado. O tom vem do tema: o turquesa
+   claro do escuro dá 1,66:1 sobre marfim, ou seja, desapareceria no tema
+   claro — ver --focus em tokens.css. */
 :focus-visible {
-  outline: 2px solid var(--teal-light);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -57,6 +58,24 @@ button {
   max-width: var(--page-max);
   margin-inline: auto;
   padding-inline: var(--page-pad);
+}
+
+/* Faixa que fica escura nos dois temas — cabeçalho e rodapé.
+
+   A logo tem fundo preto chapado e vive de mix-blend-mode: screen, que
+   só faz o preto desaparecer sobre fundo escuro (ver Logo.css). Medindo
+   os arquivos de public/, 58% a 60% da arte fica abaixo de 3:1 sobre
+   marfim: o champagne do monograma simplesmente não existe sobre claro.
+   Transparência de verdade não resolve — foi medido, dá 64,8%. Só
+   reancorar a arte nos tons fundos resolveria, e isso é redesenhar a
+   marca.
+
+   Então a logo não sai do preto: o corpo da página clareia, as duas
+   fronteiras estruturais continuam escuras, e nenhum arquivo novo entra.
+   Quem redefine os tokens aqui dentro é tokens.css, neste mesmo seletor. */
+.faixa-escura {
+  background: var(--bg);
+  color: var(--text);
 }
 
 /* Filete com o degradê da marca.

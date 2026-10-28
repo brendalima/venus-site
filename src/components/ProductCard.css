@@ -47,7 +47,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text);
-  background: rgba(8, 9, 10, 0.82);
+  background: var(--scrim-strong);
   border: 1px solid var(--line);
   border-radius: 100px;
   padding: 3px 9px;
@@ -88,15 +88,15 @@
 .card__nav:disabled {
   cursor: default;
   color: var(--text-faint);
-  border-color: rgba(245, 245, 247, 0.1);
+  border-color: var(--on-photo-line-soft);
 }
 
 /* Sem isto a seta desabilitada herdaria o realce dourado do :hover e do
    :active mais abaixo, e pareceria viva. */
 .card__nav:disabled:hover,
 .card__nav:disabled:active {
-  background: rgba(8, 9, 10, 0.42);
-  border-color: rgba(245, 245, 247, 0.1);
+  background: var(--scrim-soft);
+  border-color: var(--on-photo-line-soft);
   color: var(--text-faint);
 }
 
@@ -205,9 +205,9 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid rgba(245, 245, 247, 0.22);
+  border: 1px solid var(--on-photo-line);
   border-radius: 100px;
-  background: rgba(8, 9, 10, 0.6);
+  background: var(--scrim);
   color: var(--text);
   cursor: pointer;
   backdrop-filter: blur(6px);
@@ -240,9 +240,9 @@
   }
 
   .card__nav:hover {
-    background: rgba(8, 9, 10, 0.85);
-    border-color: var(--gold);
-    color: var(--gold);
+    background: var(--scrim-strong);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
@@ -250,14 +250,14 @@
    mantém os 36px de alvo, mas com fundo mais discreto. */
 @media (hover: none) {
   .card__nav {
-    background: rgba(8, 9, 10, 0.42);
-    border-color: rgba(245, 245, 247, 0.16);
+    background: var(--scrim-soft);
+    border-color: var(--on-photo-line);
   }
 
   .card__nav:active {
-    background: rgba(8, 9, 10, 0.8);
-    border-color: var(--gold);
-    color: var(--gold);
+    background: var(--scrim-strong);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
@@ -291,7 +291,7 @@
 .card__name a:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--accent);
 }
 
 /* Limita a 2 linhas: descrições de tamanhos muito diferentes desalinham
@@ -311,7 +311,7 @@
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
-  color: var(--gold-light);
+  color: var(--accent-text);
 }
 
 /* ---------- fichas de cor ----------
@@ -348,13 +348,13 @@
 /* A borda do escolhido vem do .brand-ring (global.css), em degradê —
    o mesmo da página da peça. Aqui fica só a cor do texto. */
 .card__cor.is-active {
-  color: var(--gold-light);
+  color: var(--accent-text);
 }
 
 @media (hover: hover) {
   .card__cor:hover:not(:disabled) {
     color: var(--text);
-    border-color: rgba(245, 245, 247, 0.4);
+    border-color: var(--line-strong);
   }
 }
 
