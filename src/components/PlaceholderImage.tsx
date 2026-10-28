@@ -9,6 +9,8 @@
  * produto real é o tipo de coisa que chega em produção sem ninguém notar.
  */
 
+import "./PlaceholderImage.css";
+
 /* Tons da logo, do lado quente ao frio. */
 const BRAND = [
   "#8a6a30", // dourado profundo
@@ -71,15 +73,17 @@ export function PlaceholderImage({ slug, name, index }: Props) {
           <stop offset="100%" stopColor={to} stopOpacity="0.12" />
         </linearGradient>
 
-        {/* Escurece o rodapé para o rótulo ficar legível mesmo sobre
-            gradientes claros, como o âmbar. */}
+        {/* Afasta o rodapé do rótulo para ele ficar legível mesmo sobre
+            gradientes claros, como o âmbar. A cor vem do tema (ver
+            PlaceholderImage.css): no escuro escurece, no claro clareia —
+            nos dois casos abre contraste para o rótulo. */}
         <linearGradient id={`${gradientId}-scrim`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="60%" stopColor="#08090a" stopOpacity="0" />
-          <stop offset="100%" stopColor="#08090a" stopOpacity="0.8" />
+          <stop className="placeholder__veu" offset="60%" stopOpacity="0" />
+          <stop className="placeholder__veu" offset="100%" stopOpacity="0.8" />
         </linearGradient>
       </defs>
 
-      <rect width="300" height="400" fill="#08090a" />
+      <rect className="placeholder__fundo" width="300" height="400" />
       <rect width="300" height="400" fill={`url(#${gradientId})`} />
       <rect width="300" height="400" fill={`url(#${gradientId}-scrim)`} />
 
@@ -88,7 +92,7 @@ export function PlaceholderImage({ slug, name, index }: Props) {
         y="200"
         textAnchor="middle"
         dominantBaseline="central"
-        fill="#08090a"
+        className="placeholder__iniciais"
         fillOpacity="0.45"
         fontSize="120"
         fontWeight="700"
@@ -102,7 +106,7 @@ export function PlaceholderImage({ slug, name, index }: Props) {
         x="150"
         y="372"
         textAnchor="middle"
-        fill="#f5f5f7"
+        className="placeholder__rotulo"
         fillOpacity="0.62"
         fontSize="13"
         letterSpacing="2.5"

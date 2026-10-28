@@ -9,7 +9,7 @@ export function NotFound() {
       <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
         Essa peça saiu do catálogo ou o endereço está errado.
       </p>
-      <Link to="/" style={{ color: "var(--gold)" }}>
+      <Link to="/" style={{ color: "var(--accent)" }}>
         Ver a coleção
       </Link>
     </div>

@@ -2,9 +2,69 @@
    Único lugar a mexer para ajustar a identidade.
 
    A paleta sai da logo: um degradê que vai do dourado champagne (à
-   esquerda) ao turquesa (à direita), sobre preto. */
+   esquerda) ao turquesa (à direita), sobre preto.
+
+   O arquivo tem três partes: a paleta da marca, que não muda com o
+   tema; o tema escuro; e o tema claro. Cada literal de cor aparece
+   uma vez só — se um valor estiver escrito duas vezes aqui, é bug. */
 
 :root {
+  /* ---------- paleta da marca ----------
+     Os mesmos tons nos dois temas. O que muda é quais deles entram em
+     texto e em detalhe, mais abaixo. */
+
+  /* Dourado — lado quente da logo */
+  --gold-deep: #8a6a30;
+  --gold: #c9a44c;
+  --gold-light: #e8ce96;
+  --gold-pale: #f3e4bd;
+
+  /* Turquesa — lado frio da logo */
+  --teal-deep: #1e6f72;
+  --teal: #45a9aa;
+  --teal-light: #7fd0ce;
+  --teal-pale: #b3e6e3;
+
+  /* Versão do degradê sem o champagne do meio. O degradê normal passa
+     por um tom quase branco, que desaparece quando o fundo é claro —
+     como o rodapé branco das fotos de produto. Esta mantém contraste
+     sobre claro, então serve tanto à onda do card quanto ao tema claro
+     inteiro. */
+  --brand-gradient-deep: linear-gradient(
+    90deg,
+    var(--gold-deep) 0%,
+    var(--gold) 30%,
+    var(--teal) 66%,
+    var(--teal-deep) 100%
+  );
+
+  /* O mesmo, apagando nas pontas, para o filete sobre fundo claro. */
+  --brand-rule-deep: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-deep) 9%,
+    var(--gold) 30%,
+    var(--teal) 66%,
+    var(--teal-deep) 88%,
+    transparent 100%
+  );
+}
+
+/* ---------- tema escuro ----------
+
+   É o padrão: `:root` sem atributo nenhum já é o escuro, e o atributo
+   só aparece quando a pessoa escolhe o claro no botão.
+
+   O segundo seletor é o que faz a Proposta A funcionar. No tema claro,
+   `.faixa-escura` reancora estes mesmos valores dentro de si, então o
+   cabeçalho e o rodapé continuam escuros sem precisar de uma segunda
+   cópia da paleta — quem está dentro da faixa lê `var(--bg)` e recebe
+   preto, no tema que for. É também por isso que a logo nunca sai do
+   escuro e o `mix-blend-mode: screen` continua valendo (ver Logo.css). */
+:root,
+:root[data-tema="claro"] .faixa-escura {
+  color-scheme: dark;
+
   /* Fundo e superfície.
      Preto levemente frio, com viés de turquesa nas linhas — combina com
      o lado frio da logo e evita o cinza neutro de fábrica. */
@@ -20,39 +80,40 @@
   --text-muted: #9ba2a3;
   --text-faint: #6b7375;
 
-  /* Dourado — lado quente da logo */
-  --gold-deep: #8a6a30;
-  --gold: #c9a44c;
-  --gold-light: #e8ce96;
-  --gold-pale: #f3e4bd;
+  /* Linha realçada, para a borda que responde ao ponteiro. */
+  --line-strong: rgba(245, 245, 247, 0.4);
 
-  /* Turquesa — lado frio da logo */
-  --teal-deep: #1e6f72;
-  --teal: #45a9aa;
-  --teal-light: #7fd0ce;
-  --teal-pale: #b3e6e3;
-
+  /* Detalhe: borda de hover, link, filete fino.
+     --accent-text é o detalhe que vira TEXTO (preço, opção escolhida) e
+     por isso é mais claro que --accent aqui. No tema claro a relação se
+     inverte, porque lá emphasis é escurecer. */
   --accent: var(--gold);
   --accent-alt: var(--teal);
+  --accent-text: var(--gold-light);
 
-  /* O degradê da logo, para filetes e detalhes. */
+  /* Turquesa claro destaca bem tanto sobre o preto do fundo quanto
+     sobre o branco das fotos. */
+  --focus: var(--teal-light);
+
+  /* Véus sobre foto: tarja de esgotado, fundo das setas de ângulo.
+     Três níveis em vez dos cinco valores quase iguais que havia espalhados
+     pelos componentes. */
+  --scrim-soft: rgba(8, 9, 10, 0.42);
+  --scrim: rgba(8, 9, 10, 0.6);
+  --scrim-strong: rgba(8, 9, 10, 0.85);
+
+  /* Contorno de controle que encosta em foto, não no fundo da página. */
+  --on-photo-line: rgba(245, 245, 247, 0.22);
+  --on-photo-line-soft: rgba(245, 245, 247, 0.1);
+
+  /* O degradê da marca, para filetes e detalhes. Sobre preto ele pode
+     passar pelo champagne, que é onde ele brilha. */
   --brand-gradient: linear-gradient(
     90deg,
     var(--gold-deep) 0%,
     var(--gold) 22%,
     var(--gold-pale) 45%,
     var(--teal-light) 68%,
-    var(--teal-deep) 100%
-  );
-
-  /* Versão sem o champagne do meio. O --brand-gradient passa por um tom
-     quase branco, que desaparece quando o fundo é claro — como o rodapé
-     branco das fotos de produto. Esta mantém contraste sobre claro. */
-  --brand-gradient-deep: linear-gradient(
-    90deg,
-    var(--gold-deep) 0%,
-    var(--gold) 30%,
-    var(--teal) 66%,
     var(--teal-deep) 100%
   );
 
@@ -68,8 +129,58 @@
     var(--teal-deep) 88%,
     transparent 100%
   );
+}
 
-  /* Tipografia.
+/* ---------- tema claro ----------
+
+   Marfim quente, não branco: branco puro encosta no rodapé branco das
+   fotos de produto e o card perde o limite. Por isso --line também é
+   mais presente aqui do que a simples inversão do escuro seria.
+
+   Os valores de texto e detalhe foram medidos, não invertidos. Três
+   deles reprovam se a gente só espelhar o escuro:
+
+   - --text-faint com o #6b7375 do escuro dá 4,53:1 contra --bg mas só
+     4,13:1 contra --surface, e a contagem do catálogo é texto de
+     0.72rem, que quer 4,5.
+   - --accent com o --gold-deep cru dá 4,27:1 contra --surface.
+   - --focus com o --teal-light do escuro dá 1,66:1. Invisível. */
+:root[data-tema="claro"] {
+  color-scheme: light;
+
+  --bg: #faf7f2;
+  --surface: #f2ece3;
+  --surface-2: #eae2d6;
+  --line: #d9cfc0;
+  --line-soft: #e7dfd3;
+
+  --text: #1a1d1f;
+  --text-muted: #4a5254;
+  --text-faint: #5a6163;
+
+  --line-strong: rgba(26, 29, 31, 0.34);
+
+  --accent: #7a5c28;
+  --accent-alt: var(--teal-deep);
+  --accent-text: #6f5222;
+
+  --focus: #17585a;
+
+  --scrim-soft: rgba(250, 247, 242, 0.55);
+  --scrim: rgba(250, 247, 242, 0.72);
+  --scrim-strong: rgba(250, 247, 242, 0.92);
+
+  --on-photo-line: rgba(26, 29, 31, 0.22);
+  --on-photo-line-soft: rgba(26, 29, 31, 0.1);
+
+  /* Sem o champagne: sobre claro ele some e parte o filete e o anel no
+     meio. É o mesmo motivo do --brand-gradient-deep na onda do card. */
+  --brand-gradient: var(--brand-gradient-deep);
+  --brand-rule: var(--brand-rule-deep);
+}
+
+:root {
+  /* ---------- tipografia ----------
      A logo é uma serifada de alto contraste, então o display acompanha.
      Didot existe no macOS e Bodoni MT em máquinas com Office; as demais
      caem em Georgia, que é o fallback realista em qualquer lugar.

@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#08090a" />
+
+    <!-- Lê o tema escolhido antes da primeira pintura. O React só monta
+         depois do CSS, e quem escolheu o claro veria um lampejo escuro a
+         cada carregamento — o mesmo cuidado que mantém a tipografia sem
+         webfont. O escuro é o padrão, então é a ausência do atributo, e
+         só o claro precisa ser escrito. A chave está também em
+         src/lib/tema.ts. -->
+    <script>
+      try {
+        if (localStorage.getItem("venus-tema") === "claro") {
+          document.documentElement.dataset.tema = "claro";
+        }
+      } catch (e) {
+        /* Armazenamento bloqueado. Segue no escuro, que é o padrão. */
+      }
+    </script>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/favicon-180.png" />
     <title>Vênus Oasis — Moda praia</title>

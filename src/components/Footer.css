@@ -58,7 +58,7 @@
 .footer__rede:hover,
 .footer__rede:focus-visible {
   color: var(--text);
-  border-color: var(--gold);
+  border-color: var(--accent);
 }
 
 /* ---------- textos ---------- */

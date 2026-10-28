@@ -33,7 +33,7 @@ export function Footer() {
   const mensagem = peca ? mensagemDaPeca(peca.name) : MENSAGEM_GERAL;
 
   return (
-    <footer className="footer brand-rule brand-rule--top">
+    <footer className="footer faixa-escura brand-rule brand-rule--top">
       <div className="page footer__inner">
         <ul className="footer__redes">
           <li>
