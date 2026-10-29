@@ -37,3 +37,28 @@ export function colecaoPrincipal(products: Product[]): string | undefined {
 
   return principal?.nome;
 }
+
+/**
+ * O título do catálogo: "Coleção" mais o nome da coleção principal.
+ *
+ * Sem coleção nenhuma no catálogo — peça que não está em nenhuma, ou
+ * admin mais velho que o site —, fica só "Coleção", que é o que o
+ * catálogo dizia antes de haver coleções.
+ *
+ * As donas cadastram o nome como dá, e parte delas já escreve a palavra
+ * dentro do nome ("Coleção Miragem"). Prefixar sem olhar daria "Coleção
+ * Coleção Miragem", então quem já começa com a palavra entra inteiro. A
+ * comparação ignora acento e caixa porque o que chega do admin é o que
+ * foi digitado — "colecao miragem" também é.
+ */
+export function tituloDoCatalogo(products: Product[]): string {
+  const nome = colecaoPrincipal(products);
+  if (!nome) return "Coleção";
+
+  const semAcento = nome
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+
+  return /^cole[cç]ao\b/u.test(semAcento) ? nome : `Coleção ${nome}`;
+}

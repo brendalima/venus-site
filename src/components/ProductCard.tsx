@@ -5,6 +5,7 @@ import { formatBRL } from "../lib/format";
 import { disponivel } from "../lib/estoque";
 import { linkWhatsApp, mensagemDaPeca } from "../lib/whatsapp";
 import { useTrilhoFotos } from "../hooks/useTrilhoFotos";
+import { useTransbordo } from "../hooks/useTransbordo";
 import { PlaceholderImage } from "./PlaceholderImage";
 import { SeletorCor } from "./SeletorCor";
 import "./ProductCard.css";
@@ -15,9 +16,28 @@ type Props = {
   index: number;
   /** Primeiros cards do grid carregam com prioridade; o resto é lazy. */
   priority?: boolean;
+  /**
+   * Linhas que o card reserva mesmo sem ter o que pôr nelas.
+   *
+   * Quem decide é o grid, olhando o catálogo inteiro: se **alguma** peça
+   * tem preço, todo card guarda a altura da linha de preço, e o mesmo
+   * para o seletor de cor. Sem isso, a peça sem preço sobe a grade de
+   * tamanhos e ela fica desencontrada da vizinha — os cards têm a mesma
+   * altura e o mesmo pé, mas o miolo não se alinha.
+   *
+   * A reserva é do catálogo e não do card para o buraco não aparecer à
+   * toa: num catálogo em que ninguém tem segunda cor, não há linha de
+   * cor nenhuma para alinhar, e todo card ganharia 50px de vazio.
+   */
+  reservas?: { preco: boolean; cores: boolean };
 };
 
-export function ProductCard({ product, index, priority = false }: Props) {
+export function ProductCard({
+  product,
+  index,
+  priority = false,
+  reservas = { preco: false, cores: false },
+}: Props) {
   const { slug, name, priceCents, sizes, colours, soldOut } = product;
   const [cor, setCor] = useState(0);
 
@@ -34,6 +54,12 @@ export function ProductCard({ product, index, priority = false }: Props) {
     images.length,
     corAtual?.id ?? "",
   );
+
+  // A grade de tamanhos rola na horizontal quando não cabe, para o card
+  // não crescer uma fileira a mais que os vizinhos. Vira parada de
+  // teclado só quando há mesmo o que rolar — ver useTransbordo.ts.
+  const { ref: refTamanhos, transborda: tamanhosTransbordam } =
+    useTransbordo<HTMLUListElement>();
 
   return (
     <article className={soldOut ? "card card--esgotada" : "card"}>
@@ -99,7 +125,10 @@ export function ProductCard({ product, index, priority = false }: Props) {
         {images.length > 1 && (
           <div className="card__barra" aria-hidden="true">
             {images.map((image, i) => (
-              <i key={`${image.src}-${i}`} className={i === indice ? "is-on" : ""} />
+              <i
+                key={`${image.src}-${i}`}
+                className={i === indice ? "is-on" : ""}
+              />
             ))}
           </div>
         )}
@@ -126,8 +155,14 @@ export function ProductCard({ product, index, priority = false }: Props) {
         <div className="card__foot">
           {/* Peça ainda sem preço não mostra preço nenhum: as donas
               catalogam antes de precificar, e "R$ 0,00" seria mentira. */}
-          {priceCents !== undefined && (
+          {priceCents !== undefined ? (
             <p className="card__price">{formatBRL(priceCents)}</p>
+          ) : (
+            /* Vazia e aria-hidden: continua não mostrando preço nenhum,
+               só guarda a linha para a de baixo não subir. */
+            reservas.preco && (
+              <p className="card__price card__reserva" aria-hidden="true" />
+            )
           )}
 
           {/* O seletor fica aqui no card__body, fora de qualquer <Link>:
@@ -136,15 +171,27 @@ export function ProductCard({ product, index, priority = false }: Props) {
               Peça de uma cor só não ganha seletor — não há o que escolher,
               e o backfill do admin batizou essas de "Única", que não diz
               nada a ninguém. */}
+          {/* A fileira de cores rola na horizontal quando a peça tem
+              cores demais para a largura do card: todos os cards da
+              linha têm a mesma altura, e uma peça de seis cores não pode
+              empurrar o pé de todos para baixo. Aqui não há tabindex
+              porque as bolinhas são botões — rolar seguindo o foco é o
+              próprio navegador que faz. */}
+          {colours.length === 1 && reservas.cores && (
+            <div className="card__cores card__reserva" aria-hidden="true" />
+          )}
+
           {colours.length > 1 && (
-            <SeletorCor
-              colours={colours}
-              escolhida={cor}
-              onEscolher={setCor}
-              label={`Cores de ${name}`}
-              desabilitado={soldOut}
-              delicada
-            />
+            <div className="card__cores">
+              <SeletorCor
+                colours={colours}
+                escolhida={cor}
+                onEscolher={setCor}
+                label={`Cores de ${name}`}
+                desabilitado={soldOut}
+                delicada
+              />
+            </div>
           )}
 
           {/* Tamanhos continuam informativos — sem número, que é coisa da
@@ -152,6 +199,8 @@ export function ProductCard({ product, index, priority = false }: Props) {
               apagados. */}
           <ul
             className="card__sizes"
+            ref={refTamanhos}
+            tabIndex={tamanhosTransbordam ? 0 : undefined}
             aria-label={
               corAtual && colours.length > 1
                 ? `Tamanhos de ${name} em ${corAtual.name}`
@@ -168,7 +217,9 @@ export function ProductCard({ product, index, priority = false }: Props) {
                   {size}
                   {/* Riscado é pista visual e nada mais: sem isto, quem
                       usa leitor de tela ouve a mesma lista de sempre. */}
-                  {!tem && <span className="visually-hidden"> indisponível</span>}
+                  {!tem && (
+                    <span className="visually-hidden"> indisponível</span>
+                  )}
                 </li>
               );
             })}

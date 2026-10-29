@@ -152,6 +152,24 @@
   padding-top: var(--space-1);
 }
 
+/* A linha que o card guarda sem ter o que pôr nela — preço de peça ainda
+   não precificada, seletor de peça de cor única. Vazia e aria-hidden:
+   não mostra nada, só impede que a linha de baixo suba e desencontre a
+   grade de tamanhos da peça vizinha. Quem decide reservar é o grid, que
+   olha o catálogo inteiro. */
+.card__reserva {
+  /* 1lh é a altura de uma linha de texto na fonte do próprio elemento —
+     é o que faz a reserva do preço valer exatamente o preço que falta,
+     sem número mágico. No seletor, o que manda é o min-height abaixo. */
+  min-height: 1lh;
+}
+
+/* O alvo da bolinha tem 44px (ver SeletorCor.css); a reserva vale o
+   mesmo, mais o respiro do halo que o .card__cores já põe em padding. */
+.card__cores.card__reserva {
+  min-height: 44px;
+}
+
 /* O botão fecha o card, à largura da coluna. */
 .card__pedir {
   margin-top: var(--space-2);
@@ -182,9 +200,57 @@
   color: var(--accent-text);
 }
 
+/* ---------- as duas fileiras que rolam ----------
+
+   Cores e tamanhos rolam na horizontal em vez de quebrarem em duas
+   fileiras. O motivo é o card: os cards de uma linha do grid têm a mesma
+   altura, e uma peça de seis cores ou de seis tamanhos esticava a linha
+   inteira para acomodar uma fileira a mais que ninguém mais usa.
+
+   Sem barra à vista, como no trilho de fotos — ela comeria a folga de
+   uma fileira de 13px de disco. O que diz que há mais é o próprio corte
+   do último item na borda, e o dedo descobre deslizando.
+
+   `overflow-y: hidden` é de propósito: `overflow-x: auto` sozinho faz o
+   eixo vertical virar `auto` também, e o halo da bolinha escolhida, que
+   sai do disco, viraria uma barra vertical de 2px. */
+.card__cores,
+.card__sizes {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.card__cores::-webkit-scrollbar,
+.card__sizes::-webkit-scrollbar {
+  display: none;
+}
+
+/* O halo da escolhida fica fora do disco; sem a folga ele seria cortado
+   pelo overflow nas pontas da fileira. */
+.card__cores {
+  padding: 3px 0;
+}
+
+.card__cores .cores {
+  flex-wrap: nowrap;
+  /* Senão a fileira encolhe até a largura do card e os discos se
+     espremem em vez de rolar. */
+  width: max-content;
+}
+
+/* Anel de foco por dentro, como no trilho de fotos: por fora, metade
+   dele ficaria escondida pelo overflow da própria fileira. */
+.card__sizes:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+  border-radius: 3px;
+}
+
 .card__sizes {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-1);
   list-style: none;
   margin: 0;
@@ -192,6 +258,9 @@
 }
 
 .card__size {
+  /* A ficha não cede largura: espremida, ela sairia da fileira que rola
+     em vez de pedir o deslize. */
+  flex: 0 0 auto;
   font-family: var(--font-sans);
   font-size: 0.66rem;
   letter-spacing: 0.06em;

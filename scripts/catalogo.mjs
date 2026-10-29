@@ -102,10 +102,11 @@ const ATONAS = new Set([
 ]);
 
 /**
- * Põe o nome da coleção em caixa de título.
+ * Põe um nome em caixa de título — o da coleção e o da peça.
  *
- * As donas cadastram como dá — "verão 2026", "VERÃO 2026", "Verão 2026"
- * —, e o nome vai para o título do catálogo, em corpo grande. Normalizar
+ * As donas cadastram como dá — "verão 2026", "VERÃO 2026", "NASSAU" —, e
+ * esses nomes vão para a tela em corpo grande: o da coleção no título do
+ * catálogo, o da peça no card e no cabeçalho da página dela. Normalizar
  * aqui, na conversão, e não no componente: é a mesma regra dos 📍 da
  * descrição, e deixa o JSON gerado legível no diff entre publicações.
  *
@@ -115,7 +116,7 @@ const ATONAS = new Set([
  * é raro o bastante para não valer uma regra adivinhando siglas, que
  * erraria em cima de nome comum curto.
  */
-function tituloDeColecao(nome) {
+function caixaDeTitulo(nome) {
   return nome
     .trim()
     .split(/\s+/)
@@ -143,7 +144,7 @@ function tituloDeColecao(nome) {
  *   componente não ter de saber como o texto foi digitado.
  * - `collection` vem como objeto ou como null, nunca ausente. Null vira
  *   campo omitido aqui, para "não tem coleção" ter um significado só, e o
- *   nome sai daqui em caixa de título — ver tituloDeColecao.
+ *   nome sai daqui em caixa de título — ver caixaDeTitulo.
  * - as fotos e o estoque são **da cor**, não da peça. O admin mandou
  *   um `images` achatado no topo enquanto o site migrava; desde a fase 5
  *   do plano ele não vem mais, e a única coisa que ainda olha para ele é
@@ -193,7 +194,7 @@ function converter(recebido) {
     const produto = {
       id: p.id,
       slug: p.slug,
-      name: p.name,
+      name: caixaDeTitulo(p.name),
       sizes: p.sizes,
       colours: converterCores(p.colours, p.sizes, onde),
       soldOut: Boolean(p.sold_out),
@@ -218,7 +219,7 @@ function converter(recebido) {
           throw erro(`${onde}: "collection" sem "${campo}"`);
         }
       }
-      const nome = tituloDeColecao(p.collection.name);
+      const nome = caixaDeTitulo(p.collection.name);
       // Só espaço no campo: o admin não deveria aceitar, mas se aceitar é
       // melhor a peça ficar sem coleção do que o catálogo ganhar um
       // título em branco.
