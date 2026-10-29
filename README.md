@@ -30,14 +30,6 @@ O **cabeçalho** é o mesmo em todas as rotas, grudado no alto, com o menu
 apontando para as âncoras da home. Abaixo de 900px o menu some — é por
 isso que a volta para a coleção, na página da peça, mora no corpo.
 
-A home é o protótipo da dona, portado. **Os textos são os dela — não
-suavize.** Houve uma rodada em que "troca em até 7 dias" e "Pix ou
-cartão" foram abrandados em nome de "o site não vende", e ela pediu de
-volta: o que o site promete é decisão dela.
-
-Duas coisas ficaram de fora do protótipo de propósito: a **Lista VIP**
-(captura de nome que ninguém receberia, já que não há backend) e a
-**linha de descrição abaixo do nome no card**.
 
 ### A coleção
 
@@ -53,8 +45,7 @@ build transforma esse `null` em campo omitido, para "não tem" ter um
 significado só. Coleção sem `id` ou sem `name` derruba o build, como os
 outros campos.
 
-**O nome é normalizado no build**, em caixa de título: as donas cadastram
-como dá e o nome vai para o título do catálogo em corpo grande.
+**O nome é normalizado no build**, em caixa de título.
 
 | Cadastrado | No site |
 |---|---|
@@ -64,29 +55,11 @@ como dá e o nome vai para o título do catálogo em corpo grande.
 | `  coleção   miragem  ` | Coleção Miragem |
 | `   ` | (peça fica sem coleção) |
 
-A normalização acontece na conversão, não no componente — a mesma regra
-dos 📍 da descrição: o site não deve ter código que sabe de um detalhe de
-como o texto foi digitado, e o JSON gerado fica legível no diff.
-
-Duas decisões dentro dela: as **átonas ficam minúsculas** no meio do nome
-("Coleção de Verão", e não "Coleção De Verão", que é o título em inglês
-aplicado ao português); e o nome é **baixado antes** de a inicial subir,
-que é o que conserta o nome gritado em caixa alta. O preço do segundo é
-que uma sigla perde a caixa (`Coleção SP` → `Coleção Sp`) — é raro o
-bastante para não valer uma regra adivinhando siglas, que erraria em cima
-de nome comum curto.
 
 O site usa isso num lugar só, por ora: **o título do catálogo é o nome da
 coleção principal**, a que tem mais peças
 ([`src/lib/colecao.ts`](src/lib/colecao.ts)). A grade continua sendo uma
 só, com as peças de todas.
-
-Pela contagem, e não pela data: o catálogo é pequeno e as donas cadastram
-a coleção nova aos poucos, peça por peça. Pela data o título viraria a
-coleção nova já na primeira peça publicada, com a grade ainda cheia da
-anterior. No empate fica a primeira na ordem do catálogo, que é o arranjo
-manual das donas — senão o título trocaria sozinho ao reordenar peças no
-admin, sem nada ter mudado de verdade.
 
 Sem coleção nenhuma no catálogo, o título cai em "Coleção", que é o que
 ele dizia antes de haver coleções.
@@ -103,8 +76,7 @@ O roteamento é no cliente. O arquivo [`public/_redirects`](public/_redirects) f
 ## Mexendo no catálogo
 
 **O catálogo não se edita aqui.** Quem mexe nele é o admin
-(`../venus-admin`), que as donas da marca usam sozinhas, e as peças
-chegam na hora do build:
+(`../venus-admin`) e as peças chegam na hora do build:
 
 ```
 admin salva → dona clica "Publicar"
@@ -219,25 +191,10 @@ O seletor é o mesmo componente no card e na página da peça
 A parada do degradê é **dura** (`A 0 50%, B 50% 100%`): sem as paradas
 duplas o corte sai esfumaçado e parece defeito de renderização.
 
-A escolha é **no dado**, como `images: []` — cada cor vira bolinha
-sozinha quando a dona preencher o hex no admin, sem flag e sem código
-morto. Até lá as duas formas convivem na mesma fileira, e tudo bem.
-
 São dois tamanhos. Na **página da peça**, disco de 28px num alvo de 44px:
 ali a cor é a escolha principal do bloco. No **card** (`delicada`), disco
 de 13px — o desenho delicado do protótipo — num alvo de 28×44px, **sem
 folga entre os alvos**.
-
-Por que 28 e não 44 na horizontal do card: quatro alvos de 44px dão 176px
-e não cabem num card de 150px em 360px; e com 44px de passo os discos de
-13px ficariam a 31px um do outro, espalhados em vez de delicados. A
-vertical fica cheia porque é onde o polegar erra mais numa tira
-horizontal, e sem folga entre os botões não há faixa morta entre um disco
-e o seguinte.
-
-No protótipo essas bolinhas são `<i>`, puro indicador. Aqui elas trocam a
-galeria do card, e é por isso que o alvo não pode encolher junto com o
-disco.
 
 O contorno interno (`box-shadow: inset`) é **obrigatório** — sem ele
 "Off-white" some no tema claro e "Preto" some no escuro, e existem peças
@@ -253,12 +210,6 @@ O admin precisa mandar `hex` como lista de **0 a 2** strings `#rrggbb`
 minúsculas. Hex torto derruba o build de propósito, como os outros
 campos. Lista vazia é normalizada para campo ausente, para "não tem" ter
 um significado só.
-
-**O número pode estar velho.** Dar baixa no estoque pelo admin só acende
-o aviso "Há alterações não publicadas" — não republica sozinho. Entre a
-venda e a publicação o site mostra o número de antes, e é por isso que a
-nota da página da peça diz que quantidades e preço são informativos e
-pede confirmação no WhatsApp.
 
 ### Fotos
 
@@ -306,13 +257,12 @@ da cor anterior não quer dizer nada na nova.
 
 As três do carrossel do hero vivem em `public/` (`campanha-*.jpg`), como
 a logo: **são arquivos de marca, não peças do catálogo.** Foto de peça
-vem do admin pelo R2 e muda quando as donas publicam; estas só mudam por
-decisão de quem desenha a página.
+vem do admin pelo R2; estas só mudam por decisão de quem desenha a página.
 
 O lookbook ("Luz, pele e cor") não tem foto própria: pega a capa das duas
 primeiras peças com foto no catálogo, então acompanha a coleção sozinho.
 
-**O repositório não guarda foto de produto.** As do protótipo saíram quando o admin entrou no ar — eram 2,1 MB de JPEG para avaliar o design antes de haver catálogo de verdade. A cópia versionada de `catalogo.json` aponta para duas fotos do **bucket de desenvolvimento** (`venusoasis-fotos-dev`), para `npm run dev` continuar parecido com produção sem peso nenhum no repositório. Se alguém apagar aquelas peças no admin de dev, as URLs quebram: é só rodar `npm run catalogo` de novo contra o admin.
+**O repositório não guarda foto de produto.** A cópia versionada de `catalogo.json` aponta para duas fotos do **bucket de desenvolvimento** (`venusoasis-fotos-dev`), para `npm run dev` continuar parecido com produção sem peso nenhum no repositório. Se alguém apagar aquelas peças no admin de dev, as URLs quebram: é só rodar `npm run catalogo` de novo contra o admin.
 
 A primeira imagem é a capa do card. Recorte **2:3 (retrato)**; outras proporções funcionam mas são cortadas.
 
@@ -329,7 +279,7 @@ Todos os arquivos saíram do mesmo original (`1254×1254`, JPEG) e vivem em `pub
 | `og-image.jpg` | Preview de link (1200×630). |
 | `favicon-32.png`, `favicon-180.png` | Aba do navegador e ícone no celular. |
 
-São duas versões porque o lockup inteiro fica alto demais num cabeçalho: ele é quase quadrado (760×704), e numa fileira de 64px sairia com 43px de largura — o nome dentro dele viraria um borrão. O handoff do redesign pedia o lockup a 40px de altura no cabeçalho; esta é a divergência, e o motivo é este.
+São duas versões porque o lockup inteiro fica alto demais num cabeçalho: ele é quase quadrado (760×704), e numa fileira de 64px sairia com 43px de largura — o nome dentro dele viraria um borrão.
 
 `Logo.tsx` separa o arquivo (`lockup`) do tamanho (`size`) justamente por isso: o rodapé quer o lockup num tamanho médio, o cabeçalho quer o wordmark pequeno. Nas classes do lockup quem manda é a **altura**, porque numa fileira é a vertical que importa; no wordmark, a largura.
 
@@ -339,7 +289,7 @@ O efeito colateral é que **a logo só funciona sobre fundo escuro**. Se algum d
 
 Para regerar os recortes a partir de um original novo, o script está em [`scripts/logo.py`](scripts/logo.py).
 
-`Logo.tsx` tem dois usos e só dois: o wordmark no cabeçalho e o lockup no rodapé. Não há prop de tamanho — havia três, das quais duas pararam de ser usadas quando o hero deixou de abrir com a logo.
+`Logo.tsx` tem dois usos e só dois: o wordmark no cabeçalho e o lockup no rodapé.
 
 Ele aceita `alt=""` — use quando o elemento ao redor já nomear a marca (um link com `aria-label`), senão o leitor de tela anuncia "Vênus Oasis" duas vezes.
 
@@ -363,8 +313,7 @@ A fonte de display é uma serifada de alto contraste (Didot → Bodoni MT → Ge
 
 ## Publicando
 
-Estático, sem servidor, no **Cloudflare Pages** (projeto `venus-site`,
-ligado a `brendalima/venus-site`):
+Estático, sem servidor, no **Cloudflare Pages**
 
 - Build: `npm run build`
 - Diretório de saída: `dist`
@@ -377,8 +326,3 @@ botão "Publicar alterações", que faz POST num **deploy hook** criado em
 
 Como é o build que busca o catálogo, publicar pelo admin e publicar por
 push fazem exatamente a mesma coisa.
-
-## Ainda falta
-
-- **WebP.** As fotos já vêm do admin redimensionadas em 600w e 1200w (o 600w pesa uns 45 KB, contra 250 KB dos JPEGs do protótipo), então o problema encolheu bastante. WebP ainda cortaria uns 60% em cima disso, mas o trabalho agora é no admin (`../venus-admin`, processamento em Go puro), não aqui.
-- Nomes, preços e tamanhos são provisórios. As fotos são do protótipo.
