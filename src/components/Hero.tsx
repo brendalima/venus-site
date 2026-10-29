@@ -71,8 +71,15 @@ export function Hero() {
         </h1>
 
         <p className="hero__linha">
-          Biquínis de modelagem marcante, regulagem lateral e cores em edição
-          limitada. Peças que valorizam o corpo real e seguem a luz do verão.
+          Moda praia autoral produzida em pequenos lotes no Brasil.
+        </p>
+
+        <p className="hero__linha">
+          Biquínis de modelagens marcantes com novidades que exploram formas, cores e detalhes para trazer personalidade a cada peça.
+        </p>
+
+        <p className="hero__linha">
+          Peças que valorizam o corpo real e seguem a luz do verão.
         </p>
 
         <div className="hero__acoes">
@@ -142,7 +149,7 @@ export function Hero() {
             )}
           </div>
 
-          <figcaption className="hero__legenda">Biquínis para o sol</figcaption>
+          <figcaption className="hero__legenda">Modelagens marcantes</figcaption>
         </figure>
       )}
     </section>

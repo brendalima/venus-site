@@ -7,20 +7,20 @@ export function Faixa() {
     <section className="faixa" aria-label="O que define as peças">
       <div className="page faixa__inner">
         <div>
+          <b>Qualidade premium</b>
+          <span>Tecido duplo, toque macio e acabamento cuidadoso.</span>
+        </div>
+        <div>
+          <b>Proteção UV</b>
+          <span>Funcionalidade e estilo para acompanhar seus dias de sol.</span>
+        </div>
+        <div>
           <b>Edição limitada</b>
-          <span>Cada cor volta poucas vezes. Quando acaba, acabou.</span>
-        </div>
-        <div>
-          <b>Regulagem lateral</b>
-          <span>Argolas que ajustam o caimento ao seu corpo.</span>
-        </div>
-        <div>
-          <b>Modelagem cavada</b>
-          <span>Corte que alonga as pernas e define a cintura.</span>
+          <span>Cores e modelos selecionados em quantidades limitadas, pensados para tornar cada dia ainda mais especial.</span>
         </div>
         <div>
           <b>Atendimento pessoal</b>
-          <span>Tamanho e estoque confirmados direto no WhatsApp.</span>
+          <span>Consulte tamanhos, cores e disponibilidade diretamente pelo WhatsApp.</span>
         </div>
       </div>
     </section>
