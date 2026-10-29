@@ -14,16 +14,15 @@
   mix-blend-mode: screen;
 }
 
-/* O wordmark é largo e baixo, então quem manda é a largura. 116px dão
+/* O wordmark é largo e baixo, então quem manda é a largura: 116px dão
    41px de altura, que é a fileira de 64px do cabeçalho com folga. */
 .logo:not(.logo--lockup) {
   width: 116px;
   height: auto;
 }
 
-/* O lockup é quase quadrado, e numa fileira o que importa dele é quanto
-   ocupa na vertical — por isso aqui quem manda é a altura. A largura sai
-   da proporção, que vem dos atributos width/height do <img>. */
+/* O lockup é quase quadrado, então aqui quem manda é a altura. A largura
+   sai da proporção, que vem dos atributos width/height do <img>. */
 .logo--lockup {
   width: auto;
   height: 70px;

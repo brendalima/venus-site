@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#08090a" />
 
-    <!-- Lê o tema escolhido antes da primeira pintura. O React só monta
+    <!-- Lê o tema escolhido antes da primeira pintura: o React só monta
          depois do CSS, e quem escolheu o claro veria um lampejo escuro a
-         cada carregamento — o mesmo cuidado que mantém a tipografia sem
-         webfont. O escuro é o padrão, então é a ausência do atributo, e
-         só o claro precisa ser escrito. A chave está também em
-         src/lib/tema.ts. -->
+         cada carregamento. O escuro é o padrão, ou seja, a ausência do
+         atributo. A chave está também em src/lib/tema.ts. -->
     <script>
       try {
         if (localStorage.getItem("venus-tema") === "claro") {

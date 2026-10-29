@@ -4,15 +4,10 @@ import { linkWhatsApp, MENSAGEM_GERAL, mensagemDaPeca } from "../lib/whatsapp";
 import "./BotaoWhatsApp.css";
 
 /**
- * O botão flutuante de WhatsApp, fixo no canto.
+ * Botão flutuante de WhatsApp, em todas as rotas.
  *
- * O site é um catálogo e a venda acontece na conversa, então o caminho
- * para a conversa não pode depender de rolar até o rodapé. Fica em todas
- * as rotas, como no protótipo.
- *
- * A mensagem muda com a rota, do mesmo jeito que a do rodapé: estando
- * numa peça, o nome dela já vai escrito, o que evita o "qual delas?".
- * Slug inválido cai no texto geral.
+ * Estando numa peça, o nome dela já vai escrito na mensagem. Slug
+ * inválido cai no texto geral.
  */
 export function BotaoWhatsApp() {
   const naPeca = useMatch("/produto/:slug");

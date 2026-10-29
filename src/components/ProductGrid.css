@@ -2,8 +2,8 @@
   padding-block: var(--space-16);
 }
 
-/* auto-fill + minmax dá 2 colunas no celular e 3–4 no desktop
-   sem precisar de media query. */
+/* auto-fill + minmax dá 2 colunas no celular e 3–4 no desktop, sem media
+   query. */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

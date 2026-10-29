@@ -3,11 +3,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 /**
  * Diz se o conteúdo de um elemento não cabe na largura dele.
  *
- * Serve às fileiras que rolam na horizontal dentro do card — cores e
- * tamanhos. Elas rolam sempre que precisam, mas só viram parada de
- * teclado (`tabindex="0"`) quando há mesmo o que rolar: região rolável
- * inalcançável por teclado é falha de acessibilidade, e um tabstop a
- * mais por card, sem nada escondido, é ruído na navegação.
+ * Serve às fileiras que rolam na horizontal dentro do card, que só viram
+ * parada de teclado quando há mesmo o que rolar: região rolável
+ * inalcançável por teclado é falha de acessibilidade, e um tabstop a mais
+ * por card, sem nada escondido, é ruído na navegação.
  *
  * Por medição e não por um número de itens: cinco tamanhos cabem em
  * 1280px e não cabem em 360px, e o card é fluido entre os dois.
@@ -30,10 +29,8 @@ export function useTransbordo<T extends HTMLElement>() {
 
     medir();
 
-    // Observa o elemento e os filhos: o card muda de largura com a
-    // janela, e a fileira de tamanhos não muda de conteúdo, mas a de
-    // cores pode mudar de forma (ficha de texto é mais larga que
-    // bolinha) quando a dona preenche o hex.
+    // Os filhos também: a fileira de cores muda de forma quando uma cor
+    // ganha hex e a ficha de texto vira bolinha.
     const ro = new ResizeObserver(medir);
     ro.observe(el);
     for (const filho of el.children) ro.observe(filho);

@@ -21,13 +21,10 @@ type Props = {
    *
    * Quem decide é o grid, olhando o catálogo inteiro: se **alguma** peça
    * tem preço, todo card guarda a altura da linha de preço, e o mesmo
-   * para o seletor de cor. Sem isso, a peça sem preço sobe a grade de
-   * tamanhos e ela fica desencontrada da vizinha — os cards têm a mesma
-   * altura e o mesmo pé, mas o miolo não se alinha.
-   *
-   * A reserva é do catálogo e não do card para o buraco não aparecer à
-   * toa: num catálogo em que ninguém tem segunda cor, não há linha de
-   * cor nenhuma para alinhar, e todo card ganharia 50px de vazio.
+   * para o seletor de cor. Sem isso a peça sem preço sobe a grade de
+   * tamanhos e ela fica desencontrada da vizinha. Pelo catálogo e não
+   * pelo card para a reserva não virar 50px de vazio em todo card quando
+   * ninguém tem segunda cor.
    */
   reservas?: { preco: boolean; cores: boolean };
 };
@@ -43,21 +40,18 @@ export function ProductCard({
 
   const href = `/produto/${slug}`;
   // Um card por peça, não um por cor: é a cor escolhida que manda na
-  // galeria. Toda peça tem ao menos uma cor, mas o `?? []` evita que um
-  // catálogo torto derrube a página inteira.
+  // galeria.
   const corAtual = colours[cor];
   const images = corAtual?.images ?? [];
 
-  // O mesmo trilho da página da peça: aqui ele substituiu os chevrons.
-  // A chave é a cor — trocar de cor volta para a capa.
+  // A chave é a cor: trocar de cor volta para a capa.
   const { trilhoRef, indice, aoRolar, aoMover, aoSair } = useTrilhoFotos(
     images.length,
     corAtual?.id ?? "",
   );
 
-  // A grade de tamanhos rola na horizontal quando não cabe, para o card
-  // não crescer uma fileira a mais que os vizinhos. Vira parada de
-  // teclado só quando há mesmo o que rolar — ver useTransbordo.ts.
+  // A grade rola na horizontal quando não cabe, para o card não crescer
+  // uma fileira a mais que os vizinhos — ver useTransbordo.ts.
   const { ref: refTamanhos, transborda: tamanhosTransbordam } =
     useTransbordo<HTMLUListElement>();
 
@@ -65,12 +59,10 @@ export function ProductCard({
     <article className={soldOut ? "card card--esgotada" : "card"}>
       <div className="card__media">
         {images.length > 0 ? (
-          /* Cada foto é um link para a peça: no celular tocar na foto é o
-             gesto natural, e perder isso para ganhar o trilho seria uma
-             troca ruim. Fora do Tab (tabIndex -1) porque o nome embaixo já
-             é o link do card, e quatro paradas idênticas por card
-             entupiriam a navegação por teclado; quem rola o trilho com as
-             setas é o próprio trilho, que é o tabindex="0". */
+          /* Cada foto é um link para a peça, mas fora do Tab: o nome
+             embaixo já é o link do card, e quatro paradas idênticas por
+             card entupiriam a navegação por teclado. Quem recebe as setas
+             é o trilho. */
           <div
             className="card__trilho"
             ref={trilhoRef}
@@ -114,14 +106,12 @@ export function ProductCard({
           </Link>
         )}
 
-        {/* A peça esgotada continua clicável: catálogo pequeno, e quem
-            chegou por link do Instagram ainda quer ver a peça e perguntar
-            no WhatsApp se ela volta. O que muda é a foto esmaecida, a
-            tarja e as bolinhas de cor desabilitadas. */}
+        {/* A peça esgotada continua clicável, para quem ainda quer vê-la
+            e perguntar se volta. O que muda é a foto esmaecida, a tarja e
+            as bolinhas desabilitadas. */}
         {soldOut && <span className="card__flag">Esgotado</span>}
 
-        {/* O mesmo indicador da página da peça: cor chapada, nunca
-            degradê, e aria-hidden porque quem anuncia é a região viva. */}
+        {/* aria-hidden porque quem anuncia é a região viva abaixo. */}
         {images.length > 1 && (
           <div className="card__barra" aria-hidden="true">
             {images.map((image, i) => (
@@ -145,38 +135,26 @@ export function ProductCard({
           <Link to={href}>{name}</Link>
         </h3>
 
-        {/* Sem linha de prosa. A `description` virou o texto longo do
-            modelo, que não cabe em duas linhas de card sem ficar um
-            trecho cortado no meio da frase — e a diferença em relação ao
-            protótipo, que tem um <p> aqui, é consciente. */}
+        {/* Sem linha de prosa: `description` é texto longo, e um trecho
+            cortado em duas linhas de card não diz nada. */}
 
-        {/* Empurrado para a base para que preço, cores e tamanhos fiquem
+        {/* Empurrado para a base para preço, cores e tamanhos ficarem
             alinhados entre cards de nome com alturas diferentes. */}
         <div className="card__foot">
-          {/* Peça ainda sem preço não mostra preço nenhum: as donas
-              catalogam antes de precificar, e "R$ 0,00" seria mentira. */}
           {priceCents !== undefined ? (
             <p className="card__price">{formatBRL(priceCents)}</p>
           ) : (
-            /* Vazia e aria-hidden: continua não mostrando preço nenhum,
-               só guarda a linha para a de baixo não subir. */
+            /* Vazia e aria-hidden: só guarda a linha para a de baixo não
+               subir. */
             reservas.preco && (
               <p className="card__price card__reserva" aria-hidden="true" />
             )
           )}
 
-          {/* O seletor fica aqui no card__body, fora de qualquer <Link>:
-              botão dentro de âncora é HTML inválido.
-
-              Peça de uma cor só não ganha seletor — não há o que escolher,
-              e o backfill do admin batizou essas de "Única", que não diz
-              nada a ninguém. */}
-          {/* A fileira de cores rola na horizontal quando a peça tem
-              cores demais para a largura do card: todos os cards da
-              linha têm a mesma altura, e uma peça de seis cores não pode
-              empurrar o pé de todos para baixo. Aqui não há tabindex
-              porque as bolinhas são botões — rolar seguindo o foco é o
-              próprio navegador que faz. */}
+          {/* O seletor fica no card__body, fora de qualquer <Link>: botão
+              dentro de âncora é HTML inválido. A fileira rola na
+              horizontal quando as cores não cabem, e aqui não precisa de
+              tabindex porque as bolinhas já são botões. */}
           {colours.length === 1 && reservas.cores && (
             <div className="card__cores card__reserva" aria-hidden="true" />
           )}
@@ -194,9 +172,8 @@ export function ProductCard({
             </div>
           )}
 
-          {/* Tamanhos continuam informativos — sem número, que é coisa da
-              página da peça. O que a cor muda aqui é quais deles estão
-              apagados. */}
+          {/* Sem número, que é coisa da página da peça: aqui a cor só
+              muda quais tamanhos estão apagados. */}
           <ul
             className="card__sizes"
             ref={refTamanhos}
@@ -215,7 +192,7 @@ export function ProductCard({
                   className={tem ? "card__size" : "card__size card__size--fora"}
                 >
                   {size}
-                  {/* Riscado é pista visual e nada mais: sem isto, quem
+                  {/* O risco é pista visual e nada mais: sem isto, quem
                       usa leitor de tela ouve a mesma lista de sempre. */}
                   {!tem && (
                     <span className="visually-hidden"> indisponível</span>
@@ -225,10 +202,6 @@ export function ProductCard({
             })}
           </ul>
 
-          {/* O mesmo "Pedir no WhatsApp" da página da peça, aqui para quem
-              já sabe o que quer e não precisa abrir a peça. A mensagem vai
-              na voz de quem clicou, não na da marca: ela aparece no
-              compositor da cliente, não no nosso. */}
           <a
             className="botao botao--mini card__pedir"
             href={linkWhatsApp(mensagemDaPeca(name))}

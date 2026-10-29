@@ -1,22 +1,15 @@
 import type { Product } from "../types";
 
 /**
- * Qual coleção dá título ao catálogo.
+ * A coleção que dá título ao catálogo: a que tem mais peças.
  *
- * O admin registra as coleções à parte e cada peça aponta para uma (ou
- * para nenhuma). O site ainda não tem seção por coleção: a home é uma
- * grade só, e o que ela mostra é **o nome da coleção principal**, que é a
- * que tem mais peças.
- *
- * Por que a maior, e não a mais recente: o catálogo é pequeno e as donas
- * cadastram a coleção nova aos poucos, peça por peça. Pela data, o título
- * viraria a coleção nova na primeira peça publicada, com a grade ainda
- * cheia da anterior. Pela contagem, ele vira quando a maior parte do que
- * está à vista já é dela.
+ * Pela contagem, e não pela data, porque a coleção nova é cadastrada aos
+ * poucos — pela data o título viraria a nova já na primeira peça
+ * publicada, com a grade ainda cheia da anterior.
  */
 export function colecaoPrincipal(products: Product[]): string | undefined {
-  // Map preserva a ordem de inserção, que aqui é a ordem do catálogo — o
-  // arranjo manual das donas. É o que torna o desempate determinístico.
+  // Map preserva a ordem de inserção, que aqui é a ordem do catálogo. É
+  // o que torna o desempate determinístico.
   const contagem = new Map<string, { nome: string; pecas: number }>();
 
   for (const p of products) {
@@ -29,9 +22,8 @@ export function colecaoPrincipal(products: Product[]): string | undefined {
 
   let principal: { nome: string; pecas: number } | undefined;
   for (const colecao of contagem.values()) {
-    // `>` e não `>=`: no empate fica a primeira na ordem do catálogo, em
-    // vez de a última a ser contada. Sem isso o título trocaria sozinho
-    // ao reordenar peças no admin, sem nada ter mudado de verdade.
+    // `>` e não `>=`: no empate fica a primeira na ordem do catálogo. Sem
+    // isso o título trocaria sozinho ao reordenar peças no admin.
     if (!principal || colecao.pecas > principal.pecas) principal = colecao;
   }
 
@@ -39,17 +31,12 @@ export function colecaoPrincipal(products: Product[]): string | undefined {
 }
 
 /**
- * O título do catálogo: "Coleção" mais o nome da coleção principal.
+ * O título do catálogo: "Coleção" mais o nome da coleção principal, ou só
+ * "Coleção" quando nenhuma peça está em alguma.
  *
- * Sem coleção nenhuma no catálogo — peça que não está em nenhuma, ou
- * admin mais velho que o site —, fica só "Coleção", que é o que o
- * catálogo dizia antes de haver coleções.
- *
- * As donas cadastram o nome como dá, e parte delas já escreve a palavra
- * dentro do nome ("Coleção Miragem"). Prefixar sem olhar daria "Coleção
- * Coleção Miragem", então quem já começa com a palavra entra inteiro. A
- * comparação ignora acento e caixa porque o que chega do admin é o que
- * foi digitado — "colecao miragem" também é.
+ * Nome que já começa com a palavra entra inteiro, senão sairia "Coleção
+ * Coleção Miragem". A comparação ignora acento e caixa porque o nome vem
+ * do admin como foi digitado.
  */
 export function tituloDoCatalogo(products: Product[]): string {
   const nome = colecaoPrincipal(products);

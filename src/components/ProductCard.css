@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  /* Estica até a altura da linha do grid para o rodapé poder alinhar. */
+  /* Estica até a altura da linha do grid para o pé poder alinhar. */
   height: 100%;
 }
 
 .card__media {
   position: relative;
-  /* 2:3 acompanha o formato das fotos (784x1168). Usar 3:4 aqui cortaria
-     cabeça e pés no object-fit: cover. */
+  /* 2:3 acompanha o formato das fotos (784x1168): 3:4 cortaria cabeça e
+     pés no object-fit: cover. */
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border-radius: var(--radius);
@@ -17,10 +17,9 @@
   border: 1px solid var(--line);
 }
 
-/* O mesmo trilho da página da peça — ver useTrilhoFotos.ts. Aqui ele
-   substituiu os chevrons: o dedo desliza, o ponteiro passa por cima e as
-   setas do teclado rolam o contêiner focado. O tabindex="0" é o que
-   mantém as outras fotos alcançáveis sem controle na tela; não remova. */
+/* O mesmo trilho da página da peça — ver useTrilhoFotos.ts. O
+   tabindex="0" é o que mantém as outras fotos alcançáveis sem controle na
+   tela; não remova. */
 .card__trilho {
   display: flex;
   height: 100%;
@@ -35,8 +34,8 @@
   display: none;
 }
 
-/* Anel de foco por dentro: o trilho ocupa a mídia inteira, e por fora
-   metade do outline ficaria escondida pelo overflow: hidden dela. */
+/* Anel de foco por dentro: por fora, metade dele ficaria escondida pelo
+   overflow: hidden da mídia. */
 .card__trilho:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: -4px;
@@ -74,9 +73,9 @@
   backdrop-filter: blur(4px);
 }
 
-/* Indicador de posição no trilho, igual ao da página da peça. Cor chapada
-   em --accent, nunca degradê: degradê aqui seria um terceiro significado
-   além de fronteira (filete) e escolha (anel).
+/* Indicador de posição no trilho, igual ao da página da peça. Cor
+   chapada em --accent, nunca degradê, que já significa fronteira
+   (filete) e escolha (anel).
 
    Por cima da onda (z-index) porque a onda é decoração e este diz onde
    você está. */
@@ -89,10 +88,9 @@
   display: flex;
   gap: 2px;
   pointer-events: none;
-  /* Véu atrás dos segmentos. Sem ele o indicador desaparecia: as fotos
+  /* Véu atrás dos segmentos. Sem ele o indicador desaparece: as fotos
      de produto têm rodapé branco, e sobre branco o --on-photo-line do
-     tema escuro (branco a 22%) simplesmente não existe. Foi visto
-     numa captura — o indicador tinha sumido na foto do card.
+     tema escuro (branco a 22%) simplesmente não existe.
 
      O véu vira com o tema junto com o --on-photo-line, então a dupla
      funciona nas quatro combinações: foto clara ou escura, tema claro ou
@@ -117,10 +115,9 @@
   background: var(--accent);
 }
 
-/* ---------- peça esgotada ----------
-
-   Só a foto esmaece e dessatura. Nome, preço, tamanhos e a tarja ficam
-   em contraste cheio: esmaecer o texto junto derrubaria a legibilidade
+/* Peça esgotada: só a foto esmaece e dessatura. Nome, preço, tamanhos e
+   a tarja ficam em contraste cheio — esmaecer o texto junto derrubaria a
+   legibilidade
    abaixo do mínimo de acessibilidade, e a informação continua valendo —
    quem chega numa peça esgotada ainda quer saber qual é e quanto custa.
 
@@ -131,9 +128,8 @@
   filter: grayscale(0.4);
 }
 
-/* Nada de zoom nem de onda no hover: quem responde ao ponteiro agora é o
-   trilho, que troca a foto. Dois efeitos na mesma foto brigam, e o zoom
-   mexeria a imagem justamente enquanto ela desliza. */
+/* Nada de zoom no hover: quem responde ao ponteiro é o trilho, que troca
+   a foto, e o zoom mexeria a imagem justamente enquanto ela desliza. */
 
 .card__body {
   display: flex;
@@ -152,25 +148,23 @@
   padding-top: var(--space-1);
 }
 
-/* A linha que o card guarda sem ter o que pôr nela — preço de peça ainda
-   não precificada, seletor de peça de cor única. Vazia e aria-hidden:
-   não mostra nada, só impede que a linha de baixo suba e desencontre a
-   grade de tamanhos da peça vizinha. Quem decide reservar é o grid, que
+/* A linha que o card guarda sem ter o que pôr nela. Vazia e aria-hidden:
+   só impede que a linha de baixo suba e desencontre a grade de tamanhos
+   da peça vizinha. Quem decide reservar é o grid, que
    olha o catálogo inteiro. */
 .card__reserva {
-  /* 1lh é a altura de uma linha de texto na fonte do próprio elemento —
-     é o que faz a reserva do preço valer exatamente o preço que falta,
-     sem número mágico. No seletor, o que manda é o min-height abaixo. */
+  /* 1lh é a altura de uma linha na fonte do próprio elemento: faz a
+     reserva valer exatamente o preço que falta, sem número mágico. No
+     seletor, o que manda é o min-height abaixo. */
   min-height: 1lh;
 }
 
-/* O alvo da bolinha tem 44px (ver SeletorCor.css); a reserva vale o
-   mesmo, mais o respiro do halo que o .card__cores já põe em padding. */
+/* O alvo da bolinha tem 44px (ver SeletorCor.css), e a reserva vale o
+   mesmo. */
 .card__cores.card__reserva {
   min-height: 44px;
 }
 
-/* O botão fecha o card, à largura da coluna. */
 .card__pedir {
   margin-top: var(--space-2);
 }
@@ -200,9 +194,7 @@
   color: var(--accent-text);
 }
 
-/* ---------- as duas fileiras que rolam ----------
-
-   Cores e tamanhos rolam na horizontal em vez de quebrarem em duas
+/* Cores e tamanhos rolam na horizontal em vez de quebrarem em duas
    fileiras. O motivo é o card: os cards de uma linha do grid têm a mesma
    altura, e uma peça de seis cores ou de seis tamanhos esticava a linha
    inteira para acomodar uma fileira a mais que ninguém mais usa.
@@ -270,10 +262,9 @@
   padding: 2px 7px;
 }
 
-/* Tamanho que acabou na cor escolhida. Risco e cor apagada, não
-   remoção: sumir da lista faria a grade da peça encolher a cada troca de
-   cor, e quem olha não saberia se o tamanho nunca existiu ou se acabou.
-   O "indisponível" escondido no HTML é o que o leitor de tela ouve.
+/* Tamanho que acabou na cor escolhida. Risco e cor apagada, não remoção:
+   sumindo, a grade encolheria a cada troca de cor e ninguém saberia se o
+   tamanho nunca existiu ou se acabou.
 
    O traço atravessa a ficha inteira, como na página da peça: riscar só
    a letra, numa ficha de 0.66rem, vira um borrão que não se distingue

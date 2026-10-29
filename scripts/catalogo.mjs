@@ -7,10 +7,9 @@
 // deploy não derrubar a loja.
 //
 // Sem ADMIN_API_URL/API_TOKEN o script não faz nada e mantém o
-// catalogo.json que está no repositório — é assim que `npm run dev`
-// funciona sem o admin de pé. No build da Cloudflare as duas variáveis
-// são obrigatórias, senão a loja republicaria com o catálogo de ontem
-// sem ninguém perceber.
+// catalogo.json versionado — é assim que `npm run dev` funciona sem o
+// admin de pé. No build da Cloudflare as duas são obrigatórias, senão a
+// loja republicaria com o catálogo de ontem sem ninguém perceber.
 
 import { writeFile, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -24,7 +23,6 @@ const TENTATIVAS = 5;
 const ESPERA_INICIAL_MS = 2000;
 const TIMEOUT_MS = 30000;
 
-/** True quando rodando no build da Cloudflare Pages. */
 const noBuildDaCloudflare = Boolean(process.env.CF_PAGES);
 
 function erro(mensagem) {
@@ -74,12 +72,11 @@ async function buscar(url, token) {
 const HEX = /^#[0-9a-f]{6}$/;
 
 /**
- * Tira os 📍 que a spec do modelo usa como marcador de item.
+ * Tira os marcadores de item que vêm colados no texto quando a descrição
+ * é copiada e colada no admin.
  *
- * Quando o texto é copiado da spec para o admin, os marcadores vêm
- * colados na descrição. Limpar aqui, na conversão, e não no componente: o
- * site não deve ter código que sabe de um detalhe de como o texto foi
- * digitado, e o JSON gerado fica legível no diff entre publicações.
+ * Na conversão, e não no componente: o site não deve ter código que sabe
+ * de um detalhe de como o texto foi digitado.
  */
 function limparTexto(texto) {
   return texto
@@ -90,11 +87,9 @@ function limparTexto(texto) {
 }
 
 /**
- * Palavras que ficam minúsculas no meio de um título, em português.
- *
- * "Coleção de Verão", e não "Coleção De Verão" — a segunda forma é o
- * título em inglês aplicado ao português, e lê como erro. A primeira
- * palavra é exceção e sobe sempre, mesmo sendo uma destas.
+ * Palavras que ficam minúsculas no meio de um título, em português:
+ * "Coleção de Verão", e não "Coleção De Verão". A primeira palavra é
+ * exceção e sobe sempre, mesmo sendo uma destas.
  */
 const ATONAS = new Set([
   "a", "as", "ao", "aos", "com", "da", "das", "de", "do", "dos", "e", "em",
@@ -102,19 +97,13 @@ const ATONAS = new Set([
 ]);
 
 /**
- * Põe um nome em caixa de título — o da coleção e o da peça.
- *
- * As donas cadastram como dá — "verão 2026", "VERÃO 2026", "NASSAU" —, e
- * esses nomes vão para a tela em corpo grande: o da coleção no título do
- * catálogo, o da peça no card e no cabeçalho da página dela. Normalizar
- * aqui, na conversão, e não no componente: é a mesma regra dos 📍 da
- * descrição, e deixa o JSON gerado legível no diff entre publicações.
+ * Põe um nome em caixa de título — o da coleção e o da peça. Na
+ * conversão, e não no componente, como a limpeza dos marcadores.
  *
  * Baixa tudo antes de subir a inicial, que é o que conserta o nome
- * gritado em CAIXA ALTA — o erro de cadastro mais provável. O preço
- * disso é que uma sigla perde a caixa ("Coleção SP" vira "Coleção Sp");
- * é raro o bastante para não valer uma regra adivinhando siglas, que
- * erraria em cima de nome comum curto.
+ * cadastrado em CAIXA ALTA. O preço é que uma sigla perde a caixa
+ * ("Coleção SP" vira "Coleção Sp"); é raro o bastante para não valer uma
+ * regra adivinhando siglas, que erraria em cima de nome comum curto.
  */
 function caixaDeTitulo(nome) {
   return nome
@@ -133,22 +122,14 @@ function caixaDeTitulo(nome) {
 /**
  * Converte a resposta do admin (snake_case) para o tipo do site.
  *
- * Três diferenças que importam:
- * - `price_cents` vem ausente quando a peça ainda não tem preço
- *   (o admin usa `omitzero`). Ausente aqui vira ausente lá, e o site
- *   simplesmente não mostra preço — nunca "R$ 0,00".
- * - cada foto vem como url_600/url_1200, sem rótulo de ângulo. A ordem
- *   é que importa, e a primeira é a capa.
- * - a descrição e os destaques chegam com os 📍 da spec do modelo colados
- *   no texto quando alguém copia e cola; saem aqui, na conversão, para o
- *   componente não ter de saber como o texto foi digitado.
+ * As diferenças que importam:
+ * - `price_cents` vem ausente quando a peça ainda não tem preço. Ausente
+ *   aqui vira ausente lá, e o site não mostra preço nenhum.
+ * - cada foto vem como url_600/url_1200, sem rótulo de ângulo: a ordem é
+ *   que importa, e a primeira é a capa.
  * - `collection` vem como objeto ou como null, nunca ausente. Null vira
- *   campo omitido aqui, para "não tem coleção" ter um significado só, e o
- *   nome sai daqui em caixa de título — ver caixaDeTitulo.
- * - as fotos e o estoque são **da cor**, não da peça. O admin mandou
- *   um `images` achatado no topo enquanto o site migrava; desde a fase 5
- *   do plano ele não vem mais, e a única coisa que ainda olha para ele é
- *   o erro nomeado abaixo.
+ *   campo omitido, para "não tem coleção" ter um significado só.
+ * - as fotos e o estoque são **da cor**, não da peça.
  *
  * Tudo que não bater com isso derruba o build de propósito: é melhor a
  * Cloudflare manter o deploy anterior do que publicar um catálogo torto.
@@ -173,10 +154,8 @@ function converter(recebido) {
 
     // A resposta antiga, de antes das cores, tinha "images" no topo e
     // nada mais. Vale um erro com nome próprio: sem ele o build morre
-    // dizendo só que falta um campo, e a causa de verdade — admin mais
-    // velho que o site — leva meia hora para aparecer. Continua valendo
-    // depois da fase 5: um admin revertido para antes das cores responde
-    // exatamente assim, e é aí que este erro paga o aluguel.
+    // dizendo só que falta um campo, e a causa — admin mais velho que o
+    // site — leva meia hora para aparecer.
     if (p.colours === undefined && Array.isArray(p.images)) {
       throw erro(
         `${onde}: a resposta não tem "colours", só o "images" antigo. ` +
@@ -185,11 +164,9 @@ function converter(recebido) {
       );
     }
     if (!Array.isArray(p.colours)) throw erro(`${onde}: "colours" não é uma lista`);
-    // Lista vazia passa de propósito. O admin exige ao menos uma cor por
-    // peça, então na prática não acontece — e se acontecer é o mesmo caso
-    // de uma peça sem foto, que o placeholder já resolve. Derrubar a
-    // publicação inteira por causa disso deixaria as donas sem publicar
-    // nada.
+    // Lista vazia passa de propósito: é o mesmo caso de uma peça sem
+    // foto, que o placeholder já resolve, e não vale derrubar a
+    // publicação inteira.
 
     const produto = {
       id: p.id,
@@ -200,19 +177,15 @@ function converter(recebido) {
       soldOut: Boolean(p.sold_out),
     };
 
-    // Opcionais entram só quando existem, para o JSON não encher de
-    // campos vazios e o diff entre publicações ficar legível.
+    // Opcionais entram só quando existem, para o diff entre publicações
+    // ficar legível.
     if (p.price_cents) produto.priceCents = p.price_cents;
 
-    // A limpeza pode esvaziar o texto (uma descrição que fosse só os
-    // marcadores), e aí o campo não entra — o site trata ausente como
-    // "não tem descrição", não como string vazia.
+    // A limpeza pode esvaziar o texto, e aí o campo não entra: o site
+    // trata ausente como "não tem descrição", não como string vazia.
     const descricao = p.description ? limparTexto(p.description) : "";
     if (descricao) produto.description = descricao;
 
-    // `collection` vem sempre na resposta, como null quando a peça não
-    // está em nenhuma — o admin não usa omitempty aqui. Null vira campo
-    // ausente, que é como o site trata "não tem".
     if (p.collection !== undefined && p.collection !== null) {
       for (const campo of ["id", "name"]) {
         if (typeof p.collection[campo] !== "string" || p.collection[campo] === "") {
@@ -220,9 +193,8 @@ function converter(recebido) {
         }
       }
       const nome = caixaDeTitulo(p.collection.name);
-      // Só espaço no campo: o admin não deveria aceitar, mas se aceitar é
-      // melhor a peça ficar sem coleção do que o catálogo ganhar um
-      // título em branco.
+      // Só espaço no campo: melhor a peça ficar sem coleção do que o
+      // catálogo ganhar um título em branco.
       if (nome) produto.collection = { id: p.collection.id, name: nome };
     }
 
@@ -249,9 +221,8 @@ function converterCores(cores, sizes, onde) {
         throw erro(`${ondeCor}: falta "${campo}"`);
       }
     }
-    // O admin já recusa duas cores de mesmo nome na peça. Se duas
-    // chegarem aqui, o seletor do site mostraria duas fichas idênticas e
-    // ninguém saberia qual é qual.
+    // Duas cores de mesmo nome dariam duas fichas idênticas no seletor,
+    // sem jeito de saber qual é qual.
     const nome = c.name.trim().toLowerCase();
     if (nomes.has(nome)) throw erro(`${ondeCor}: nome de cor repetido na peça`);
     nomes.add(nome);
@@ -267,10 +238,9 @@ function converterCores(cores, sizes, onde) {
       throw erro(`${ondeCor}: "tracks_stock" é falso mas vieram ${c.stock.length} lançamentos`);
     }
 
-    // O hex é opcional: o admin só manda quando a dona preencheu, e sem
-    // ele a cor cai na ficha de texto. Mas hex torto derruba o build de
-    // propósito, igual aos outros campos — é melhor a Cloudflare manter o
-    // deploy anterior do que publicar uma bolinha preta onde era coral.
+    // O hex é opcional, e sem ele a cor cai na ficha de texto. Mas hex
+    // torto derruba o build: melhor manter o deploy anterior do que
+    // publicar uma bolinha preta onde era coral.
     let hex;
     if (c.hex !== undefined) {
       if (!Array.isArray(c.hex)) throw erro(`${ondeCor}: "hex" não é uma lista`);
@@ -282,8 +252,8 @@ function converterCores(cores, sizes, onde) {
           throw erro(`${ondeCor}: "hex" inválido (${valor}) — esperava #rrggbb minúsculo`);
         }
       }
-      // Lista vazia vira ausente: "não tem hex" passa a ter um
-      // significado só, em vez de dois jeitos de dizer a mesma coisa.
+      // Lista vazia vira ausente, para "não tem hex" ter um significado
+      // só.
       if (c.hex.length > 0) hex = c.hex;
     }
 
@@ -294,7 +264,7 @@ function converterCores(cores, sizes, onde) {
       }
       if (tamanhos.has(s.size)) throw erro(`${ondeCor}: tamanho "${s.size}" lançado duas vezes`);
       tamanhos.add(s.size);
-      // Zero é "indisponível" e tem de sobreviver à viagem — um zero
+      // Zero é "indisponível" e tem de sobreviver à viagem: um zero
       // sumido vira "não contado", que é o oposto.
       if (!Number.isInteger(s.quantity) || s.quantity < 0) {
         throw erro(`${ondeCor}, tamanho ${s.size}: "quantity" não é inteiro não-negativo (${s.quantity})`);
@@ -317,7 +287,6 @@ function converterCores(cores, sizes, onde) {
       stock,
     };
 
-    // Opcional entra só quando existe, como os do produto.
     if (hex) cor.hex = hex;
 
     return cor;
@@ -358,8 +327,6 @@ async function main() {
     p.colours.every((c) => c.images.length === 0),
   ).length;
   const cores = produtos.reduce((n, p) => n + p.colours.length, 0);
-  // Quantas cores já viram bolinha: é o jeito de acompanhar o
-  // preenchimento do hex sem abrir o admin.
   const comHex = produtos.reduce(
     (n, p) => n + p.colours.filter((c) => c.hex !== undefined).length,
     0,
@@ -378,9 +345,8 @@ async function main() {
 
 main().catch((e) => {
   console.error(`[catálogo] ${e.message}`);
-  // Sai diferente de zero de propósito: o build morre aqui e a Cloudflare
-  // mantém no ar o deploy anterior. O site continua de pé com o catálogo
-  // bom, e o aviso "Há alterações não publicadas" do admin continua
-  // aceso, que é o sinal honesto de que a publicação não foi.
+  // Sai diferente de zero de propósito: o build morre aqui e a
+  // Cloudflare mantém no ar o deploy anterior, com o aviso "Há alterações
+  // não publicadas" do admin aceso.
   process.exit(1);
 });

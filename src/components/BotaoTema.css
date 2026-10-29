@@ -1,12 +1,10 @@
-/* O botão vive sempre dentro de uma .faixa-escura (hero ou faixa de
-   navegação), então os tokens que ele lê são os do tema escuro nos dois
-   temas — e a aparência dele não muda quando a página clareia. É de
-   propósito: o controle que troca o tema não deveria piscar junto. */
+/* O botão vive dentro de uma .faixa-escura, então lê os tokens do tema
+   escuro nos dois temas e a aparência dele não muda quando a página
+   clareia. É de propósito: o controle que troca o tema não pisca junto. */
 .botao-tema {
   display: grid;
   place-items: center;
-  /* 44px de alvo de toque. A maior parte do tráfego vem do Instagram,
-     ou seja, celular, e não há hover para ajudar a acertar. */
+  /* 44px de alvo de toque: o tráfego é celular. */
   width: 44px;
   height: 44px;
   padding: 0;

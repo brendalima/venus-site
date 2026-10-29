@@ -2,8 +2,6 @@ import { useState } from "react";
 import { aplicaTema, temaAtual, type Tema } from "../lib/tema";
 import "./BotaoTema.css";
 
-/* Ícones inline, como os do rodapé: a marca não carrega webfont nem
-   biblioteca de ícones. */
 function IconeSol() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -22,16 +20,11 @@ function IconeLua() {
 }
 
 /**
- * Botão de troca de tema.
- *
  * O ícone mostra o DESTINO, não o estado: no escuro aparece o sol, que é
- * para onde o clique leva. Ícone de estado num botão de ação faz a pessoa
- * clicar esperando o contrário.
+ * para onde o clique leva.
  *
- * O estado mora aqui porque existe um botão só, no cabeçalho, que é o
- * mesmo em todas as rotas e não remonta na navegação. A verdade continua
- * sendo o atributo no <html>, que o script do index.html já definiu antes
- * desta tela montar.
+ * A verdade continua sendo o atributo no <html>, que o script do
+ * index.html define antes da primeira pintura.
  */
 export function BotaoTema() {
   const [tema, setTema] = useState<Tema>(temaAtual);

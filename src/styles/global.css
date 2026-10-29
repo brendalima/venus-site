@@ -11,9 +11,7 @@ html {
   /* Sem isto a âncora do menu para debaixo do cabeçalho grudado e o
      título da seção fica escondido. */
   scroll-padding-top: var(--altura-cabecalho);
-  /* O menu desliza até a seção em vez de pular. A home é uma página só,
-     e o pulo seco faz perder onde se estava. O bloco de
-     prefers-reduced-motion no fim deste arquivo desliga isto. */
+  /* Desligado pelo bloco de prefers-reduced-motion no fim do arquivo. */
   scroll-behavior: smooth;
 }
 
@@ -51,9 +49,8 @@ button {
   color: inherit;
 }
 
-/* Foco visível em tudo que recebe teclado. O tom vem do tema: o turquesa
-   claro do escuro dá 1,66:1 sobre marfim, ou seja, desapareceria no tema
-   claro — ver --focus em tokens.css. */
+/* O tom vem do tema: o turquesa claro do escuro dá 1,66:1 sobre marfim,
+   ou seja, desapareceria no tema claro — ver --focus em tokens.css. */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
@@ -72,24 +69,23 @@ button {
    A logo tem fundo preto chapado e vive de mix-blend-mode: screen, que
    só faz o preto desaparecer sobre fundo escuro (ver Logo.css). Medindo
    os arquivos de public/, 58% a 60% da arte fica abaixo de 3:1 sobre
-   marfim: o champagne do monograma simplesmente não existe sobre claro.
-   Transparência de verdade não resolve — foi medido, dá 64,8%. Só
+   marfim, e transparência de verdade não resolve: dá 64,8%. Só
    reancorar a arte nos tons fundos resolveria, e isso é redesenhar a
    marca.
 
-   Então a logo não sai do preto: o corpo da página clareia, as duas
-   fronteiras estruturais continuam escuras, e nenhum arquivo novo entra.
-   Quem redefine os tokens aqui dentro é tokens.css, neste mesmo seletor. */
+   Então a logo não sai do preto: o corpo da página clareia e as duas
+   fronteiras estruturais continuam escuras. Quem redefine os tokens aqui
+   dentro é tokens.css, neste mesmo seletor. */
 .faixa-escura {
   background: var(--bg);
   color: var(--text);
 }
 
-/* Filete com o degradê da marca.
-   Reservado para as fronteiras estruturais da página — cabeçalho/corpo e
-   corpo/rodapé. As divisões internas (entre seções, entre blocos de
-   texto) continuam com linha lisa em --line: se tudo virasse degradê, ele
-   deixaria de significar "aqui muda de contexto".
+/* Filete com o degradê da marca, reservado às fronteiras estruturais da
+   página — cabeçalho/corpo e corpo/rodapé. As divisões internas usam
+   linha lisa em --line: se tudo virasse degradê, ele deixaria de
+   significar "aqui muda de contexto".
+
    É pseudo-elemento porque border não aceita gradiente. */
 .brand-rule {
   position: relative;
@@ -114,23 +110,19 @@ button {
 }
 
 /* Anel com o degradê da marca, para a opção escolhida — a ficha de cor,
-   o botão de tamanho. Mesma espessura de antes (1px): quem desenha a
-   borda continua sendo o `border` do próprio componente, esta classe só
-   troca a cor dele por degradê.
+   o botão de tamanho. Quem desenha a borda continua sendo o `border` do
+   próprio componente; esta classe só troca a cor dele por degradê.
 
    `border` não aceita gradiente, então quem faz o trabalho é o fundo:
    uma camada chapada presa ao padding-box por cima do degradê preso ao
    border-box deixa à mostra só a faixa da borda. Por isso a camada de
    baixo é --bg, e o anel só funciona sobre o fundo da página.
 
-   Usa --brand-gradient e não --brand-rule, que é o do filete: aquele
-   apaga nas pontas para não bater seco na borda da tela, e numa ficha de
-   40px o apagamento comeria metade do anel.
+   Usa --brand-gradient e não o --brand-rule do filete: aquele apaga nas
+   pontas, e numa ficha de 40px o apagamento comeria metade do anel.
 
-   Irmã do .brand-rule, mas com outro trabalho: o filete marca fronteira
-   de contexto, o anel marca escolha. Nenhum dos dois é enfeite — se
-   borda com degradê começar a aparecer em elemento que não foi
-   escolhido, os dois param de significar alguma coisa. */
+   Filete marca fronteira de contexto, anel marca escolha. Borda com
+   degradê em elemento que não foi escolhido tira o sentido dos dois. */
 .brand-ring {
   border-color: transparent;
   background-image: linear-gradient(var(--bg), var(--bg)), var(--brand-gradient);
@@ -138,23 +130,18 @@ button {
   background-clip: padding-box, border-box;
 }
 
-/* Para o anel que encosta em foto, e não no fundo da página: a
-   miniatura escolhida. O --brand-gradient passa por um champagne quase
-   branco que some sobre o fundo branco das fotos de produto, e o anel
-   ficaria partido no meio. Mesmo motivo do --brand-gradient-deep na
-   onda do card. */
+/* Para o anel que encosta em foto, e não no fundo da página: o
+   --brand-gradient passa por um champagne quase branco que some sobre o
+   rodapé branco das fotos, e o anel ficaria partido no meio. */
 .brand-ring--deep {
   background-image: var(--brand-gradient-deep);
 }
 
-/* Acordeão — as dúvidas da home e os dois blocos de ajuda da página da
-   peça. Mora aqui porque é o mesmo desenho nos dois lugares, e um
-   acordeão com duas caras diria que são coisas diferentes.
+/* Acordeão — as dúvidas da home e os blocos de ajuda da página da peça,
+   o mesmo desenho nos dois lugares.
 
-   Linha lisa em --line-soft, nunca o filete: a divisão entre perguntas é
-   interna, e o degradê é reservado às fronteiras estruturais. O "+" é
-   gerado no ::after e trocado por um traço quando aberto — um sinal de
-   estado que não depende de cor para ser lido. */
+   O "+" é gerado no ::after e trocado por um traço quando aberto: um
+   sinal de estado que não depende de cor para ser lido. */
 .acordeao {
   border-top: 1px solid var(--line-soft);
 }
@@ -191,11 +178,8 @@ button {
   padding-bottom: var(--space-4);
 }
 
-/* ---------- cabeçalho de seção ----------
-
-   Título à esquerda, frase à direita, alinhados pela base. É o mesmo
-   bloco no catálogo, no "comprar é simples" e nas dúvidas, então o
-   desenho mora aqui, com os outros primitivos. */
+/* Título à esquerda, frase à direita, alinhados pela base. O mesmo bloco
+   no catálogo, no "comprar é simples" e nas dúvidas. */
 .secao__cabeca {
   display: flex;
   flex-wrap: wrap;
@@ -218,17 +202,12 @@ button {
   line-height: 1.65;
 }
 
-/* Botão da marca — o mesmo desenho em todo lugar que convida a uma
-   ação: os dois do hero, o "Pedir no WhatsApp" do card e da página da
-   peça, o do lookbook.
+/* Botão da marca — o mesmo desenho em todo lugar que convida a uma ação.
+   Vazado por padrão, cheio na variante; o cheio é para a ação principal
+   do bloco, e só uma por bloco.
 
-   Vazado por padrão, cheio na variante. O cheio é para a ação principal
-   de um bloco, e só uma por bloco: dois botões cheios lado a lado não
-   dizem qual é a principal.
-
-   No hover o fundo vira --accent e o texto vira --bg, e não --text: o
-   fundo virou dourado, então o texto precisa ser o oposto dele nos dois
-   temas. */
+   No hover o texto vira --bg e não --text: o fundo virou dourado, então
+   o texto precisa ser o oposto dele nos dois temas. */
 .botao {
   display: inline-block;
   text-align: center;
@@ -272,16 +251,12 @@ button {
   letter-spacing: 0.08em;
 }
 
-/* Uma palavra do título em degradê, recortada no texto.
+/* Ênfase numa palavra de display, e o terceiro e último uso do degradê
+   da marca. Não serve para texto corrido: cor saturada em parágrafo cansa
+   a leitura, e o recorte derruba o contraste de fonte pequena.
 
-   É o terceiro uso do degradê da marca, e o último: filete é fronteira,
-   anel é escolha, e isto é **ênfase numa palavra de display**. Não serve
-   para texto corrido — cor saturada em parágrafo cansa a leitura, e o
-   recorte no texto derruba o contraste de qualquer fonte pequena.
-
-   O fallback é a cor herdada: se background-clip: text não pegar, o
-   `color: transparent` tornaria a palavra invisível, então ele só entra
-   dentro do @supports. */
+   O `color: transparent` só entra dentro do @supports: sem o
+   background-clip ele tornaria a palavra invisível. */
 .texto-degrade {
   background-image: var(--brand-gradient);
   background-clip: text;

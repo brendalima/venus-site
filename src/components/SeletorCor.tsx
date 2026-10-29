@@ -3,15 +3,12 @@ import type { ProductColour } from "../types";
 import "./SeletorCor.css";
 
 /**
- * O fundo da bolinha, a partir do hex da cor.
- *
- * Hex em estilo inline não fere a regra de tokens.css: a cor não é da
- * marca, é um dado do catálogo que a dona digitou no admin. O que não
- * pode é cor da identidade escrita em componente.
+ * O fundo da bolinha, a partir do hex da cor. Hex em estilo inline não
+ * fere a regra de tokens.css: é dado do catálogo, não cor da identidade.
  *
  * As paradas são duplas de propósito — `A 0 50%, B 50% 100%`. Sem elas o
- * degradê interpola entre as duas metades, o corte sai esfumaçado e
- * parece defeito de renderização em vez de peça bicolor.
+ * degradê interpola entre as metades e o corte da peça bicolor sai
+ * esfumaçado.
  */
 function fundo(hex: string[]): CSSProperties {
   if (hex.length === 1) return { background: hex[0] };
@@ -30,12 +27,8 @@ type Props = {
   /** Peça esgotada: as opções ficam legíveis, mas não aceitam toque. */
   desabilitado?: boolean;
   /**
-   * Bolinhas miúdas, para o card do grid.
-   *
-   * Muda só o **disco** (13px em vez de 28px); o alvo continua com 44px,
-   * transparente ao redor. No card há seis peças por tela e um disco de
-   * 28px pesa mais que a foto; na página da peça a bolinha é a escolha
-   * principal do bloco e precisa de presença.
+   * Bolinhas miúdas, para o card do grid. Muda só o **disco** (13px em
+   * vez de 28px); o alvo continua com 44px, transparente ao redor.
    */
   delicada?: boolean;
 };
@@ -44,26 +37,16 @@ type Props = {
  * Seletor de cor, o mesmo no card do grid e na página da peça.
  *
  * Cada cor é uma bolinha quando tem `hex`, e a ficha com o nome escrito
- * quando não tem. A escolha é no dado, como `images: []`: a cor vira
- * bolinha sozinha quando a dona preencher o hex no admin, sem flag e sem
- * código morto. Até lá as duas formas convivem na mesma fileira, e é
- * assim mesmo — uma fileira só de fichas seria o estado de hoje, e uma
- * fileira só de bolinhas o de depois.
+ * quando não tem. As duas formas convivem na mesma fileira enquanto o
+ * hex vai sendo preenchido.
  *
- * **Nunca só cor.** A bolinha leva o nome da cor em texto escondido, que
- * é o nome acessível do botão, e quem chama o seletor mostra o nome da
- * escolhida em algum lugar visível — a página da peça mostra na plaquinha
- * sobre a foto e na linha abaixo das bolinhas. Bolinha sozinha é
- * informação que só chega a quem distingue as cores na tela.
+ * **Nunca só cor.** A bolinha leva o nome em texto escondido, que é o
+ * nome acessível do botão, e quem chama o seletor mostra o nome da
+ * escolhida em algum lugar visível — bolinha sozinha é informação que só
+ * chega a quem distingue as cores na tela.
  *
- * Peça de uma cor só não ganha seletor nenhum: não há o que escolher, e
- * as peças anteriores às cores se chamam "Única", que não diz nada a
- * ninguém. Quem decide isso é quem chama.
- *
- * A escolha é marcada por um halo ao redor do disco, e não pelo
- * `.brand-ring`: o anel em degradê precisa de uma borda para colorir, e
- * numa bolinha de 13px ela comeria o disco inteiro. O anel continua
- * valendo onde cabe — a ficha de texto e o botão de tamanho.
+ * Peça de uma cor só não ganha seletor nenhum, e quem decide isso é quem
+ * chama.
  */
 export function SeletorCor({
   colours,
@@ -87,10 +70,8 @@ export function SeletorCor({
           <button
             key={c.id}
             type="button"
-            /* O anel em degradê marca a escolha, igual à ficha de tamanho:
-               filete é fronteira, anel é escolha. A borda já existe
-               transparente na classe base, então escolher não muda o
-               tamanho do botão.
+            /* A borda já existe transparente na classe base, então
+               escolher não muda o tamanho do botão.
 
                A bolinha miúda fica de fora: o anel precisa de uma borda
                para colorir, e num disco de 13px ela comeria o disco. Lá a

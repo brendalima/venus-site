@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 /**
  * Pagina RENDERIZAÇÃO, não carregamento — todos os produtos já estão em
  * memória. Serve para o DOM não crescer sem necessidade se o catálogo
- * aumentar; com poucos produtos é praticamente decorativo.
+ * aumentar.
  */
 export function useInfiniteScroll(total: number, pageSize = 8) {
   const [visible, setVisible] = useState(() => Math.min(pageSize, total));
@@ -31,7 +31,7 @@ export function useInfiniteScroll(total: number, pageSize = 8) {
     return () => io.disconnect();
   }, [hasMore, showMore]);
 
-  // Se a lista encolher (catálogo editado), não deixa `visible` acima do total.
+  // Se a lista encolher, não deixa `visible` acima do total.
   useEffect(() => {
     setVisible((v) => Math.min(v, total) || Math.min(pageSize, total));
   }, [total, pageSize]);

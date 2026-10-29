@@ -1,10 +1,8 @@
 export type Tema = "escuro" | "claro";
 
 /**
- * Chave no localStorage.
- *
- * A mesma string está escrita no script inline do index.html, que roda
- * antes da primeira pintura. Se mudar aqui, muda lá.
+ * Chave no localStorage. A mesma string está no script inline do
+ * index.html, que roda antes da primeira pintura — se mudar aqui, muda lá.
  */
 const CHAVE = "venus-tema";
 
@@ -25,24 +23,20 @@ export function aplicaTema(tema: Tema): void {
   try {
     localStorage.setItem(CHAVE, tema);
   } catch {
-    // Navegação privada ou armazenamento bloqueado. O tema vale para
-    // esta sessão e volta ao escuro no próximo carregamento — melhor que
-    // deixar o clique sem efeito nenhum.
+    // Navegação privada ou armazenamento bloqueado: o tema vale para esta
+    // sessão e volta ao escuro no próximo carregamento.
   }
 
   sincronizaBarra();
 }
 
 /**
- * Põe a barra do navegador na cor do fundo da página.
- *
- * A maior parte do tráfego vem do Instagram, ou seja, celular, e barra
- * preta sobre página clara fica à mostra. O valor sai do --bg já
- * computado, para tokens.css continuar sendo o único lugar onde a cor
- * está escrita.
+ * Põe a barra do navegador na cor do fundo da página. O valor sai do
+ * --bg já computado, para tokens.css continuar sendo o único lugar onde a
+ * cor está escrita.
  *
  * Roda na troca e também na carga: o script do index.html define o tema
- * antes da primeira pintura, mas não tem o CSS para consultar ainda.
+ * antes da primeira pintura, mas ainda não tem o CSS para consultar.
  */
 export function sincronizaBarra(): void {
   const meta = document.querySelector('meta[name="theme-color"]');
