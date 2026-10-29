@@ -16,9 +16,28 @@ type Props = {
   index: number;
   /** Primeiros cards do grid carregam com prioridade; o resto é lazy. */
   priority?: boolean;
+  /**
+   * Linhas que o card reserva mesmo sem ter o que pôr nelas.
+   *
+   * Quem decide é o grid, olhando o catálogo inteiro: se **alguma** peça
+   * tem preço, todo card guarda a altura da linha de preço, e o mesmo
+   * para o seletor de cor. Sem isso, a peça sem preço sobe a grade de
+   * tamanhos e ela fica desencontrada da vizinha — os cards têm a mesma
+   * altura e o mesmo pé, mas o miolo não se alinha.
+   *
+   * A reserva é do catálogo e não do card para o buraco não aparecer à
+   * toa: num catálogo em que ninguém tem segunda cor, não há linha de
+   * cor nenhuma para alinhar, e todo card ganharia 50px de vazio.
+   */
+  reservas?: { preco: boolean; cores: boolean };
 };
 
-export function ProductCard({ product, index, priority = false }: Props) {
+export function ProductCard({
+  product,
+  index,
+  priority = false,
+  reservas = { preco: false, cores: false },
+}: Props) {
   const { slug, name, priceCents, sizes, colours, soldOut } = product;
   const [cor, setCor] = useState(0);
 
@@ -136,8 +155,14 @@ export function ProductCard({ product, index, priority = false }: Props) {
         <div className="card__foot">
           {/* Peça ainda sem preço não mostra preço nenhum: as donas
               catalogam antes de precificar, e "R$ 0,00" seria mentira. */}
-          {priceCents !== undefined && (
+          {priceCents !== undefined ? (
             <p className="card__price">{formatBRL(priceCents)}</p>
+          ) : (
+            /* Vazia e aria-hidden: continua não mostrando preço nenhum,
+               só guarda a linha para a de baixo não subir. */
+            reservas.preco && (
+              <p className="card__price card__reserva" aria-hidden="true" />
+            )
           )}
 
           {/* O seletor fica aqui no card__body, fora de qualquer <Link>:
@@ -152,6 +177,10 @@ export function ProductCard({ product, index, priority = false }: Props) {
               empurrar o pé de todos para baixo. Aqui não há tabindex
               porque as bolinhas são botões — rolar seguindo o foco é o
               próprio navegador que faz. */}
+          {colours.length === 1 && reservas.cores && (
+            <div className="card__cores card__reserva" aria-hidden="true" />
+          )}
+
           {colours.length > 1 && (
             <div className="card__cores">
               <SeletorCor
