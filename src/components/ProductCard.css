@@ -124,117 +124,16 @@
    abaixo do mínimo de acessibilidade, e a informação continua valendo —
    quem chega numa peça esgotada ainda quer saber qual é e quanto custa.
 
-   A onda acompanha a foto porque fica por cima dela: em contraste cheio
-   sobre uma foto apagada, a decoração ficaria mais forte que o produto. */
+   O botão de pedir continua ativo: quem chega numa peça esgotada ainda
+   quer perguntar se ela volta, e é essa a conversa. */
 .card--esgotada .card__foto {
   opacity: 0.55;
   filter: grayscale(0.4);
 }
 
-/* A onda é apagada por filter, nunca pela propriedade opacity: é opacity
-   que a mantém escondida até o hover, e um valor fixo aqui venceria por
-   especificidade e deixaria a onda acesa o tempo todo na peça esgotada.
-   Já aconteceu: uma faixa do degradê aparecia no pé da foto. */
-.card--esgotada .card__wave-layer {
-  filter: grayscale(0.4) opacity(0.55);
-}
-
-/* Nada de zoom no hover: quem responde ao ponteiro agora é o trilho, que
-   troca a foto. Dois efeitos de hover na mesma foto brigam, e o zoom
+/* Nada de zoom nem de onda no hover: quem responde ao ponteiro agora é o
+   trilho, que troca a foto. Dois efeitos na mesma foto brigam, e o zoom
    mexeria a imagem justamente enquanto ela desliza. */
-
-/* ---------- onda no rodapé da foto ----------
-
-   Duas camadas com velocidades e alturas diferentes: uma onda só lê como
-   uma faixa deslizando, duas em ritmos distintos criam a sensação de
-   água. O formato vem de uma máscara SVG e a cor vem do degradê da
-   marca, então a onda é literalmente a paleta recortada em onda.
-
-   Fica escondida por padrão e só aparece no hover. */
-.card__wave {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 52px;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-
-.card__wave-layer {
-  position: absolute;
-  inset: auto 0 0 0;
-  background: var(--brand-gradient-deep);
-
-  /* Um comprimento de onda inteiro por ladrilho, com amplitude baixa:
-     crista em y=5, cava em y=17, de 24 de altura. Onda curta e alta lê
-     como desenho infantil; aberta e rasa lê como maresia. */
-  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath d='M0 11 Q25 5 50 11 T100 11 L100 24 L0 24 Z' fill='%23fff'/%3E%3C/svg%3E");
-  -webkit-mask-image: var(--wave);
-  mask-image: var(--wave);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: var(--tile) 100%;
-  mask-size: var(--tile) 100%;
-
-  animation: card-wave linear infinite;
-  animation-play-state: paused;
-}
-
-.card__wave-layer--back {
-  --tile: 240px;
-  height: 34px;
-  opacity: 0.3;
-  animation-duration: 14s;
-}
-
-.card__wave-layer--front {
-  --tile: 165px;
-  height: 24px;
-  opacity: 0.6;
-  animation-duration: 9s;
-  animation-direction: reverse;
-}
-
-/* Desliza a máscara exatamente um ladrilho, e não o elemento inteiro.
-   Como a máscara é repeat-x, deslocá-la um ladrilho é contínuo em
-   qualquer largura de card — enquanto mover o elemento só fecharia o
-   ciclo se a largura fosse múltiplo do ladrilho, o que não dá para
-   garantir num grid responsivo.
-   De quebra, o degradê fica parado: se o elemento se movesse, a cor
-   escorregaria junto e voltaria ao lugar de repente no fim do ciclo. */
-@keyframes card-wave {
-  from {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
-  to {
-    -webkit-mask-position: var(--tile) 0;
-    mask-position: var(--tile) 0;
-  }
-}
-
-@media (hover: hover) {
-  .card:hover .card__wave {
-    opacity: 1;
-  }
-
-  /* Só anima enquanto está visível — seis cards animando o tempo todo
-     custam bateria à toa. */
-  .card:hover .card__wave-layer {
-    animation-play-state: running;
-  }
-}
-
-/* Com movimento reduzido a onda continua aparecendo, parada. O efeito
-   visual se mantém e ninguém leva movimento que não pediu. */
-@media (prefers-reduced-motion: reduce) {
-  .card__wave-layer {
-    animation: none;
-  }
-}
 
 .card__body {
   display: flex;
@@ -247,8 +146,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  /* Empurra o pé para a base, para preço, cores, grade e botão ficarem
+     alinhados entre cards de nome com alturas diferentes. */
   margin-top: auto;
   padding-top: var(--space-1);
+}
+
+/* O botão fecha o card, à largura da coluna. */
+.card__pedir {
+  margin-top: var(--space-2);
 }
 
 .card__name {

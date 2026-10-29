@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { Product } from "../types";
 import { formatBRL } from "../lib/format";
 import { disponivel } from "../lib/estoque";
+import { linkWhatsApp, mensagemDaPeca } from "../lib/whatsapp";
 import { useTrilhoFotos } from "../hooks/useTrilhoFotos";
 import { PlaceholderImage } from "./PlaceholderImage";
 import { SeletorCor } from "./SeletorCor";
@@ -87,17 +88,10 @@ export function ProductCard({ product, index, priority = false }: Props) {
           </Link>
         )}
 
-        {/* Decoração pura: animação de onda no rodapé da foto, no hover.
-            aria-hidden porque não carrega informação nenhuma. */}
-        <span className="card__wave" aria-hidden="true">
-          <span className="card__wave-layer card__wave-layer--back" />
-          <span className="card__wave-layer card__wave-layer--front" />
-        </span>
-
         {/* A peça esgotada continua clicável: catálogo pequeno, e quem
             chegou por link do Instagram ainda quer ver a peça e perguntar
             no WhatsApp se ela volta. O que muda é a foto esmaecida, a
-            tarja e as fichas de cor desabilitadas. */}
+            tarja e as bolinhas de cor desabilitadas. */}
         {soldOut && <span className="card__flag">Esgotado</span>}
 
         {/* O mesmo indicador da página da peça: cor chapada, nunca
@@ -149,6 +143,7 @@ export function ProductCard({ product, index, priority = false }: Props) {
               onEscolher={setCor}
               label={`Cores de ${name}`}
               desabilitado={soldOut}
+              delicada
             />
           )}
 
@@ -178,6 +173,19 @@ export function ProductCard({ product, index, priority = false }: Props) {
               );
             })}
           </ul>
+
+          {/* O mesmo "Pedir no WhatsApp" da página da peça, aqui para quem
+              já sabe o que quer e não precisa abrir a peça. A mensagem vai
+              na voz de quem clicou, não na da marca: ela aparece no
+              compositor da cliente, não no nosso. */}
+          <a
+            className="botao botao--mini card__pedir"
+            href={linkWhatsApp(mensagemDaPeca(name))}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pedir no WhatsApp
+          </a>
         </div>
       </div>
     </article>

@@ -45,7 +45,8 @@ sobre preto.
 definidas.** Nada de hex solto em componente.
 
 - Dourado e turquesa entram **só em detalhe**: preço, foco, borda ativa,
-  filete, brilho do hero. Texto corrido é sempre `--text`. Cor saturada
+  filete, bolinha do carrossel. Texto corrido é sempre `--text`. Cor
+  saturada
   sobre preto puro vibra e cansa a leitura.
 - O filete com degradê (`.brand-rule`) marca **fronteiras estruturais** —
   cabeçalho/corpo, corpo/rodapé. Divisões internas usam linha lisa. Se
@@ -63,6 +64,37 @@ definidas.** Nada de hex solto em componente.
 - A fonte de display é serifada sem webfont. Sem requisição externa e sem
   risco de piscar a fonte errada.
 
+## A home
+
+A home é o protótipo da dona, portado: hero com carrossel de campanha,
+faixa de quatro atributos, catálogo, lookbook, "comprar é simples" e
+dúvidas. Os textos são os dela — **não suavize**. Já houve uma rodada em
+que "troca em até 7 dias" e "Pix ou cartão" foram abrandados em nome de
+"o site não vende", e ela pediu de volta: a decisão de o que o site
+promete é dela, não do código.
+
+Duas coisas ficaram de fora do protótipo de propósito: a **Lista VIP**
+(captura de nome que ninguém receberia, já que não há backend) e a
+**linha de descrição abaixo do nome no card**.
+
+**O título do catálogo é o nome da coleção principal**, que é a que tem
+mais peças (`src/lib/colecao.ts`). O admin registra as coleções à parte e
+cada peça aponta para uma, ou para nenhuma (`collection: null`).
+
+O nome sai do build **em caixa de título** — as donas cadastram como dá,
+e o nome vai para o título em corpo grande. A normalização é na
+conversão, não no componente, igual aos 📍 da descrição. Átonas ficam
+minúsculas no meio ("Coleção de Verão", não "Coleção De Verão").
+
+Pela contagem, e não pela data: o catálogo é pequeno e as donas cadastram
+a coleção nova aos poucos, peça por peça. Pela data o título viraria a
+coleção nova já na primeira peça publicada, com a grade ainda cheia da
+anterior.
+
+Por ora é **só o título** — a grade continua sendo uma só, com as peças
+de todas as coleções. Daí a frase ao lado do título não nomear nem
+descrever a coleção: ela mentiria assim que a principal virasse outra.
+
 ## Cabeçalho e rodapé
 
 As duas faixas (`.faixa-escura`) ficam **pretas nos dois temas**, e o
@@ -79,7 +111,7 @@ desapareceria junto, justamente no celular.
 O lockup é quase quadrado (760×704), então **o cabeçalho usa o
 wordmark**. Encolhido para caber numa fileira de 64px, o lockup sairia
 com 43px de largura e o nome dentro dele viraria um borrão. O lockup
-completo fica no hero e no rodapé, onde há altura para ele.
+completo fica no rodapé, onde há altura para ele.
 
 ## Logo
 
@@ -92,6 +124,17 @@ houver seção clara, aí sim gere um PNG com transparência de verdade.
 Para regerar os recortes a partir de um original novo:
 `python scripts/logo.py <arquivo>`.
 
+## Fotos de campanha
+
+As três do carrossel do hero vivem em `public/` (`campanha-*.jpg`), como
+a logo: **são arquivos de marca, não peças do catálogo.** A distinção é a
+regra toda — foto de peça vem do admin pelo R2 e muda quando as donas
+publicam; estas só mudam por decisão de quem desenha a página.
+
+O lookbook ("Luz, pele e cor") não tem foto própria: pega a capa das duas
+primeiras peças com foto no catálogo. Assim ele acompanha a coleção
+sozinho e o repositório continua sem guardar foto de produto.
+
 ## Imagens
 
 - Proporção **2:3**, que é o formato das fotos. Usar 3:4 corta cabeça e
@@ -100,7 +143,8 @@ Para regerar os recortes a partir de um original novo:
 - **Com esses atributos presentes, `aspect-ratio` é ignorado** enquanto
   `height` tiver valor concreto. Use `height: auto` junto. Isso já causou
   miniatura de 1168px de altura.
-- `loading="lazy"` em tudo, menos no hero e nos primeiros cards.
+- `loading="lazy"` em tudo, menos na primeira foto do carrossel e nos
+  primeiros cards.
 - Produto sem foto cai num placeholder gerado. A escolha é **no dado**
   (`images: []`), não numa flag — assim some sozinho quando a foto
   chegar, sem código morto.
@@ -188,8 +232,11 @@ fotos.
 - Conteúdo que só aparece ao rolar precisa de alternativa alcançável por
   teclado. O scroll infinito tem botão "Ver mais" por isso, não por
   redundância.
-- `prefers-reduced-motion` respeitado: a onda do card continua visível,
-  parada.
+- `prefers-reduced-motion` respeitado: o carrossel do hero não gira
+  sozinho.
+- **Conteúdo que se move sozinho precisa de parada alcançável.** O
+  carrossel para no hover e no foco, e clicar numa bolinha para de vez —
+  só o hover não serve, porque não existe no teclado nem no toque.
 - Efeito que depende de `hover` não existe em tela de toque. A maior
   parte do tráfego vem do Instagram, ou seja, celular — diga isso ao
   propor um efeito de hover.

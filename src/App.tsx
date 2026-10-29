@@ -2,27 +2,26 @@ import { Route, Routes } from "react-router-dom";
 import { Cabecalho } from "./components/Cabecalho";
 import { Hero } from "./components/Hero";
 import { ProductGrid } from "./components/ProductGrid";
-import { ComoComprar, Duvidas, Lookbook } from "./components/Secoes";
+import { ComoComprar, Duvidas, Faixa, Lookbook } from "./components/Secoes";
 import { ProductPage } from "./components/ProductPage";
 import { NotFound } from "./components/NotFound";
 import { Footer } from "./components/Footer";
+import { BotaoWhatsApp } from "./components/BotaoWhatsApp";
 import { useAncora } from "./hooks/useAncora";
 import { products } from "./data/products";
 
 function Home() {
   return (
-    <>
-      <Hero count={products.length} />
-      <main>
-        <ProductGrid products={products} />
-        {/* As três seções que o menu do cabeçalho alcança. Vêm depois da
-            coleção: a home é um catálogo, e o texto é o que fica embaixo
-            dele. */}
-        <Lookbook />
-        <ComoComprar />
-        <Duvidas />
-      </main>
-    </>
+    <main>
+      {/* A ordem é a do protótipo: abertura, faixa de atributos,
+          catálogo, e então as três seções de texto que o menu alcança. */}
+      <Hero />
+      <Faixa />
+      <ProductGrid products={products} />
+      <Lookbook />
+      <ComoComprar />
+      <Duvidas />
+    </main>
   );
 }
 
@@ -61,6 +60,9 @@ export default function App() {
       </Routes>
 
       <Footer />
+
+      {/* Fora das rotas: acompanha a página inteira, em qualquer peça. */}
+      <BotaoWhatsApp />
     </>
   );
 }

@@ -11,6 +11,10 @@ html {
   /* Sem isto a âncora do menu para debaixo do cabeçalho grudado e o
      título da seção fica escondido. */
   scroll-padding-top: var(--altura-cabecalho);
+  /* O menu desliza até a seção em vez de pular. A home é uma página só,
+     e o pulo seco faz perder onde se estava. O bloco de
+     prefers-reduced-motion no fim deste arquivo desliga isto. */
+  scroll-behavior: smooth;
 }
 
 body {
@@ -185,6 +189,109 @@ button {
 
 .acordeao > summary + * {
   padding-bottom: var(--space-4);
+}
+
+/* ---------- cabeçalho de seção ----------
+
+   Título à esquerda, frase à direita, alinhados pela base. É o mesmo
+   bloco no catálogo, no "comprar é simples" e nas dúvidas, então o
+   desenho mora aqui, com os outros primitivos. */
+.secao__cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.secao__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.secao__linha {
+  color: var(--text-muted);
+  max-width: 42ch;
+  line-height: 1.65;
+}
+
+/* Botão da marca — o mesmo desenho em todo lugar que convida a uma
+   ação: os dois do hero, o "Pedir no WhatsApp" do card e da página da
+   peça, o do lookbook.
+
+   Vazado por padrão, cheio na variante. O cheio é para a ação principal
+   de um bloco, e só uma por bloco: dois botões cheios lado a lado não
+   dizem qual é a principal.
+
+   No hover o fundo vira --accent e o texto vira --bg, e não --text: o
+   fundo virou dourado, então o texto precisa ser o oposto dele nos dois
+   temas. */
+.botao {
+  display: inline-block;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-text);
+  text-decoration: none;
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  /* 14px de padding vertical dá os 44px de alvo com a altura da linha. */
+  padding: 14px 28px;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.botao:hover,
+.botao:focus-visible {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.botao--cheio {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.botao--cheio:hover,
+.botao--cheio:focus-visible {
+  background: var(--accent-text);
+}
+
+/* Para o botão dentro de um card, onde 28px de padding lateral não cabem
+   numa coluna de 150px. */
+.botao--mini {
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+/* Uma palavra do título em degradê, recortada no texto.
+
+   É o terceiro uso do degradê da marca, e o último: filete é fronteira,
+   anel é escolha, e isto é **ênfase numa palavra de display**. Não serve
+   para texto corrido — cor saturada em parágrafo cansa a leitura, e o
+   recorte no texto derruba o contraste de qualquer fonte pequena.
+
+   O fallback é a cor herdada: se background-clip: text não pegar, o
+   `color: transparent` tornaria a palavra invisível, então ele só entra
+   dentro do @supports. */
+.texto-degrade {
+  background-image: var(--brand-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .texto-degrade {
+    color: transparent;
+  }
 }
 
 .visually-hidden {

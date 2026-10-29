@@ -45,7 +45,7 @@ export function Cabecalho() {
           aria-label="Vênus Oasis — página inicial"
         >
           {/* O link já nomeia a marca; alt="" evita o anúncio duplicado. */}
-          <Logo size="sm" alt="" />
+          <Logo alt="" />
         </Link>
 
         <nav className="cabecalho__menu" aria-label="Seções do site">

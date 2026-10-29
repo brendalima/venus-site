@@ -1,0 +1,53 @@
+/* Fixo no canto inferior direito, por cima de tudo menos do cabeçalho.
+
+   Turquesa chapado, e não o dourado dos outros botões: é o único
+   elemento da página que não é da marca mas de um serviço de fora, e o
+   lado frio da paleta é o que o separa das ações da própria página sem
+   sair da identidade. */
+.zap {
+  position: fixed;
+  right: var(--space-4);
+  /* Respeita a barra de gestos do iPhone, que come os últimos pixels. */
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  z-index: 19;
+
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--bg);
+  background: var(--accent-alt);
+  border-radius: 100px;
+  /* 13px com a altura da linha dá os 44px de alvo. */
+  padding: 13px 22px;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.28);
+  transition: transform 0.18s ease;
+}
+
+.zap:hover,
+.zap:focus-visible {
+  transform: translateY(-2px);
+}
+
+/* Abaixo do cabeçalho (z-index 20) de propósito: o cabeçalho é grudado e
+   passa por cima ao rolar, e um botão flutuante cobrindo o menu seria
+   pior que o botão sumir por um instante. */
+
+/* Em telas estreitas a pastilha ocupa quase um terço da largura e cobre
+   a coluna da direita da grade. Encolhe o bastante para liberar a coluna,
+   mantendo os 44px de altura do alvo. */
+@media (max-width: 599px) {
+  .zap {
+    right: var(--space-3);
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zap:hover,
+  .zap:focus-visible {
+    transform: none;
+  }
+}

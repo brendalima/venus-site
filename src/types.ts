@@ -44,6 +44,13 @@ export type ProductColour = {
   stock: ProductStock[];
 };
 
+/** A coleção a que uma peça pertence. O admin registra as coleções à parte. */
+export type ProductCollection = {
+  id: string;
+  /** O nome que as donas escreveram: "Verão 2026", "Miragem". */
+  name: string;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -82,5 +89,14 @@ export type Product = {
    * inteira por item.
    */
   details?: string[];
+  /**
+   * A coleção da peça. **Ausente quando a peça não está em nenhuma** — o
+   * admin manda `collection: null` nesse caso, e o build omite o campo.
+   *
+   * O site não mostra a coleção peça a peça: usa o conjunto delas para
+   * descobrir qual é a coleção principal e dar título ao catálogo. Ver
+   * `src/lib/colecao.ts`.
+   */
+  collection?: ProductCollection;
   soldOut?: boolean;
 };

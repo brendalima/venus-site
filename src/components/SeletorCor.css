@@ -42,6 +42,52 @@
   box-shadow: inset 0 0 0 1px var(--on-photo-line);
 }
 
+/* ---------- a bolinha miúda, do card do grid ----------
+
+   O disco encolhe para 13px, o desenho delicado do protótipo. O alvo não
+   encolhe junto: é a parte que não dá para copiar do protótipo, onde as
+   bolinhas são `<i>`, puro indicador. Aqui elas trocam a galeria do card,
+   e disco de 13px clicável seria um alvo de 13px — quase todo o tráfego
+   vem do Instagram, ou seja, de celular.
+
+   O alvo fica 28px na horizontal e 44px na vertical, **sem folga entre
+   eles** (o gap zero abaixo). Duas razões para não ser 44 nos dois
+   lados: quatro alvos de 44px dão 176px e não cabem num card de 150px
+   em 360px; e com 44px de passo os discos de 13px ficariam a 31px um do
+   outro, espalhados em vez de delicados. Com 28px de passo a distância
+   cai para 15px, e a fileira lê como uma fileira.
+
+   A vertical é a que fica cheia porque é onde o polegar erra mais numa
+   tira horizontal. 28px continua acima dos 24px mínimos de alvo, e sem
+   folga entre os botões não há faixa morta entre um disco e o seguinte. */
+.cores--delicada {
+  gap: 0;
+}
+
+.cor--delicada.cor--bolinha {
+  width: 28px;
+  height: 44px;
+  /* Quadrado: o raio de 50% era do alvo redondo de 44px. Quem é redondo
+     aqui é o disco, e o alvo é invisível. */
+  border-radius: 0;
+}
+
+.cor--delicada.cor--bolinha .cor__disco {
+  width: 13px;
+  height: 13px;
+}
+
+/* A escolhida ganha um halo em vez do anel em degradê. O box-shadow faz
+   os dois numa propriedade só: o contorno interno de sempre, que é o que
+   impede "Off-white" de sumir no claro, mais o anel por fora. O halo não
+   ocupa espaço no layout, então escolher não empurra as vizinhas. */
+.cor--delicada.cor--bolinha.is-active .cor__disco {
+  box-shadow:
+    inset 0 0 0 1px var(--on-photo-line),
+    0 0 0 2px var(--bg),
+    0 0 0 3px var(--accent);
+}
+
 /* Cor que ainda não tem hex: a ficha com o nome escrito, que é o seletor
    de antes das bolinhas. Convive na mesma fileira com as bolinhas
    enquanto as donas vão preenchendo. */
@@ -61,6 +107,17 @@
    além do anel. */
 .cor--ficha.is-active {
   color: var(--accent-text);
+}
+
+/* A ficha de texto encolhe junto, senão um "Areia" de 44px de altura
+   domina um card de 150px. A altura do alvo fica, a letra é que diminui. */
+.cor--delicada.cor--ficha {
+  font-size: 0.68rem;
+  padding: 4px 11px;
+  min-height: 44px;
+  /* O gap zero é da fileira de bolinhas; a ficha precisa respirar das
+     vizinhas, porque a borda dela é visível. */
+  margin-right: var(--space-1);
 }
 
 @media (hover: hover) {

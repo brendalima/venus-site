@@ -6,7 +6,13 @@
    como no protótipo: a logo depende de mix-blend-mode: screen sobre preto
    de verdade, e por cima de um fundo meio transparente ela deixaria
    aparecer o que está passando embaixo. */
-.cabecalho {
+/* A especificidade dobrada (.cabecalho.brand-rule) não é enfeite: o
+   `.brand-rule` de global.css também declara `position`, com a mesma
+   especificidade, e o pacote de CSS entra com o global depois dos
+   componentes — então `position: relative` vencia e o cabeçalho rolava
+   junto com a página. Aconteceu. Qualquer componente grudado que também
+   leve o filete precisa do mesmo cuidado. */
+.cabecalho.brand-rule {
   position: sticky;
   top: 0;
   z-index: 20;
