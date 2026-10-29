@@ -30,7 +30,7 @@ export function Faixa() {
 /**
  * A capa das duas primeiras peças que têm foto.
  *
- * Não são arquivos em `public/`, ao contrário das fotos de campanha do
+ * Não são arquivos versionados, ao contrário das fotos de campanha do
  * hero: assim a seção acompanha a coleção sozinha e o repositório
  * continua sem guardar foto de produto.
  */

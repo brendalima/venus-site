@@ -126,10 +126,29 @@ Para regerar os recortes a partir de um original novo:
 
 ## Fotos de campanha
 
-As três do carrossel do hero vivem em `public/` (`campanha-*.jpg`), como
-a logo: **são arquivos de marca, não peças do catálogo.** A distinção é a
-regra toda — foto de peça vem do admin pelo R2 e muda quando as donas
-publicam; estas só mudam por decisão de quem desenha a página.
+As do carrossel do hero vivem em `src/assets/campanha/`: **são arquivos
+de marca, não peças do catálogo.** A distinção é a regra toda — foto de
+peça vem do admin pelo R2 e muda quando as donas publicam; estas só mudam
+por decisão de quem desenha a página.
+
+**A pasta é a lista.** `Hero.tsx` enumera o diretório com `import.meta.glob`
+no build, em ordem alfabética do nome do arquivo, e não tem lista escrita à
+mão. Trocar a campanha é commitar os arquivos — nenhum código muda. Numere
+com zero à esquerda (`campanha-01`), ou a décima foto cai antes da segunda.
+
+Não ficam em `public/` como a logo, e a diferença é deliberada: o `glob`
+do Vite não enxerga `public/`, e de `src/assets/` cada arquivo sai com
+hash no nome, então foto nova não fica presa no cache de quem já visitou.
+
+**Exporte em 2:3** (1000×1500 serve). Fora dessa proporção o `cover` corta
+uma tira centrada, sem aviso, e a pasta não tem onde guardar um
+enquadramento por foto. Havia um `object-position` por foto tentando isso,
+que não funcionava: ele só age no eixo que sobra, e nas três fotos de então
+sobrava o outro. `campanha-01.jpg` é 5:6 e continua perdendo as laterais,
+exatamente como antes — vale reexportar quando der.
+
+O `alt` é `"Campanha Vênus Oasis — foto N"`, como o das fotos de peça: a
+pasta não sabe descrever o que entrou nela, e o que importa é a ordem.
 
 O lookbook ("Luz, pele e cor") não tem foto própria: pega a capa das duas
 primeiras peças com foto no catálogo. Assim ele acompanha a coleção
