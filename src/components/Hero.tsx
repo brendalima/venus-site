@@ -4,29 +4,34 @@ import { linkWhatsApp, MENSAGEM_GERAL } from "../lib/whatsapp";
 import "./Hero.css";
 
 /**
- * Arquivos de marca em `public/`, como a logo — e não fotos do catálogo,
- * que vêm do admin pelo R2.
+ * O carrossel é a pasta `src/assets/campanha/`: toda imagem ali entra,
+ * na ordem alfabética do nome do arquivo. Para trocar a campanha, basta
+ * commitar os arquivos — não se mexe neste componente.
  *
- * O `foco` é o `object-position`: as três foram cortadas em 2:3 e sem ele
- * o corte pega no lugar errado — em duas delas, no rosto.
+ * São arquivos de marca, como a logo, e não fotos do catálogo, que vêm
+ * do admin pelo R2. Ficam em `src/assets/` e não em `public/` por dois
+ * motivos: o `glob` do Vite não enxerga `public/`, e daqui cada arquivo
+ * sai do build com hash no nome, então foto nova nunca fica presa no
+ * cache de quem já visitou.
+ *
+ * **Exporte em 2:3** (1000×1500 serve). É a proporção do quadro; quem
+ * vier fora dela perde uma tira pelo `object-fit: cover`, centrada, sem
+ * aviso. Era o que o `object-position` por foto tentava corrigir antes,
+ * e não corrigia: ele só tem efeito no eixo que sobra, e nas três fotos
+ * de então sobrava o outro.
+ *
+ * Numere com zero à esquerda (`campanha-01`, não `campanha-1`): a ordem
+ * é a do nome, e sem o zero a décima foto cairia antes da segunda.
  */
-const FOTOS = [
-  {
-    src: "/campanha-1.jpg",
-    alt: "Duas modelos na praia usando biquínis laranja e azul aço da Vênus Oasis",
-    foco: "50% 40%",
-  },
-  {
-    src: "/campanha-2.jpg",
-    alt: "Modelo na praia usando conjunto azul claro com vivo branco",
-    foco: "50% 25%",
-  },
-  {
-    src: "/campanha-3.jpg",
-    alt: "Modelo na praia usando conjunto vermelho texturizado com vivo branco",
-    foco: "50% 32%",
-  },
-];
+const FOTOS = Object.entries(
+  import.meta.glob<string>("../assets/campanha/*.{jpg,jpeg,png,webp}", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }),
+)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, url]) => url);
 
 const INTERVALO_MS = 2800;
 
@@ -47,8 +52,12 @@ export function Hero() {
   useEffect(() => {
     // Quem pediu menos movimento não leva um carrossel girando sozinho;
     // as bolinhas continuam trocando a foto no clique.
-    const parado = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (parado || visitando || assumido) return;
+    const parado = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    // Com uma foto só não há o que girar, e com nenhuma o resto da home
+    // ainda tem que subir.
+    if (FOTOS.length < 2 || parado || visitando || assumido) return;
 
     temporizador.current = window.setInterval(proxima, INTERVALO_MS);
     return () => window.clearInterval(temporizador.current);
@@ -62,8 +71,15 @@ export function Hero() {
         </h1>
 
         <p className="hero__linha">
-          Biquínis de modelagem marcante, regulagem lateral e cores em edição
-          limitada. Peças que valorizam o corpo real e seguem a luz do verão.
+          Moda praia autoral produzida em pequenos lotes no Brasil.
+        </p>
+
+        <p className="hero__linha">
+          Biquínis de modelagens marcantes com novidades que exploram formas, cores e detalhes para trazer personalidade a cada peça.
+        </p>
+
+        <p className="hero__linha">
+          Peças que valorizam o corpo real e seguem a luz do verão.
         </p>
 
         <div className="hero__acoes">
@@ -81,53 +97,61 @@ export function Hero() {
         </div>
       </div>
 
-      <figure
-        className="hero__figura"
-        onMouseEnter={() => setVisitando(true)}
-        onMouseLeave={() => setVisitando(false)}
-        onFocusCapture={() => setVisitando(true)}
-        onBlurCapture={() => setVisitando(false)}
-      >
-        {/* Travessia por opacidade, e não o trilho que rola das galerias
+      {FOTOS.length > 0 && (
+        <figure
+          className="hero__figura"
+          onMouseEnter={() => setVisitando(true)}
+          onMouseLeave={() => setVisitando(false)}
+          onFocusCapture={() => setVisitando(true)}
+          onBlurCapture={() => setVisitando(false)}
+        >
+          {/* Travessia por opacidade, e não o trilho que rola das galerias
             de peça: aqui não há foto para navegar, só a abertura
             passando sozinha. */}
-        <div className="hero__slides">
-          {FOTOS.map((foto, i) => (
-            <img
-              key={foto.src}
-              className={i === atual ? "is-on" : ""}
-              src={foto.src}
-              alt={foto.alt}
-              style={{ objectPosition: foto.foco }}
-              width={1000}
-              height={1500}
-              /* A primeira é a maior imagem da primeira dobra; as outras
+          <div className="hero__slides">
+            {FOTOS.map((src, i) => (
+              <img
+                key={src}
+                className={i === atual ? "is-on" : ""}
+                src={src}
+                /* Sem rótulo por foto, como as fotos de peça: o que
+                 importa é a ordem, e a pasta não sabe descrever o que
+                 entrou nela. */
+                alt={`Campanha Vênus Oasis — foto ${i + 1}`}
+                width={1000}
+                height={1500}
+                /* A primeira é a maior imagem da primeira dobra; as outras
                  só aparecem depois do intervalo, com tempo de carregar. */
-              loading={i === 0 ? "eager" : "lazy"}
-              fetchPriority={i === 0 ? "high" : "auto"}
-              decoding="async"
-            />
-          ))}
-
-          <div className="hero__bolinhas">
-            {FOTOS.map((foto, i) => (
-              <button
-                key={foto.src}
-                type="button"
-                className={`hero__bolinha ${i === atual ? "is-on" : ""}`}
-                aria-label={`Foto ${i + 1} de ${FOTOS.length}`}
-                aria-pressed={i === atual}
-                onClick={() => {
-                  setAtual(i);
-                  setAssumido(true);
-                }}
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : "auto"}
+                decoding="async"
               />
             ))}
-          </div>
-        </div>
 
-        <figcaption className="hero__legenda">Biquínis para o sol</figcaption>
-      </figure>
+            {/* Uma foto só não é escolha, então não leva bolinha — como o
+              seletor de cor da peça de cor única. */}
+            {FOTOS.length > 1 && (
+              <div className="hero__bolinhas">
+                {FOTOS.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    className={`hero__bolinha ${i === atual ? "is-on" : ""}`}
+                    aria-label={`Foto ${i + 1} de ${FOTOS.length}`}
+                    aria-pressed={i === atual}
+                    onClick={() => {
+                      setAtual(i);
+                      setAssumido(true);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <figcaption className="hero__legenda">Modelagens marcantes</figcaption>
+        </figure>
+      )}
     </section>
   );
 }

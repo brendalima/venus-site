@@ -46,9 +46,8 @@
 
 .hero__slides {
   position: relative;
-  /* 2:3 é a proporção das fotos da marca. Duas das três já vêm assim; a
-     terceira é 5:6 e perde uma tira, que é o que o object-position de
-     cada uma acerta. */
+  /* 2:3 é a proporção em que as fotos de campanha são exportadas. Quem
+     vier fora dela perde uma tira pelo cover, centrada — ver Hero.tsx. */
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border-radius: var(--radius);
