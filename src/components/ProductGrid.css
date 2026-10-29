@@ -1,30 +1,5 @@
 .catalog {
-  padding-block: var(--space-12);
-}
-
-.catalog__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-8);
-  border-bottom: 1px solid var(--line);
-}
-
-.catalog__title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-}
-
-.catalog__count {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
+  padding-block: var(--space-16);
 }
 
 /* auto-fill + minmax dá 2 colunas no celular e 3–4 no desktop

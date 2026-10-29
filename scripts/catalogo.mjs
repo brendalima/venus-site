@@ -70,6 +70,65 @@ async function buscar(url, token) {
   throw erro(`não consegui ler ${url} em ${TENTATIVAS} tentativas: ${ultimoErro?.message}`);
 }
 
+/** Hex de 6 dígitos, minúsculo — o formato que o admin valida. */
+const HEX = /^#[0-9a-f]{6}$/;
+
+/**
+ * Tira os 📍 que a spec do modelo usa como marcador de item.
+ *
+ * Quando o texto é copiado da spec para o admin, os marcadores vêm
+ * colados na descrição. Limpar aqui, na conversão, e não no componente: o
+ * site não deve ter código que sabe de um detalhe de como o texto foi
+ * digitado, e o JSON gerado fica legível no diff entre publicações.
+ */
+function limparTexto(texto) {
+  return texto
+    .split("\n")
+    .map((linha) => linha.replace(/\u{1F4CD}/gu, " ").replace(/[ \t]+/g, " ").trim())
+    .join("\n")
+    .trim();
+}
+
+/**
+ * Palavras que ficam minúsculas no meio de um título, em português.
+ *
+ * "Coleção de Verão", e não "Coleção De Verão" — a segunda forma é o
+ * título em inglês aplicado ao português, e lê como erro. A primeira
+ * palavra é exceção e sobe sempre, mesmo sendo uma destas.
+ */
+const ATONAS = new Set([
+  "a", "as", "ao", "aos", "com", "da", "das", "de", "do", "dos", "e", "em",
+  "na", "nas", "no", "nos", "o", "os", "para", "por", "um", "uma",
+]);
+
+/**
+ * Põe o nome da coleção em caixa de título.
+ *
+ * As donas cadastram como dá — "verão 2026", "VERÃO 2026", "Verão 2026"
+ * —, e o nome vai para o título do catálogo, em corpo grande. Normalizar
+ * aqui, na conversão, e não no componente: é a mesma regra dos 📍 da
+ * descrição, e deixa o JSON gerado legível no diff entre publicações.
+ *
+ * Baixa tudo antes de subir a inicial, que é o que conserta o nome
+ * gritado em CAIXA ALTA — o erro de cadastro mais provável. O preço
+ * disso é que uma sigla perde a caixa ("Coleção SP" vira "Coleção Sp");
+ * é raro o bastante para não valer uma regra adivinhando siglas, que
+ * erraria em cima de nome comum curto.
+ */
+function tituloDeColecao(nome) {
+  return nome
+    .trim()
+    .split(/\s+/)
+    .map((palavra, i) => {
+      const baixa = palavra.toLocaleLowerCase("pt-BR");
+      if (i > 0 && ATONAS.has(baixa)) return baixa;
+      // charAt/slice e não [0]: um nome que comece com emoji ou acento
+      // composto não pode ser cortado no meio do caractere.
+      return baixa.charAt(0).toLocaleUpperCase("pt-BR") + baixa.slice(1);
+    })
+    .join(" ");
+}
+
 /**
  * Converte a resposta do admin (snake_case) para o tipo do site.
  *
@@ -79,6 +138,12 @@ async function buscar(url, token) {
  *   simplesmente não mostra preço — nunca "R$ 0,00".
  * - cada foto vem como url_600/url_1200, sem rótulo de ângulo. A ordem
  *   é que importa, e a primeira é a capa.
+ * - a descrição e os destaques chegam com os 📍 da spec do modelo colados
+ *   no texto quando alguém copia e cola; saem aqui, na conversão, para o
+ *   componente não ter de saber como o texto foi digitado.
+ * - `collection` vem como objeto ou como null, nunca ausente. Null vira
+ *   campo omitido aqui, para "não tem coleção" ter um significado só, e o
+ *   nome sai daqui em caixa de título — ver tituloDeColecao.
  * - as fotos e o estoque são **da cor**, não da peça. O admin mandou
  *   um `images` achatado no topo enquanto o site migrava; desde a fase 5
  *   do plano ele não vem mais, e a única coisa que ainda olha para ele é
@@ -137,8 +202,36 @@ function converter(recebido) {
     // Opcionais entram só quando existem, para o JSON não encher de
     // campos vazios e o diff entre publicações ficar legível.
     if (p.price_cents) produto.priceCents = p.price_cents;
-    if (p.description) produto.description = p.description;
-    if (Array.isArray(p.details) && p.details.length > 0) produto.details = p.details;
+
+    // A limpeza pode esvaziar o texto (uma descrição que fosse só os
+    // marcadores), e aí o campo não entra — o site trata ausente como
+    // "não tem descrição", não como string vazia.
+    const descricao = p.description ? limparTexto(p.description) : "";
+    if (descricao) produto.description = descricao;
+
+    // `collection` vem sempre na resposta, como null quando a peça não
+    // está em nenhuma — o admin não usa omitempty aqui. Null vira campo
+    // ausente, que é como o site trata "não tem".
+    if (p.collection !== undefined && p.collection !== null) {
+      for (const campo of ["id", "name"]) {
+        if (typeof p.collection[campo] !== "string" || p.collection[campo] === "") {
+          throw erro(`${onde}: "collection" sem "${campo}"`);
+        }
+      }
+      const nome = tituloDeColecao(p.collection.name);
+      // Só espaço no campo: o admin não deveria aceitar, mas se aceitar é
+      // melhor a peça ficar sem coleção do que o catálogo ganhar um
+      // título em branco.
+      if (nome) produto.collection = { id: p.collection.id, name: nome };
+    }
+
+    if (Array.isArray(p.details)) {
+      const details = p.details
+        .filter((d) => typeof d === "string")
+        .map(limparTexto)
+        .filter(Boolean);
+      if (details.length > 0) produto.details = details;
+    }
 
     return produto;
   });
@@ -173,6 +266,26 @@ function converterCores(cores, sizes, onde) {
       throw erro(`${ondeCor}: "tracks_stock" é falso mas vieram ${c.stock.length} lançamentos`);
     }
 
+    // O hex é opcional: o admin só manda quando a dona preencheu, e sem
+    // ele a cor cai na ficha de texto. Mas hex torto derruba o build de
+    // propósito, igual aos outros campos — é melhor a Cloudflare manter o
+    // deploy anterior do que publicar uma bolinha preta onde era coral.
+    let hex;
+    if (c.hex !== undefined) {
+      if (!Array.isArray(c.hex)) throw erro(`${ondeCor}: "hex" não é uma lista`);
+      if (c.hex.length > 2) {
+        throw erro(`${ondeCor}: "hex" tem ${c.hex.length} cores, o máximo é 2`);
+      }
+      for (const valor of c.hex) {
+        if (typeof valor !== "string" || !HEX.test(valor)) {
+          throw erro(`${ondeCor}: "hex" inválido (${valor}) — esperava #rrggbb minúsculo`);
+        }
+      }
+      // Lista vazia vira ausente: "não tem hex" passa a ter um
+      // significado só, em vez de dois jeitos de dizer a mesma coisa.
+      if (c.hex.length > 0) hex = c.hex;
+    }
+
     const tamanhos = new Set();
     const stock = c.stock.map((s) => {
       if (!sizes.includes(s?.size)) {
@@ -188,7 +301,7 @@ function converterCores(cores, sizes, onde) {
       return { size: s.size, quantity: s.quantity };
     });
 
-    return {
+    const cor = {
       id: c.id,
       name: c.name,
       images: c.images.map((img, k) => {
@@ -202,6 +315,11 @@ function converterCores(cores, sizes, onde) {
       tracksStock: c.tracks_stock,
       stock,
     };
+
+    // Opcional entra só quando existe, como os do produto.
+    if (hex) cor.hex = hex;
+
+    return cor;
   });
 }
 
@@ -239,8 +357,19 @@ async function main() {
     p.colours.every((c) => c.images.length === 0),
   ).length;
   const cores = produtos.reduce((n, p) => n + p.colours.length, 0);
+  // Quantas cores já viram bolinha: é o jeito de acompanhar o
+  // preenchimento do hex sem abrir o admin.
+  const comHex = produtos.reduce(
+    (n, p) => n + p.colours.filter((c) => c.hex !== undefined).length,
+    0,
+  );
+  const colecoes = new Set(
+    produtos.flatMap((p) => (p.collection ? [p.collection.name] : [])),
+  );
   console.log(
     `[catálogo] ${produtos.length} produtos gravados, ${cores} cores` +
+      `, ${comHex} com hex` +
+      (colecoes.size ? `, coleções: ${[...colecoes].join(", ")}` : "") +
       (semPreco ? `, ${semPreco} sem preço` : "") +
       (semFoto ? `, ${semFoto} sem foto` : ""),
   );

@@ -3,26 +3,11 @@ import { Link } from "react-router-dom";
 import type { Product } from "../types";
 import { formatBRL } from "../lib/format";
 import { disponivel } from "../lib/estoque";
+import { linkWhatsApp, mensagemDaPeca } from "../lib/whatsapp";
+import { useTrilhoFotos } from "../hooks/useTrilhoFotos";
 import { PlaceholderImage } from "./PlaceholderImage";
+import { SeletorCor } from "./SeletorCor";
 import "./ProductCard.css";
-
-function Chevron({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d={direction === "left" ? "M15 5 8 12l7 7" : "M9 5l7 7-7 7"} />
-    </svg>
-  );
-}
 
 type Props = {
   product: Product;
@@ -33,10 +18,8 @@ type Props = {
 };
 
 export function ProductCard({ product, index, priority = false }: Props) {
-  const { slug, name, priceCents, sizes, colours, description, soldOut } =
-    product;
+  const { slug, name, priceCents, sizes, colours, soldOut } = product;
   const [cor, setCor] = useState(0);
-  const [active, setActive] = useState(0);
 
   const href = `/produto/${slug}`;
   // Um card por peça, não um por cor: é a cor escolhida que manda na
@@ -44,82 +27,87 @@ export function ProductCard({ product, index, priority = false }: Props) {
   // catálogo torto derrube a página inteira.
   const corAtual = colours[cor];
   const images = corAtual?.images ?? [];
-  const current = images[active];
 
-  function escolherCor(i: number) {
-    setCor(i);
-    // A nova cor tem outras fotos, e a de índice 3 da anterior não quer
-    // dizer nada aqui. Volta para a capa.
-    setActive(0);
-  }
+  // O mesmo trilho da página da peça: aqui ele substituiu os chevrons.
+  // A chave é a cor — trocar de cor volta para a capa.
+  const { trilhoRef, indice, aoRolar, aoMover, aoSair } = useTrilhoFotos(
+    images.length,
+    corAtual?.id ?? "",
+  );
 
   return (
     <article className={soldOut ? "card card--esgotada" : "card"}>
       <div className="card__media">
-        {/* O link envolve só a imagem. Os controles de perspectiva ficam
-            como irmãos, nunca dentro da âncora: botão dentro de link é
-            HTML inválido e confunde leitor de tela. */}
-        <Link
-          to={href}
-          className="card__link"
-          aria-label={soldOut ? `Ver ${name} — esgotado` : `Ver ${name}`}
-        >
-          {current ? (
-            <img
-              src={current.src}
-              alt={`${name} — foto ${active + 1}`}
-              width={784}
-              height={1168}
-              loading={priority ? "eager" : "lazy"}
-              decoding="async"
-              fetchPriority={priority ? "high" : "auto"}
-            />
-          ) : (
+        {images.length > 0 ? (
+          /* Cada foto é um link para a peça: no celular tocar na foto é o
+             gesto natural, e perder isso para ganhar o trilho seria uma
+             troca ruim. Fora do Tab (tabIndex -1) porque o nome embaixo já
+             é o link do card, e quatro paradas idênticas por card
+             entupiriam a navegação por teclado; quem rola o trilho com as
+             setas é o próprio trilho, que é o tabindex="0". */
+          <div
+            className="card__trilho"
+            ref={trilhoRef}
+            tabIndex={0}
+            role="group"
+            aria-label={
+              images.length > 1
+                ? `Fotos de ${name} — deslize para ver as outras`
+                : `Foto de ${name}`
+            }
+            onScroll={aoRolar}
+            onPointerMove={aoMover}
+            onPointerLeave={aoSair}
+          >
+            {images.map((image, i) => (
+              <Link
+                key={`${image.src}-${i}`}
+                to={href}
+                className="card__foto"
+                tabIndex={-1}
+              >
+                <img
+                  src={image.src}
+                  alt={`${name} — foto ${i + 1}`}
+                  width={784}
+                  height={1168}
+                  loading={priority && i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  fetchPriority={priority && i === 0 ? "high" : "auto"}
+                />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <Link
+            to={href}
+            className="card__foto"
+            aria-label={soldOut ? `Ver ${name} — esgotado` : `Ver ${name}`}
+          >
             <PlaceholderImage slug={slug} name={name} index={index} />
-          )}
-        </Link>
-
-        {/* Decoração pura: animação de onda no rodapé da foto, no hover.
-            aria-hidden porque não carrega informação nenhuma. */}
-        <span className="card__wave" aria-hidden="true">
-          <span className="card__wave-layer card__wave-layer--back" />
-          <span className="card__wave-layer card__wave-layer--front" />
-        </span>
+          </Link>
+        )}
 
         {/* A peça esgotada continua clicável: catálogo pequeno, e quem
-            chegou por link do Instagram ainda quer ver a peça e
-            perguntar no WhatsApp se ela volta. O que muda é a foto
-            esmaecida, a tarja e os controles desabilitados. */}
+            chegou por link do Instagram ainda quer ver a peça e perguntar
+            no WhatsApp se ela volta. O que muda é a foto esmaecida, a
+            tarja e as bolinhas de cor desabilitadas. */}
         {soldOut && <span className="card__flag">Esgotado</span>}
 
+        {/* O mesmo indicador da página da peça: cor chapada, nunca
+            degradê, e aria-hidden porque quem anuncia é a região viva. */}
         {images.length > 1 && (
-          <>
-            <button
-              type="button"
-              className="card__nav card__nav--prev"
-              aria-label={`${name}: foto anterior`}
-              disabled={soldOut}
-              onClick={() => setActive((i) => (i - 1 + images.length) % images.length)}
-            >
-              <Chevron direction="left" />
-            </button>
-            <button
-              type="button"
-              className="card__nav card__nav--next"
-              aria-label={`${name}: próxima foto`}
-              disabled={soldOut}
-              onClick={() => setActive((i) => (i + 1) % images.length)}
-            >
-              <Chevron direction="right" />
-            </button>
+          <div className="card__barra" aria-hidden="true">
+            {images.map((image, i) => (
+              <i key={`${image.src}-${i}`} className={i === indice ? "is-on" : ""} />
+            ))}
+          </div>
+        )}
 
-            {/* Sem isso, quem usa leitor de tela clica na seta e não recebe
-                retorno nenhum de que a foto mudou. As fotos não têm mais
-                rótulo de ângulo, então a posição é o que dá para anunciar. */}
-            <p aria-live="polite" className="visually-hidden">
-              Foto {active + 1} de {images.length}
-            </p>
-          </>
+        {images.length > 1 && (
+          <p aria-live="polite" className="visually-hidden">
+            Foto {indice + 1} de {images.length}
+          </p>
         )}
       </div>
 
@@ -128,10 +116,13 @@ export function ProductCard({ product, index, priority = false }: Props) {
           <Link to={href}>{name}</Link>
         </h3>
 
-        {description && <p className="card__desc">{description}</p>}
+        {/* Sem linha de prosa. A `description` virou o texto longo do
+            modelo, que não cabe em duas linhas de card sem ficar um
+            trecho cortado no meio da frase — e a diferença em relação ao
+            protótipo, que tem um <p> aqui, é consciente. */}
 
-        {/* Empurrado para a base para que preço e tamanhos fiquem
-            alinhados entre cards de descrição com alturas diferentes. */}
+        {/* Empurrado para a base para que preço, cores e tamanhos fiquem
+            alinhados entre cards de nome com alturas diferentes. */}
         <div className="card__foot">
           {/* Peça ainda sem preço não mostra preço nenhum: as donas
               catalogam antes de precificar, e "R$ 0,00" seria mentira. */}
@@ -139,31 +130,21 @@ export function ProductCard({ product, index, priority = false }: Props) {
             <p className="card__price">{formatBRL(priceCents)}</p>
           )}
 
-          {/* As fichas ficam aqui no card__body, fora do <Link> da foto:
+          {/* O seletor fica aqui no card__body, fora de qualquer <Link>:
               botão dentro de âncora é HTML inválido.
 
-              Peça de uma cor só não ganha seletor — não há o que
-              escolher, e o backfill do admin batizou essas de "Única",
-              que não diz nada a ninguém. */}
+              Peça de uma cor só não ganha seletor — não há o que escolher,
+              e o backfill do admin batizou essas de "Única", que não diz
+              nada a ninguém. */}
           {colours.length > 1 && (
-            <div
-              className="card__cores"
-              role="group"
-              aria-label={`Cores de ${name}`}
-            >
-              {colours.map((c, i) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={`card__cor ${i === cor ? "is-active brand-ring" : ""}`}
-                  aria-pressed={i === cor}
-                  disabled={soldOut}
-                  onClick={() => escolherCor(i)}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
+            <SeletorCor
+              colours={colours}
+              escolhida={cor}
+              onEscolher={setCor}
+              label={`Cores de ${name}`}
+              desabilitado={soldOut}
+              delicada
+            />
           )}
 
           {/* Tamanhos continuam informativos — sem número, que é coisa da
@@ -192,6 +173,19 @@ export function ProductCard({ product, index, priority = false }: Props) {
               );
             })}
           </ul>
+
+          {/* O mesmo "Pedir no WhatsApp" da página da peça, aqui para quem
+              já sabe o que quer e não precisa abrir a peça. A mensagem vai
+              na voz de quem clicou, não na da marca: ela aparece no
+              compositor da cliente, não no nosso. */}
+          <a
+            className="botao botao--mini card__pedir"
+            href={linkWhatsApp(mensagemDaPeca(name))}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pedir no WhatsApp
+          </a>
         </div>
       </div>
     </article>

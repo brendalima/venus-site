@@ -4,22 +4,27 @@
 
    mix-blend-mode: screen resolve sem editar a imagem: screen com preto
    (0) devolve exatamente o pixel de baixo, então o fundo some, e a arte
-   dourada/turquesa continua idêntica. Também funciona por cima do brilho
-   do hero, onde um recorte com transparência mostraria borda dura. */
+   dourada/turquesa continua idêntica.
+
+   É por isso que a logo só aparece dentro de .faixa-escura (global.css):
+   sobre o marfim do tema claro, screen devolveria o marfim e a arte
+   simplesmente não existiria. */
 .logo {
   display: block;
-  height: auto;
   mix-blend-mode: screen;
 }
 
-.logo--sm {
+/* O wordmark é largo e baixo, então quem manda é a largura. 116px dão
+   41px de altura, que é a fileira de 64px do cabeçalho com folga. */
+.logo:not(.logo--lockup) {
   width: 116px;
+  height: auto;
 }
 
-.logo--md {
-  width: 150px;
-}
-
-.logo--lg {
-  width: clamp(196px, 52vw, 300px);
+/* O lockup é quase quadrado, e numa fileira o que importa dele é quanto
+   ocupa na vertical — por isso aqui quem manda é a altura. A largura sai
+   da proporção, que vem dos atributos width/height do <img>. */
+.logo--lockup {
+  width: auto;
+  height: 70px;
 }

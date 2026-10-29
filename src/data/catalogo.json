@@ -12,7 +12,18 @@
       {
         "id": "1-1",
         "name": "Verde esmeralda",
+        "hex": [
+          "#0f7a5a"
+        ],
         "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          },
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
             "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
@@ -39,8 +50,16 @@
         "name": "Areia",
         "images": [
           {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
             "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
           }
         ],
         "tracksStock": true,
@@ -62,12 +81,16 @@
     ],
     "soldOut": false,
     "priceCents": 18900,
-    "description": "Triângulo com amarração no pescoço e calcinha de laço lateral.",
+    "description": "O modelo Aurora tem top triângulo deslizante, que ajusta no pescoço e nas costas e acompanha o busto sem apertar. A amarração dupla deixa o caimento no ponto em qualquer altura de tronco.\n\nA calcinha de laço lateral regula a altura do cavado dos dois lados, então a mesma peça serve a quadris diferentes. Forro duplo na frente, sem transparência.",
+    "collection": {
+      "id": "col-1",
+      "name": "Coleção Miragem"
+    },
     "details": [
-      "Verde esmeralda liso",
-      "Top triângulo deslizante, ajusta no pescoço e nas costas",
-      "Calcinha de amarrar dos dois lados",
-      "Forro duplo na frente"
+      "Top triângulo deslizante, com ajuste no pescoço e nas costas.",
+      "Calcinha de amarrar dos dois lados, que regula a altura do cavado.",
+      "Forro duplo na frente, sem transparência.",
+      "Tecido com proteção solar, que não desbota fácil no cloro."
     ]
   },
   {
@@ -84,6 +107,9 @@
       {
         "id": "2-1",
         "name": "Preto",
+        "hex": [
+          "#15171a"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
@@ -113,6 +139,9 @@
       {
         "id": "2-2",
         "name": "Grafite",
+        "hex": [
+          "#4a4f54"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
@@ -142,12 +171,16 @@
     ],
     "soldOut": true,
     "priceCents": 17900,
-    "description": "Cortininha preta com calcinha asa delta de cavado alto.",
+    "description": "O Eclipse é a cortininha tradicional em preto, com amarração ajustável no pescoço e nas costas. A calcinha asa-delta tem cavado alto e modelagem semi-fio, que alonga a perna e deixa o bumbum mais empinado.\n\nÉ o modelo mais pedido para quem quer marcar a silhueta sem abrir mão de conforto na amarração.",
+    "collection": {
+      "id": "col-1",
+      "name": "Coleção Miragem"
+    },
     "details": [
-      "Preto liso",
-      "Top cortininha com alça fina regulável",
-      "Calcinha asa delta, cavada",
-      "Tecido com toque acetinado"
+      "Calcinha asa-delta com cava acentuada no bumbum, para um efeito visual mais empinado.",
+      "Modelagem semi-fio que valoriza o bumbum.",
+      "Top cortininha com amarração ajustável no pescoço e nas costas.",
+      "Tecido duplo, sem transparência."
     ]
   },
   {
@@ -163,6 +196,9 @@
       {
         "id": "3-1",
         "name": "Azul marinho",
+        "hex": [
+          "#1b2a4a"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
@@ -179,12 +215,16 @@
     ],
     "soldOut": false,
     "priceCents": 21900,
-    "description": "Azul marinho com viés branco contrastante e alça fina.",
+    "description": "O Órion tem viés branco contrastante contornando o top e a calcinha, o acabamento que dá o ar esportivo da peça. A alça fina e o decote reto equilibram a modelagem.\n\nA calcinha é de cintura média, com cavado moderado — o corte menos agressivo da coleção.",
+    "collection": {
+      "id": "col-1",
+      "name": "Coleção Miragem"
+    },
     "details": [
-      "Azul marinho com acabamento em viés branco",
-      "Top triângulo fixo, alça fina regulável",
-      "Calcinha de cintura média",
-      "Forro duplo"
+      "Viés branco contrastante contornando o top e a calcinha.",
+      "Alça fina com decote reto, de caimento esportivo.",
+      "Calcinha de cintura média, com cavado moderado.",
+      "Forro duplo na frente, sem transparência."
     ]
   },
   {
@@ -201,7 +241,22 @@
       {
         "id": "4-1",
         "name": "Coral",
+        "hex": [
+          "#f4785c"
+        ],
         "images": [
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
             "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
@@ -230,10 +285,25 @@
       {
         "id": "4-2",
         "name": "Preto",
+        "hex": [
+          "#15171a"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
             "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-1200.jpg"
+          },
+          {
+            "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
+            "srcGrande": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-1200.jpg"
           }
         ],
         "tracksStock": true,
@@ -259,6 +329,9 @@
       {
         "id": "4-3",
         "name": "Off-white",
+        "hex": [
+          "#f4efe6"
+        ],
         "images": [],
         "tracksStock": true,
         "stock": [
@@ -279,16 +352,31 @@
             "quantity": 0
           }
         ]
+      },
+      {
+        "id": "4-4",
+        "name": "Coral e off-white",
+        "hex": [
+          "#f4785c",
+          "#f4efe6"
+        ],
+        "images": [],
+        "tracksStock": false,
+        "stock": []
       }
     ],
     "soldOut": false,
     "priceCents": 22900,
-    "description": "Coral com argola dourada no top e na lateral da calcinha.",
+    "description": "O modelo Vega foi pensado para valorizar as curvas e destacar a silhueta. Um modelo marcante, sua calcinha super asa-delta possui uma cava acentuada e modelagem semi-fio, valorizando o bumbum e proporcionando um efeito visual mais empinado e harmonioso.\n\nO top cortininha tradicional possui amarração ajustável, permitindo regular o caimento no busto e proporcionando conforto e praticidade.",
+    "collection": {
+      "id": "col-2",
+      "name": "Verão 2026"
+    },
     "details": [
-      "Coral liso",
-      "Argola metálica dourada no centro do top",
-      "Calcinha com detalhe de argola nas laterais",
-      "Top triângulo com amarração no pescoço"
+      "Calcinha super asa-delta com cava acentuada no bumbum, para um efeito visual mais empinado.",
+      "Modelagem semi-fio que valoriza o bumbum.",
+      "Argola dourada no top e na lateral da calcinha.",
+      "Tecido duplo, sem transparência."
     ]
   },
   {
@@ -304,6 +392,9 @@
       {
         "id": "5-1",
         "name": "Lilás",
+        "hex": [
+          "#b79bd4"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/66150fea-e122-4c41-b1ec-ce4e168aa431-600.jpg",
@@ -333,12 +424,16 @@
     ],
     "soldOut": false,
     "priceCents": 19900,
-    "description": "Lilás com franzido no top e na lateral da calcinha.",
+    "description": "O Lyra traz franzido no centro do top e nas laterais da calcinha, o detalhe que dá volume onde se quer volume e disfarça onde não se quer.\n\nA amarração lateral é por laço, então a altura do cavado é escolhida na hora de vestir.",
+    "collection": {
+      "id": "col-2",
+      "name": "Verão 2026"
+    },
     "details": [
-      "Lilás liso",
-      "Top triângulo franzido no centro, alça fina",
-      "Calcinha com franzido lateral",
-      "Modelagem de cobertura média"
+      "Franzido no centro do top e nas laterais da calcinha.",
+      "Amarração lateral por laço, com a altura do cavado escolhida ao vestir.",
+      "Alça fina ajustável no pescoço.",
+      "Forro duplo na frente, sem transparência."
     ]
   },
   {
@@ -355,6 +450,9 @@
       {
         "id": "6-1",
         "name": "Off-white",
+        "hex": [
+          "#f4efe6"
+        ],
         "images": [
           {
             "src": "https://pub-ce6277a6ad524d37b3d3021def1597b9.r2.dev/produtos/be95bc97-f3d3-425d-8b77-da437a3b5752-600.jpg",
@@ -371,12 +469,12 @@
     ],
     "soldOut": true,
     "priceCents": 23900,
-    "description": "Tomara que caia canelado com calcinha de cintura alta.",
+    "description": "O Nova é tomara-que-caia em tecido canelado, com barbatana lateral e elástico interno que seguram a peça no lugar sem precisar de alça.\n\nA calcinha de cintura alta cobre o umbigo e desenha a cintura. É a modelagem mais coberta da coleção, e a preferida de quem não gosta de marca de alça.",
     "details": [
-      "Off-white em malha canelada",
-      "Top tomara que caia com silicone antideslizante",
-      "Calcinha de cintura alta, cobertura média",
-      "Tecido encorpado, não transparenta"
+      "Tomara-que-caia em tecido canelado, com barbatana lateral.",
+      "Elástico interno que segura a peça no lugar, sem precisar de alça.",
+      "Calcinha de cintura alta, que cobre o umbigo e desenha a cintura.",
+      "A modelagem mais coberta da coleção, sem marca de alça."
     ]
   }
 ]

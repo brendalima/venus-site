@@ -23,8 +23,80 @@ npm run dev
 
 | Rota | O que é |
 |---|---|
-| `/` | Hero + catálogo, com seletor de cor e troca de foto no card e scroll infinito |
-| `/produto/:slug` | Página da peça: seletor de cor, galeria da cor, preço, seletor de tamanho com disponibilidade, detalhes |
+| `/` | A home do protótipo: hero com carrossel, faixa de atributos, catálogo (`#colecao`), `#lookbook`, `#comprar` e `#duvidas` |
+| `/produto/:slug` | Página da peça: trilho de fotos, seletor de cor, preço, grade de tamanhos com disponibilidade, descrição, destaques e acordeões |
+
+O **cabeçalho** é o mesmo em todas as rotas, grudado no alto, com o menu
+apontando para as âncoras da home. Abaixo de 900px o menu some — é por
+isso que a volta para a coleção, na página da peça, mora no corpo.
+
+A home é o protótipo da dona, portado. **Os textos são os dela — não
+suavize.** Houve uma rodada em que "troca em até 7 dias" e "Pix ou
+cartão" foram abrandados em nome de "o site não vende", e ela pediu de
+volta: o que o site promete é decisão dela.
+
+Duas coisas ficaram de fora do protótipo de propósito: a **Lista VIP**
+(captura de nome que ninguém receberia, já que não há backend) e a
+**linha de descrição abaixo do nome no card**.
+
+### A coleção
+
+O admin registra as coleções à parte e manda a de cada peça junto com
+ela:
+
+```json
+"collection": {"id": "5b0e…", "name": "Verão 2026"}
+```
+
+Vem como `null` quando a peça não está em nenhuma — nunca ausente —, e o
+build transforma esse `null` em campo omitido, para "não tem" ter um
+significado só. Coleção sem `id` ou sem `name` derruba o build, como os
+outros campos.
+
+**O nome é normalizado no build**, em caixa de título: as donas cadastram
+como dá e o nome vai para o título do catálogo em corpo grande.
+
+| Cadastrado | No site |
+|---|---|
+| `VERÃO 2026` | Verão 2026 |
+| `verão 2026` | Verão 2026 |
+| `coleção de verão` | Coleção de Verão |
+| `  coleção   miragem  ` | Coleção Miragem |
+| `   ` | (peça fica sem coleção) |
+
+A normalização acontece na conversão, não no componente — a mesma regra
+dos 📍 da descrição: o site não deve ter código que sabe de um detalhe de
+como o texto foi digitado, e o JSON gerado fica legível no diff.
+
+Duas decisões dentro dela: as **átonas ficam minúsculas** no meio do nome
+("Coleção de Verão", e não "Coleção De Verão", que é o título em inglês
+aplicado ao português); e o nome é **baixado antes** de a inicial subir,
+que é o que conserta o nome gritado em caixa alta. O preço do segundo é
+que uma sigla perde a caixa (`Coleção SP` → `Coleção Sp`) — é raro o
+bastante para não valer uma regra adivinhando siglas, que erraria em cima
+de nome comum curto.
+
+O site usa isso num lugar só, por ora: **o título do catálogo é o nome da
+coleção principal**, a que tem mais peças
+([`src/lib/colecao.ts`](src/lib/colecao.ts)). A grade continua sendo uma
+só, com as peças de todas.
+
+Pela contagem, e não pela data: o catálogo é pequeno e as donas cadastram
+a coleção nova aos poucos, peça por peça. Pela data o título viraria a
+coleção nova já na primeira peça publicada, com a grade ainda cheia da
+anterior. No empate fica a primeira na ordem do catálogo, que é o arranjo
+manual das donas — senão o título trocaria sozinho ao reordenar peças no
+admin, sem nada ter mudado de verdade.
+
+Sem coleção nenhuma no catálogo, o título cai em "Coleção", que é o que
+ele dizia antes de haver coleções.
+
+A frase ao lado do título **não nomeia nem descreve a coleção** de
+propósito: o título já diz o nome, e uma descrição escrita no código
+mentiria assim que a principal virasse outra.
+
+O botão flutuante de WhatsApp acompanha todas as rotas. A mensagem muda
+com a rota: numa peça, o nome dela já vai escrito.
 
 O roteamento é no cliente. O arquivo [`public/_redirects`](public/_redirects) faz o servidor devolver o `index.html` em qualquer caminho — **sem ele, abrir `/produto/...` direto ou dar F5 retorna 404** no Cloudflare Pages.
 
@@ -113,14 +185,18 @@ contar, como catalogam antes de precificar.
 renderiza dela, e o tamanho que acabou aparece riscado em vez de sumir.
 Sumindo, ninguém saberia se o tamanho nunca existiu ou se esgotou.
 
-Na página da peça o seletor de cor fica **acima do de tamanho**, na
-ordem em que a escolha acontece: primeiro qual peça, depois se ela
-serve. A opção escolhida — cor, tamanho, miniatura no palco — leva o
-anel com o degradê da marca (`.brand-ring`, em
-[`global.css`](src/styles/global.css)), e o tamanho que acabou leva um
-traço atravessando o botão inteiro.
+Na página da peça cor e tamanho vêm **antes do texto longo**, e o
+seletor de cor fica acima do de tamanho: é a ordem em que a escolha
+acontece, e no celular "o meu tamanho existe nessa cor?" é a pergunta
+que decide. Enterrá-la sob dois parágrafos custaria um scroll inteiro. É
+**uma ordem só**, igual no desktop e no celular — ordem visual diferente
+da do DOM estraga a navegação por teclado.
 
-**No card** a cor troca a foto e apaga os tamanhos que faltam, mas
+A opção escolhida — cor, tamanho — leva o anel com o degradê da marca
+(`.brand-ring`, em [`global.css`](src/styles/global.css)), e o tamanho
+que acabou leva um traço atravessando o botão inteiro.
+
+**No card** a cor troca a galeria e apaga os tamanhos que faltam, mas
 **não** mostra número — número só na página da peça, onde há espaço para
 o aviso de que ele pode estar velho. É um card por peça, com seletor,
 não um card por cor.
@@ -129,10 +205,54 @@ não um card por cor.
 peças que existiam antes das cores foram batizadas de "Única" pelo
 admin, que não diz nada a ninguém.
 
-As fichas de cor são **texto, não amostras**: o admin guarda o nome que
-as donas escreveram ("Bege"), nunca um valor. Um hex seria mais um campo
-por cor para preencherem, e um hex errado engana mais que a palavra
-certa.
+### A bolinha de cor
+
+O seletor é o mesmo componente no card e na página da peça
+([`SeletorCor.tsx`](src/components/SeletorCor.tsx)):
+
+| No dado | No site |
+|---|---|
+| `hex: ["#f4785c"]` | Bolinha chapada |
+| `hex: ["#f4785c", "#f4efe6"]` | Peça bicolor: bolinha dividida na diagonal |
+| sem `hex` | A ficha de texto com o nome escrito |
+
+A parada do degradê é **dura** (`A 0 50%, B 50% 100%`): sem as paradas
+duplas o corte sai esfumaçado e parece defeito de renderização.
+
+A escolha é **no dado**, como `images: []` — cada cor vira bolinha
+sozinha quando a dona preencher o hex no admin, sem flag e sem código
+morto. Até lá as duas formas convivem na mesma fileira, e tudo bem.
+
+São dois tamanhos. Na **página da peça**, disco de 28px num alvo de 44px:
+ali a cor é a escolha principal do bloco. No **card** (`delicada`), disco
+de 13px — o desenho delicado do protótipo — num alvo de 28×44px, **sem
+folga entre os alvos**.
+
+Por que 28 e não 44 na horizontal do card: quatro alvos de 44px dão 176px
+e não cabem num card de 150px em 360px; e com 44px de passo os discos de
+13px ficariam a 31px um do outro, espalhados em vez de delicados. A
+vertical fica cheia porque é onde o polegar erra mais numa tira
+horizontal, e sem folga entre os botões não há faixa morta entre um disco
+e o seguinte.
+
+No protótipo essas bolinhas são `<i>`, puro indicador. Aqui elas trocam a
+galeria do card, e é por isso que o alvo não pode encolher junto com o
+disco.
+
+O contorno interno (`box-shadow: inset`) é **obrigatório** — sem ele
+"Off-white" some no tema claro e "Preto" some no escuro, e existem peças
+com as duas. Na bolinha miúda a escolha é um **halo**, e não o
+`.brand-ring`: o anel em degradê precisa de uma borda para colorir, e num
+disco de 13px ela comeria o disco inteiro.
+
+E **nunca só cor**: a bolinha leva o nome no nome acessível do botão, e
+o nome da escolhida aparece visível em dois lugares na página da peça —
+a plaquinha sobre a foto e a linha abaixo das bolinhas.
+
+O admin precisa mandar `hex` como lista de **0 a 2** strings `#rrggbb`
+minúsculas. Hex torto derruba o build de propósito, como os outros
+campos. Lista vazia é normalizada para campo ausente, para "não tem" ter
+um significado só.
 
 **O número pode estar velho.** Dar baixa no estoque pelo admin só acende
 o aviso "Há alterações não publicadas" — não republica sozinho. Entre a
@@ -142,9 +262,55 @@ pede confirmação no WhatsApp.
 
 ### Fotos
 
-As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card e na miniatura, `srcGrande` (1200w) na foto grande da página da peça. **As fotos são da cor**, não da peça: cada cor tem a sua lista, e a primeira da cor é a capa.
+As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card, `srcGrande` (1200w) na página da peça. **As fotos são da cor**, não da peça: cada cor tem a sua lista, e a primeira da cor é a capa.
 
-**Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N". As miniaturas não têm legenda; quem usa leitor de tela recebe "Foto 2 de 3" ao trocar.
+**Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N".
+
+### O trilho de fotos
+
+As fotos ficam lado a lado num contêiner que rola com encaixe
+(`scroll-snap`), não empilhadas com uma visível por vez. É o mesmo
+mecanismo no card e na página da peça, num hook só
+([`useTrilhoFotos.ts`](src/hooks/useTrilhoFotos.ts)) — ele substituiu a
+tira de miniaturas e os chevrons.
+
+| Quem | Como navega |
+|---|---|
+| Dedo | Desliza, com a inércia do sistema |
+| Mouse | Passar por cima mapeia a posição X para o índice |
+| Teclado | As setas rolam o trilho, que é `tabindex="0"` |
+
+Três coisas que vale preservar:
+
+- **Quem manda no índice é a posição do trilho**, lida no evento
+  `scroll`. Assim o dedo, as setas e a roda horizontal do mouse
+  atualizam o indicador sem um ramo de código para cada um.
+- O mouse só escreve o `scrollLeft` **quando o índice muda**. Escrever a
+  cada pixel de movimento briga com a animação de encaixe e a foto fica
+  tremendo.
+- **O `tabindex="0"` é o que mantém as outras fotos alcançáveis** agora
+  que não há miniaturas. Não tire.
+
+O indicador de segmentos no rodapé da foto é `aria-hidden` e
+`pointer-events: none` — é indicador, não controle. Quem anuncia para
+leitor de tela é a região viva com "Foto 2 de 4". Ele leva cor chapada
+em `--accent` sobre um véu `--scrim-strong`: degradê ali seria um
+terceiro significado além de fronteira e escolha, e sem o véu os
+segmentos sumiam no rodapé branco das fotos de produto (medido: 1,60:1
+sem véu, 3,02:1 com).
+
+Trocar de cor troca a galeria e **volta para a capa**: a foto de índice 3
+da cor anterior não quer dizer nada na nova.
+
+### Fotos de campanha
+
+As três do carrossel do hero vivem em `public/` (`campanha-*.jpg`), como
+a logo: **são arquivos de marca, não peças do catálogo.** Foto de peça
+vem do admin pelo R2 e muda quando as donas publicam; estas só mudam por
+decisão de quem desenha a página.
+
+O lookbook ("Luz, pele e cor") não tem foto própria: pega a capa das duas
+primeiras peças com foto no catálogo, então acompanha a coleção sozinho.
 
 **O repositório não guarda foto de produto.** As do protótipo saíram quando o admin entrou no ar — eram 2,1 MB de JPEG para avaliar o design antes de haver catálogo de verdade. A cópia versionada de `catalogo.json` aponta para duas fotos do **bucket de desenvolvimento** (`venusoasis-fotos-dev`), para `npm run dev` continuar parecido com produção sem peso nenhum no repositório. Se alguém apagar aquelas peças no admin de dev, as URLs quebram: é só rodar `npm run catalogo` de novo contra o admin.
 
@@ -158,20 +324,24 @@ Todos os arquivos saíram do mesmo original (`1254×1254`, JPEG) e vivem em `pub
 
 | Arquivo | Onde aparece |
 |---|---|
-| `logo.png` | Lockup completo — monograma + nome. Só no hero. |
-| `logo-wordmark.png` | Só "VÊNUS OASIS". Cabeçalho das páginas de peça e rodapé. |
+| `logo.png` | Lockup completo — monograma + nome. Rodapé. |
+| `logo-wordmark.png` | Só "VÊNUS OASIS". Cabeçalho de todas as rotas. |
 | `og-image.jpg` | Preview de link (1200×630). |
 | `favicon-32.png`, `favicon-180.png` | Aba do navegador e ícone no celular. |
 
-São duas versões porque o lockup inteiro fica alto demais num cabeçalho: encolhido para caber, o monograma vira um borrão.
+São duas versões porque o lockup inteiro fica alto demais num cabeçalho: ele é quase quadrado (760×704), e numa fileira de 64px sairia com 43px de largura — o nome dentro dele viraria um borrão. O handoff do redesign pedia o lockup a 40px de altura no cabeçalho; esta é a divergência, e o motivo é este.
 
-**Sobre o fundo preto.** Os arquivos têm fundo preto chapado, e o site usa `#08090a` — coladas cruas, apareceria um retângulo levemente diferente ao redor da marca. [`Logo.css`](src/components/Logo.css) resolve com `mix-blend-mode: screen`: *screen* com preto devolve exatamente o pixel de baixo, então o fundo some e a arte continua idêntica. Também funciona por cima do brilho do hero, onde um recorte com transparência mostraria borda dura.
+`Logo.tsx` separa o arquivo (`lockup`) do tamanho (`size`) justamente por isso: o rodapé quer o lockup num tamanho médio, o cabeçalho quer o wordmark pequeno. Nas classes do lockup quem manda é a **altura**, porque numa fileira é a vertical que importa; no wordmark, a largura.
+
+**Sobre o fundo preto.** Os arquivos têm fundo preto chapado, e o site usa `#08090a` — coladas cruas, apareceria um retângulo levemente diferente ao redor da marca. [`Logo.css`](src/components/Logo.css) resolve com `mix-blend-mode: screen`: *screen* com preto devolve exatamente o pixel de baixo, então o fundo some e a arte continua idêntica.
 
 O efeito colateral é que **a logo só funciona sobre fundo escuro**. Se algum dia houver uma seção clara, aí sim vale gerar um PNG com transparência de verdade.
 
 Para regerar os recortes a partir de um original novo, o script está em [`scripts/logo.py`](scripts/logo.py).
 
-`Logo.tsx` aceita `alt=""` — use quando o elemento ao redor já nomear a marca (um link com `aria-label`), senão o leitor de tela anuncia "Vênus Oasis" duas vezes.
+`Logo.tsx` tem dois usos e só dois: o wordmark no cabeçalho e o lockup no rodapé. Não há prop de tamanho — havia três, das quais duas pararam de ser usadas quando o hero deixou de abrir com a logo.
+
+Ele aceita `alt=""` — use quando o elemento ao redor já nomear a marca (um link com `aria-label`), senão o leitor de tela anuncia "Vênus Oasis" duas vezes.
 
 ### Cores e tipografia
 
@@ -179,7 +349,7 @@ Tudo em [`src/styles/tokens.css`](src/styles/tokens.css). É o único arquivo a 
 
 A paleta sai da logo — dourado champagne de um lado, turquesa do outro, sobre preto. O token `--brand-gradient` reproduz essa transição e é usado nos filetes e no wordmark.
 
-O dourado e o turquesa entram **só em detalhe**: preço, foco, borda ativa, filetes, brilho do hero. Texto corrido fica sempre em `--text`, um off-white levemente quente — cor saturada sobre preto puro vibra e cansa a leitura.
+O dourado e o turquesa entram **só em detalhe**: preço, foco, borda ativa, filetes, bolinha do carrossel. Texto corrido fica sempre em `--text`, um off-white levemente quente — cor saturada sobre preto puro vibra e cansa a leitura.
 
 ### O filete da marca
 
@@ -188,22 +358,6 @@ A classe `.brand-rule` (em [`global.css`](src/styles/global.css)) desenha um fil
 Ele é reservado às **fronteiras estruturais** — cabeçalho/corpo e corpo/rodapé. Divisões internas (entre seções, entre blocos de texto) continuam com linha lisa em `--line`. A regra existe para o degradê significar "aqui muda de contexto": se todas as linhas virassem degradê, ele deixaria de dizer qualquer coisa e viraria enfeite.
 
 É pseudo-elemento porque `border` não aceita gradiente.
-
-### A onda nos cards
-
-No hover de um card, uma onda animada sobe no rodapé da foto ([`ProductCard.css`](src/components/ProductCard.css)). São duas camadas em velocidades e alturas diferentes — uma onda só lê como faixa deslizando; duas em ritmos distintos dão sensação de água. O formato vem de uma máscara SVG e a cor vem de `--brand-gradient-deep`, então a onda é a paleta da marca recortada em onda.
-
-Três decisões que valem preservar se alguém mexer:
-
-- Usa `--brand-gradient-deep`, não `--brand-gradient`. O degradê normal passa por um champagne quase branco que sumiria sobre o rodapé branco das fotos.
-- **A animação desloca a máscara, não o elemento.** Como a máscara é `repeat-x`, deslocá-la exatamente um ladrilho (`--tile`) fecha o ciclo em qualquer largura de card. Mover o elemento só fecharia se a largura fosse múltiplo do ladrilho — impossível de garantir num grid responsivo — e ainda arrastaria o degradê junto, que voltaria ao lugar de repente no fim do ciclo.
-- A animação fica `paused` e só roda no hover. Seis cards animando o tempo todo gastam bateria à toa.
-
-Sobre o desenho: um comprimento de onda inteiro por ladrilho, amplitude baixa, ladrilhos largos (165px e 240px). Onda curta e alta lê como desenho infantil; aberta e rasa lê como maresia. As duas camadas têm períodos que não são múltiplos um do outro (9s e 14s), então o conjunto demora a se repetir.
-
-Com `prefers-reduced-motion` a onda continua aparecendo, parada.
-
-**A onda é só desktop** — depende de hover, e em tela de toque não existe. Como a maior parte do tráfego vem do Instagram, ou seja, celular, é um detalhe que a maioria não vai ver. Se quiser presença no mobile, o caminho é mostrar a onda parada (sem animação) dentro de `@media (hover: none)`.
 
 A fonte de display é uma serifada de alto contraste (Didot → Bodoni MT → Georgia). **Sem webfont**: uma requisição a menos e zero risco de piscar a fonte errada no carregamento. Em máquinas sem Didot nem Bodoni o fallback é Georgia, que é mais suave mas mantém o caráter serifado.
 
@@ -226,5 +380,5 @@ push fazem exatamente a mesma coisa.
 
 ## Ainda falta
 
-- **Otimizar as fotos.** Hoje são JPEGs originais, ~2,1 MB no total, e é de longe o maior peso da página. Converter para WebP em duas larguras (uma para card, uma para a página da peça) corta uns 60% — é o maior ganho de performance disponível, e vale fazer antes de o catálogo crescer.
+- **WebP.** As fotos já vêm do admin redimensionadas em 600w e 1200w (o 600w pesa uns 45 KB, contra 250 KB dos JPEGs do protótipo), então o problema encolheu bastante. WebP ainda cortaria uns 60% em cima disso, mas o trabalho agora é no admin (`../venus-admin`, processamento em Go puro), não aqui.
 - Nomes, preços e tamanhos são provisórios. As fotos são do protótipo.

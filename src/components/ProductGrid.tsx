@@ -1,4 +1,5 @@
 import type { Product } from "../types";
+import { colecaoPrincipal } from "../lib/colecao";
 import { ProductCard } from "./ProductCard";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import "./ProductGrid.css";
@@ -14,15 +15,29 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
   const shown = products.slice(0, visible);
 
+  // O nome vem do dado. Sem coleção nenhuma no catálogo — peça que não
+  // está em nenhuma, ou admin mais velho que o site —, o título cai em
+  // "Coleção", que é o que o catálogo dizia antes de haver coleções.
+  const colecao = colecaoPrincipal(products) ?? "Coleção";
+
+  // id="colecao" é a âncora do menu do cabeçalho e do "← Voltar para a
+  // coleção" da página da peça.
   return (
-    <section className="page catalog" aria-labelledby="catalog-title">
-      <div className="catalog__head">
-        <h2 className="catalog__title" id="catalog-title">
-          Coleção
+    <section className="page catalog" id="colecao" aria-labelledby="catalog-title">
+      <div className="secao__cabeca">
+        {/* Só o título vem da coleção, por enquanto: a grade continua
+            sendo uma só, com as peças de todas. Ver lib/colecao.ts. */}
+        <h2 className="secao__titulo" id="catalog-title">
+          {colecao}
         </h2>
-        <span className="catalog__count">
-          {visible} de {products.length}
-        </span>
+        <div>
+          <p className="secao__linha">
+            Com modelagens marcantes, cores cuidadosamente selecionadas e detalhes que fazem a diferença valorizando a beleza natural e a singularidade de cada corpo.
+          </p>
+          <p className="secao__linha">
+            Passe o dedo ou o mouse sobre a peça para ver os outros ângulos.
+          </p>
+        </div>
       </div>
 
       <div className="grid">
@@ -50,9 +65,6 @@ export function ProductGrid({ products }: { products: Product[] }) {
             </button>
           </div>
         </>
-      ) : (
-        <p className="catalog__end">Fim da coleção</p>
-      )}
-    </section>
+      ) : null}    </section>
   );
 }

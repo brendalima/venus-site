@@ -206,6 +206,12 @@
   --radius: 4px;
   --page-max: 1200px;
   --page-pad: 1.25rem;
+
+  /* Altura do cabeçalho grudado. Mora aqui porque três lugares precisam
+     dela e precisam do mesmo valor: o próprio cabeçalho, o
+     `scroll-padding-top` que impede a âncora de parar debaixo dele, e o
+     `top` da galeria grudada na página da peça. */
+  --altura-cabecalho: 64px;
 }
 
 @media (min-width: 768px) {

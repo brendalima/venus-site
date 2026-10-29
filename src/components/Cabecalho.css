@@ -1,0 +1,67 @@
+/* Grudado no alto. A altura é a de --altura-cabecalho (tokens.css), que o
+   `scroll-padding-top` do html e a galeria grudada da página da peça
+   também leem — três lugares, um valor.
+
+   O fundo é chapado (vem de .faixa-escura) e não translúcido com blur
+   como no protótipo: a logo depende de mix-blend-mode: screen sobre preto
+   de verdade, e por cima de um fundo meio transparente ela deixaria
+   aparecer o que está passando embaixo. */
+/* A especificidade dobrada (.cabecalho.brand-rule) não é enfeite: o
+   `.brand-rule` de global.css também declara `position`, com a mesma
+   especificidade, e o pacote de CSS entra com o global depois dos
+   componentes — então `position: relative` vencia e o cabeçalho rolava
+   junto com a página. Aconteceu. Qualquer componente grudado que também
+   leve o filete precisa do mesmo cuidado. */
+.cabecalho.brand-rule {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.cabecalho__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: var(--altura-cabecalho);
+}
+
+.cabecalho__marca {
+  display: block;
+  /* line-height no link mediria o texto que não existe e deixaria uma
+     tira a mais embaixo da imagem. */
+  line-height: 0;
+  text-decoration: none;
+}
+
+.cabecalho__menu {
+  display: flex;
+  gap: var(--space-6);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+}
+
+.cabecalho__menu a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.cabecalho__menu a:hover,
+.cabecalho__menu a:focus-visible {
+  color: var(--accent-text);
+}
+
+/* Abaixo de 900px o menu sai: quatro itens mais a logo e o botão de tema
+   não cabem numa fileira de 360px, e um menu sanfona seria o primeiro
+   componente do site a precisar de estado para navegação.
+
+   O que o menu dá acesso continua alcançável: as seções estão todas na
+   home, uma embaixo da outra, e a volta para a coleção mora no corpo da
+   página da peça justamente por causa disto. */
+@media (max-width: 899px) {
+  .cabecalho__menu {
+    display: none;
+  }
+}
