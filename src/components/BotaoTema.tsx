@@ -28,10 +28,10 @@ function IconeLua() {
  * para onde o clique leva. Ícone de estado num botão de ação faz a pessoa
  * clicar esperando o contrário.
  *
- * O estado mora aqui porque existe um botão por rota — no hero na home,
- * na faixa de navegação na página da peça —, nunca dois ao mesmo tempo. A
- * verdade continua sendo o atributo no <html>, que o script do index.html
- * já definiu antes desta tela montar.
+ * O estado mora aqui porque existe um botão só, no cabeçalho, que é o
+ * mesmo em todas as rotas e não remonta na navegação. A verdade continua
+ * sendo o atributo no <html>, que o script do index.html já definiu antes
+ * desta tela montar.
  */
 export function BotaoTema() {
   const [tema, setTema] = useState<Tema>(temaAtual);

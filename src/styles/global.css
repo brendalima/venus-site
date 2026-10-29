@@ -8,6 +8,9 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Sem isto a âncora do menu para debaixo do cabeçalho grudado e o
+     título da seção fica escondido. */
+  scroll-padding-top: var(--altura-cabecalho);
 }
 
 body {
@@ -138,6 +141,50 @@ button {
    onda do card. */
 .brand-ring--deep {
   background-image: var(--brand-gradient-deep);
+}
+
+/* Acordeão — as dúvidas da home e os dois blocos de ajuda da página da
+   peça. Mora aqui porque é o mesmo desenho nos dois lugares, e um
+   acordeão com duas caras diria que são coisas diferentes.
+
+   Linha lisa em --line-soft, nunca o filete: a divisão entre perguntas é
+   interna, e o degradê é reservado às fronteiras estruturais. O "+" é
+   gerado no ::after e trocado por um traço quando aberto — um sinal de
+   estado que não depende de cor para ser lido. */
+.acordeao {
+  border-top: 1px solid var(--line-soft);
+}
+
+.acordeao > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  cursor: pointer;
+  /* Os dois: o Safari ainda usa o pseudo-elemento antigo. */
+  list-style: none;
+}
+
+.acordeao > summary::-webkit-details-marker {
+  display: none;
+}
+
+.acordeao > summary::after {
+  content: "+";
+  flex: none;
+  font-family: var(--font-sans);
+  color: var(--accent);
+}
+
+.acordeao[open] > summary::after {
+  content: "\2013";
+}
+
+.acordeao > summary + * {
+  padding-bottom: var(--space-4);
 }
 
 .visually-hidden {

@@ -1,16 +1,21 @@
 import { Logo } from "./Logo";
-import { BotaoTema } from "./BotaoTema";
 import "./Hero.css";
 
+/**
+ * Abertura da home.
+ *
+ * É <section> e não <header>: o cabeçalho do site já é o banner da
+ * página, e dois <header> no nível da raiz dariam dois banners para quem
+ * navega por marcos. O botão de tema também mudou para lá — antes havia
+ * um por rota, agora há um só, no cabeçalho de todas.
+ */
 export function Hero({ count }: { count: number }) {
   return (
-    <header className="hero faixa-escura brand-rule brand-rule--bottom">
+    <section
+      className="hero faixa-escura brand-rule brand-rule--bottom"
+      aria-label="Vênus Oasis"
+    >
       <div className="page hero__inner">
-        {/* Fora do fluxo, então não entra no gap da coluna centralizada. */}
-        <div className="hero__tema">
-          <BotaoTema />
-        </div>
-
         <Logo size="lg" />
 
         <p className="hero__tagline">
@@ -23,6 +28,6 @@ export function Hero({ count }: { count: number }) {
           <span>Coleção atual</span>
         </p>
       </div>
-    </header>
+    </section>
   );
 }

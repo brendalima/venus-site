@@ -1,91 +1,138 @@
-.product {
-  padding-block: var(--space-8) var(--space-16);
+.produto {
+  padding-block: var(--space-6) var(--space-16);
 }
 
-/* Vive dentro de uma .faixa-escura que sangra de ponta a ponta — a
-   logo tem fundo preto chapado e só funciona sobre escuro (ver
-   Logo.css). O espaçamento abaixo é do .product, não daqui: margem
-   nesta fileira deixaria uma tira clara dentro da faixa. */
-.product__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-block: var(--space-4);
-  /* Divisória pelo filete da marca (.brand-rule), não por border. */
-}
+/* ---------- migalha ---------- */
 
-.product__acoes {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.product__home {
-  text-decoration: none;
-}
-
-.product__back {
+.produto__migalha {
+  font-family: var(--font-sans);
   font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-6);
+}
+
+.produto__migalha a {
   color: var(--text-muted);
   text-decoration: none;
-  white-space: nowrap;
 }
 
-.product__back:hover {
-  color: var(--text);
+.produto__migalha a:hover,
+.produto__migalha a:focus-visible {
+  color: var(--accent-text);
 }
 
-.product__layout {
+/* ---------- layout ---------- */
+
+.produto__layout {
   display: grid;
-  /* minmax(0, 1fr) em vez de 1fr: item de grade tem min-width auto, e a
-     fileira de miniaturas (que não cabe em 360px) esticava a coluna —
-     a foto grande saía mais larga que a tela. */
+  /* minmax(0, 1fr) em vez de 1fr: item de grade tem min-width auto, e o
+     trilho de fotos tem conteúdo mais largo que a coluna — com 1fr ele
+     esticaria a coluna e a foto sairia mais larga que a tela. */
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-8);
 }
 
+.produto__galeria,
+.produto__info {
+  min-width: 0;
+}
+
 @media (min-width: 900px) {
-  /* Coluna da foto com largura fixa em vez de fração: numa proporção 2:3,
-     cada 100px de largura viram 150px de altura, e a imagem passava de
-     860px — muito mais alta que o texto ao lado. */
-  .product__layout {
-    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  .produto__layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
     gap: var(--space-12);
     align-items: start;
   }
 
-  /* A galeria acompanha a rolagem da coluna de texto, que é mais curta. */
-  .product__gallery {
+  /* A galeria acompanha a rolagem da coluna de texto, que é mais longa.
+     O `top` desconta o cabeçalho grudado, senão a foto some debaixo dele. */
+  .produto__galeria {
     position: sticky;
-    top: var(--space-8);
+    top: calc(var(--altura-cabecalho) + var(--space-6));
   }
 }
 
-.product__gallery {
-  min-width: 0;
+/* ---------- o palco ---------- */
+
+.palco {
+  position: relative;
+  margin: 0;
 }
 
-.product__stage {
+.palco__moldura {
   position: relative;
+  /* 2:3 acompanha o formato das fotos. Usar 3:4 cortaria cabeça e pés no
+     object-fit: cover. */
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border-radius: var(--radius);
-  border: 1px solid var(--line);
   background: var(--surface);
 }
 
-.product__stage img,
-.product__stage .placeholder {
+/* A moldura deslocada, emprestada do hero do protótipo. Decoração: fica
+   atrás e não recebe ponteiro. Avança 14px para a direita e para baixo,
+   que cabe dentro do --page-pad mesmo em 360px. */
+.palco::after {
+  content: "";
+  position: absolute;
+  inset: var(--space-3) calc(-1 * var(--space-3)) calc(-1 * var(--space-3))
+    var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* As fotos lado a lado num trilho que rola com encaixe, não empilhadas
+   com uma visível por vez: é o que deixa o dedo deslizar com a inércia do
+   sistema e as setas do teclado funcionarem sem controle na tela. Ver
+   useTrilhoFotos.ts. */
+.palco__trilho {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  /* Sem isto o gesto horizontal no fim do trilho vira navegação de
+     histórico em alguns navegadores. */
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.palco__trilho::-webkit-scrollbar {
+  display: none;
+}
+
+.palco__trilho img {
+  flex: 0 0 100%;
+  width: 100%;
+  /* height concreto, e não aspect-ratio: o <img> carrega os atributos
+     width/height contra layout shift, e enquanto height tiver valor
+     concreto o aspect-ratio é ignorado. Quem dá a proporção aqui é a
+     moldura. */
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: center;
+}
+
+.palco__moldura .placeholder {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.product__flag {
+/* O anel de foco por dentro: o trilho ocupa a moldura inteira, e por fora
+   o outline ficaria metade escondido pelo overflow: hidden dela. */
+.palco__trilho:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -4px;
+}
+
+.palco__tarja {
   position: absolute;
   top: var(--space-3);
   left: var(--space-3);
+  z-index: 2;
   font-family: var(--font-sans);
   font-size: 0.68rem;
   letter-spacing: 0.12em;
@@ -97,151 +144,160 @@
   backdrop-filter: blur(4px);
 }
 
+/* Segmentos no rodapé da foto. Cor chapada em --accent, nunca degradê:
+   degradê aqui seria um terceiro significado além de fronteira (filete) e
+   escolha (anel). */
+.palco__barra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  pointer-events: none;
+  /* Véu atrás dos segmentos. Sem ele o indicador desaparecia: as fotos
+     de produto têm rodapé branco, e sobre branco o --on-photo-line do
+     tema escuro (branco a 22%) simplesmente não existe. Foi visto
+     numa captura — o indicador tinha sumido na foto da Vega.
+
+     O véu vira com o tema junto com o --on-photo-line, então a dupla
+     funciona nas quatro combinações: foto clara ou escura, tema claro ou
+     escuro. É o mesmo problema que o contorno interno resolve na
+     bolinha de cor.
+
+     É o --scrim-strong, e não o --scrim: com o véu mais fraco o segmento
+     ligado dava 1,60:1 contra o apagado, lendo os pixels da captura. Com
+     este, 3,02:1 no tema escuro e 3,67:1 no claro — acima dos 3:1 que um
+     elemento não-textual precisa. */
+  background: var(--scrim-strong);
+}
+
+.palco__barra i {
+  flex: 1;
+  height: 3px;
+  background: var(--on-photo-line);
+  transition: background 0.2s ease;
+}
+
+.palco__barra i.is-on {
+  background: var(--accent);
+}
+
+/* A plaquinha com o nome da cor, sobre a foto. Fundo chapado em --bg e
+   filete turquesa à esquerda: é a mesma marcação do protótipo, e é ela
+   que dá nome visível à bolinha escolhida. */
+.palco__cor {
+  position: absolute;
+  left: -1px;
+  bottom: var(--space-6);
+  z-index: 2;
+  background: var(--bg);
+  color: var(--text);
+  border-left: 2px solid var(--accent-alt);
+  padding: 9px 16px 9px 13px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.palco__dica {
+  margin-top: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+
 /* ---------- peça esgotada ----------
 
-   Mesmo tratamento do card: esmaece e dessatura só as fotos. Descrição,
-   preço, tamanhos e detalhes continuam legíveis — é o motivo de a peça
-   seguir clicável, e esmaecer o texto junto cairia abaixo do mínimo de
-   contraste. A tarja fica fora da regra, em contraste cheio. */
-.product--esgotada .product__stage img,
-.product--esgotada .product__stage .placeholder,
-.product--esgotada .product__thumb img {
+   Esmaece e dessatura só as fotos. Preço, cores, tamanhos e texto
+   continuam legíveis — é o motivo de a peça seguir clicável no grid, e
+   esmaecer o texto junto cairia abaixo do mínimo de contraste. A tarja
+   fica fora da regra, em contraste cheio. */
+.produto--esgotada .palco__trilho img,
+.produto--esgotada .palco__moldura .placeholder {
   opacity: 0.55;
   filter: grayscale(0.4);
 }
 
-.product--esgotada .product__thumb {
-  cursor: default;
-}
+/* ---------- coluna de informação ---------- */
 
-/* Sem isto a miniatura desabilitada ainda clarearia a borda no ponteiro. */
-.product--esgotada .product__thumb:hover img {
-  border-color: var(--line);
-}
-
-.product__thumbs {
-  display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-  /* Em 360px não cabem mais de três miniaturas. Rolagem horizontal, não
-     quebra de linha: mantém a ordem das fotos legível numa fileira só.
-     Alcançável por teclado — o Tab passa por cada botão e o navegador
-     rola até ele. */
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
-  /* Espaço para o anel de foco (outline-offset: 3px) não ser cortado. */
-  padding: 3px;
-  margin-inline: -3px;
-}
-
-.product__thumb {
-  display: block;
-  flex: 0 0 92px;
-  scroll-snap-align: start;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.product__thumb img {
-  width: 100%;
-  /* height: auto é obrigatório aqui. O <img> carrega os atributos
-     width/height (que evitam layout shift), e enquanto height for um
-     valor concreto o aspect-ratio é ignorado — a miniatura sai com
-     1168px de altura. */
-  height: auto;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  transition: border-color 0.18s ease;
-}
-
-.product__thumb:hover img {
-  border-color: var(--line-strong);
-}
-
-/* A miniatura no palco leva o mesmo anel de marca das fichas de cor e
-   tamanho (.brand-ring, em global.css): na página da peça "escolhido"
-   tem de ter uma cara só, senão a borda dourada da miniatura e o anel em
-   degradê das fichas parecem dizer coisas diferentes.
-
-   A borda aqui mora no <img>, não no botão, e a foto cobre só o
-   padding-box — então a faixa da borda continua mostrando o degradê.
-
-   A miniatura ativa continua marcada mesmo na peça esgotada: é a única
-   pista de qual foto está no palco. */
-.product--esgotada .product__thumb.is-active img {
-  border-color: transparent;
-}
-
-/* ---------- coluna de texto ---------- */
-
-.product__info {
+.produto__info {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
-.product__name {
+.produto__cabeca {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.produto__nome {
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
-.product__desc {
-  color: var(--text-muted);
-  font-size: 1rem;
-  line-height: 1.55;
-  max-width: 46ch;
-}
-
-.product__price {
-  font-family: var(--font-sans);
-  font-size: 1.4rem;
+.produto__preco {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
   font-variant-numeric: tabular-nums;
   color: var(--accent-text);
 }
 
-.product__block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding-top: var(--space-4);
+/* Linha lisa em --line entre blocos, nunca o filete: divisão interna. */
+.produto__bloco {
   border-top: 1px solid var(--line);
+  padding-top: var(--space-6);
 }
 
-.product__label {
+.produto__rotulo {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-faint);
+  margin-bottom: var(--space-3);
 }
 
-.product__sizes {
+.produto__cor-escolhida {
+  margin-top: var(--space-3);
+  color: var(--text);
+}
+
+.produto__cor-escolhida b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+/* ---------- grade de tamanhos ---------- */
+
+.produto__tamanhos {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-/* Botão, não mais item de lista: o tamanho é escolhível e é a escolha
-   que acende a linha de disponibilidade. A aparência é a mesma de antes
-   — ficha retangular — mas o alvo cresceu para os 36px de toque. */
-.product__size {
+.produto__tamanho {
+  position: relative;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: var(--text);
   background: none;
-  border: 1px solid var(--line);
+  /* 2px porque é o que o anel em degradê precisa para ser visto num botão
+     pequeno: com 1px ele desaparece de relance. */
+  border: 2px solid var(--line);
   border-radius: var(--radius);
+  min-width: 52px;
+  /* 44px de alvo de toque — o tráfego é celular. */
+  min-height: 44px;
   padding: 8px 16px;
-  min-height: 36px;
   cursor: pointer;
   transition:
     border-color 0.18s ease,
@@ -249,160 +305,171 @@
 }
 
 @media (hover: hover) {
-  .product__size:hover:not(:disabled) {
+  .produto__tamanho:hover:not(:disabled) {
     border-color: var(--line-strong);
   }
 }
 
-/* A borda do escolhido vem do .brand-ring (global.css), em degradê.
-   Aqui fica só a cor do texto. */
-.product__size.is-active {
+/* A borda do escolhido vem do .brand-ring (global.css), em degradê. Aqui
+   fica só o texto: dourado e um pouco mais pesado, porque 2px de degradê
+   num botão de 52px ainda é pouco de relance. */
+.produto__tamanho.is-active {
   color: var(--accent-text);
+  font-weight: 500;
 }
 
 /* Tamanho que acabou na cor escolhida. Continua clicável: é clicando que
    a pessoa recebe o "Indisponível" por escrito, e sumir da grade
    esconderia que o tamanho existe na peça.
 
-   O risco atravessa o botão inteiro, não a palavra. Riscar só a letra
-   some num "P" de três pixels de largura — foi o que aconteceu, e de
-   relance a ficha parecia normal. */
-.product__size--fora {
-  position: relative;
+   O risco atravessa o botão inteiro, não a palavra: riscar só a letra
+   some num "P" de três pixels de largura, e de relance a ficha parece
+   disponível. Entra e sai pelas bordas (os -2px) para não ficar uma sobra
+   de traço dentro do raio do canto.
+
+   currentColor de propósito: o traço acompanha o texto, inclusive quando
+   o botão está escolhido e fica dourado. */
+.produto__tamanho--fora {
   color: var(--text-faint);
   border-color: var(--line-soft);
 }
 
-/* O traço é um gradiente de borda dura, e não um pseudo-elemento
-   rotacionado: rotação precisaria da diagonal do botão, que muda com o
-   texto ("P" e "GG" não têm a mesma largura). A 45° o traço entra e sai
-   pelas bordas em vez de cravar nos cantos, e atravessa o botão todo em
-   qualquer largura.
-
-   currentColor de propósito: o traço acompanha o texto, inclusive
-   quando o botão está escolhido e fica dourado. */
-.product__size--fora::after {
+.produto__tamanho--fora::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: -2px;
+  right: -2px;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom right,
-    transparent calc(50% - 0.5px),
-    currentColor calc(50% - 0.5px),
-    currentColor calc(50% + 0.5px),
-    transparent calc(50% + 0.5px)
-  );
 }
 
-/* A escolha vence o risco: dourado no texto e anel de marca na borda,
-   para a ficha clicada continuar sendo claramente a que está em foco
-   mesmo estando indisponível. */
-.product__size--fora.is-active {
+/* A escolha vence o risco: a ficha clicada continua claramente a que está
+   em foco, mesmo indisponível. */
+.produto__tamanho--fora.is-active {
   color: var(--accent-text);
 }
 
-/* min-height reserva a linha mesmo vazia. Sem isso, escolher um tamanho
-   faz o texto nascer e empurrar detalhes e nota para baixo — layout
-   shift disparado por clique, com o CLS que vem junto. */
-.product__disponibilidade {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  min-height: 1.5em;
-  color: var(--text);
-}
-
-/* ---------- seletor de cor ----------
-
-   Fichas de texto, não amostras: o admin guarda o nome que as donas
-   escreveram ("Bege"), nunca um valor de cor.
-
-   Vive num .product__block logo acima dos tamanhos, então o espaçamento
-   vem do bloco — nada de margem própria aqui. */
-.product__cores {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.product__cor {
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
-  color: var(--text-muted);
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 100px;
-  padding: 7px 15px;
-  min-height: 36px;
-  cursor: pointer;
-  transition:
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-
-@media (hover: hover) {
-  .product__cor:hover:not(:disabled) {
-    color: var(--text);
-    border-color: var(--line-strong);
-  }
-}
-
-/* Borda em degradê pelo .brand-ring; aqui só a cor do texto. */
-.product__cor.is-active {
-  color: var(--accent-text);
-}
-
-/* Peça esgotada: cores e tamanhos continuam legíveis — dizem em que
-   cores e tamanhos a peça sai, e isso segue valendo para quem vai
-   perguntar no WhatsApp se ela volta. Só não aceitam toque. Nada de
-   opacity aqui: derrubaria o contraste do texto, que é o motivo de só a
-   foto esmaecer. */
-.product__cor:disabled,
-.product__size:disabled {
+/* Peça esgotada: cores e tamanhos continuam legíveis — dizem em que cores
+   e tamanhos a peça sai, e isso segue valendo para quem vai perguntar no
+   WhatsApp se ela volta. Só não aceitam toque. */
+.produto__tamanho:disabled {
   cursor: default;
 }
 
-.product__details {
+/* min-height reserva a linha mesmo vazia. Sem isso, escolher um tamanho
+   faz o texto nascer e empurrar o CTA e o resto para baixo — layout shift
+   disparado por clique, com o CLS que vem junto.
+
+   O line-height está escrito aqui de propósito: com o 1.6 herdado do
+   body, a caixa de linha do texto dava 1.6em e a reserva de 1.5em ficava
+   1,4px curta — a linha ainda crescia ao ser preenchida, que é
+   exatamente o que ela existe para não fazer. Medido no navegador. Os
+   dois valores têm de bater; se mudar um, mude o outro. */
+.produto__disponibilidade {
+  margin-top: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 1.5em;
+  color: var(--accent-text);
+}
+
+/* ---------- CTA ---------- */
+
+.produto__cta {
+  display: block;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-text);
+  text-decoration: none;
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 28px;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.produto__cta:hover,
+.produto__cta:focus-visible {
+  background: var(--accent);
+  /* --bg e não --text: o fundo virou dourado, e o texto tem de ser o
+     oposto dele nos dois temas. */
+  color: var(--bg);
+}
+
+/* ---------- texto longo ---------- */
+
+.produto__prosa {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-4);
+}
+
+.produto__prosa p {
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+
+.produto__destaques {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.product__details li {
+/* Os destaques agora são frases inteiras, então o item quebra em várias
+   linhas — daí o max-width e o marcador posicionado na primeira linha, em
+   vez de centrado no item. */
+.produto__destaques li {
   position: relative;
-  padding-left: var(--space-4);
-  font-size: 0.9rem;
+  padding-left: var(--space-6);
   color: var(--text-muted);
+  max-width: 60ch;
 }
 
-.product__details li::before {
+.produto__destaques li::before {
   content: "";
   position: absolute;
   left: 0;
   top: 0.62em;
-  width: 8px;
-  height: 1px;
+  width: 7px;
+  height: 7px;
   background: var(--accent-alt);
 }
 
-.product__note {
-  margin-top: var(--space-2);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--line);
-  font-size: 0.78rem;
-  line-height: 1.5;
+/* ---------- ajuda e nota ---------- */
+
+/* Os acordeões fecham com uma linha embaixo, como as dúvidas da home:
+   sem isso o último parece cortado. O desenho vem de .acordeao, em
+   global.css. */
+.produto__ajuda {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.produto__ajuda p {
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+.produto__nota {
+  font-size: 0.8rem;
+  line-height: 1.6;
   color: var(--text-faint);
-  max-width: 44ch;
+  max-width: 56ch;
 }
 
 /* Contraste cheio dentro de uma nota esmaecida: a frase do esgotado é
    informação sobre a peça, não letra miúda de rodapé. */
-.product__esgotado {
+.produto__esgotado {
   color: var(--text);
   font-weight: 500;
 }

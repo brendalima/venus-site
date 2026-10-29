@@ -60,7 +60,9 @@ export function Footer() {
           </li>
         </ul>
 
-        <Logo size="sm" />
+        {/* O lockup completo, como no rodapé do protótipo: aqui há altura
+            para o monograma, ao contrário do cabeçalho. */}
+        <Logo size="sm" lockup />
 
         <p className="footer__note">
           Catálogo para consulta. Entre em contato para se informar sobre

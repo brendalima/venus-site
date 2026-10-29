@@ -14,8 +14,10 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
   const shown = products.slice(0, visible);
 
+  // id="colecao" é a âncora do menu do cabeçalho e do "← Voltar para a
+  // coleção" da página da peça.
   return (
-    <section className="page catalog" aria-labelledby="catalog-title">
+    <section className="page catalog" id="colecao" aria-labelledby="catalog-title">
       <div className="catalog__head">
         <h2 className="catalog__title" id="catalog-title">
           Coleção

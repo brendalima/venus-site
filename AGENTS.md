@@ -50,8 +50,8 @@ definidas.** Nada de hex solto em componente.
 - O filete com degradê (`.brand-rule`) marca **fronteiras estruturais** —
   cabeçalho/corpo, corpo/rodapé. Divisões internas usam linha lisa. Se
   tudo virar degradê, ele deixa de significar "aqui muda de contexto".
-- O anel com degradê (`.brand-ring`) marca **a opção escolhida** — ficha
-  de cor, botão de tamanho, miniatura no palco. É o segundo e último uso
+- O anel com degradê (`.brand-ring`) marca **a opção escolhida** —
+  bolinha de cor, botão de tamanho. É o segundo e último uso
   do degradê: filete é fronteira, anel é escolha. Borda com degradê em
   elemento que não foi escolhido tira o sentido dos dois. Decidido com a
   dona do projeto, que pediu o degradê no lugar do dourado chapado.
@@ -62,6 +62,24 @@ definidas.** Nada de hex solto em componente.
   por um champagne quase branco que some sobre as fotos.
 - A fonte de display é serifada sem webfont. Sem requisição externa e sem
   risco de piscar a fonte errada.
+
+## Cabeçalho e rodapé
+
+As duas faixas (`.faixa-escura`) ficam **pretas nos dois temas**, e o
+corpo da página é que clareia. Não é esquecimento: a logo tem fundo preto
+chapado e vive de `mix-blend-mode: screen`, que só faz o preto sumir
+sobre fundo escuro. O protótipo clareia as faixas e inverte a logo com
+`filter`; aqui não, e a divergência foi decidida com a dona do projeto.
+Alguém vai tentar "consertar" — é isto.
+
+O menu do cabeçalho some abaixo de 900px. É por isso que a volta para a
+coleção, na página da peça, mora no corpo e não no cabeçalho: ali ela
+desapareceria junto, justamente no celular.
+
+O lockup é quase quadrado (760×704), então **o cabeçalho usa o
+wordmark**. Encolhido para caber numa fileira de 64px, o lockup sairia
+com 43px de largura e o nome dentro dele viraria um borrão. O lockup
+completo fica no hero e no rodapé, onde há altura para ele.
 
 ## Logo
 
@@ -106,6 +124,16 @@ enquanto a peça não foi precificada — as donas catalogam antes de
 precificar. Nada de "R$ 0,00" nem "Consulte": a peça fica listada, sem a
 linha de preço. Decidido com a dona do projeto.
 
+**A cor vira bolinha quando tem `hex`** (1 hex chapado, 2 hex divididos
+na diagonal com parada dura — sem as paradas duplas o corte sai
+esfumaçado). Sem `hex`, ela cai na ficha de texto com o nome escrito: a
+escolha é no dado, como `images: []`, e cada cor vira bolinha sozinha
+quando a dona preencher. Disco de 28px dentro de alvo de 44px, com
+contorno interno obrigatório — sem ele "Off-white" some no tema claro e
+"Preto" some no escuro. E **nunca só cor**: o nome vai no nome acessível
+do botão e aparece visível na plaquinha sobre a foto e abaixo das
+bolinhas.
+
 **Cor é dona das fotos e do estoque**, não a peça. Trocar a cor no site
 troca a galeria, e o seletor some quando a peça tem uma cor só — não há
 o que escolher, e as peças anteriores às cores se chamam "Única".
@@ -123,14 +151,37 @@ existiu ou se esgotou. O risco **atravessa o botão inteiro**, não a
 palavra: riscar só a letra some num "P" de três pixels e a ficha parece
 disponível de relance.
 
+**`description` é texto longo** — parágrafos separados por linha em
+branco, quebrados em `/\n{2,}/` na página da peça — e `details` são
+frases inteiras. Foi o que tirou a linha de prosa do card: um trecho de
+texto longo cortado em duas linhas não diz nada. O card ficou nome +
+bolinhas + preço + grade, e a diferença em relação ao protótipo, que tem
+um `<p>` ali, é consciente.
+
 **O número que o site mostra pode estar velho.** Dar baixa no admin só
 acende o aviso de publicação, não republica. É o motivo de a nota da
 página da peça pedir confirmação no WhatsApp — não tire.
 
 **As fotos não têm rótulo de ângulo.** O que importa é a ordem, e a
-primeira é a capa. O alt text é "<nome> — foto N" e a miniatura não tem
-legenda. Cada foto vem em duas larguras: `src` (600w) no card e na
-miniatura, `srcGrande` (1200w) na foto grande da página da peça.
+primeira é a capa. O alt text é "<nome> — foto N". Cada foto vem em duas
+larguras: `src` (600w) no card, `srcGrande` (1200w) na página da peça.
+
+**As fotos ficam num trilho que rola com encaixe** (`useTrilhoFotos`), o
+mesmo no card e na página da peça — não há mais miniaturas nem chevrons.
+Quem manda no índice é sempre a posição do trilho, lida no `scroll`:
+assim o dedo, as setas do teclado e a roda horizontal do mouse atualizam
+o indicador sem um ramo de código para cada um. O mouse é o único caso
+especial, porque não desliza: a posição X vira índice e escreve o
+`scrollLeft`, **só quando o índice muda** — escrever a cada pixel briga
+com a animação de encaixe e a foto treme.
+
+O trilho é `tabindex="0"`, e é isso que mantém as outras fotos
+alcançáveis por teclado sem controle na tela. **Não tire o `tabindex`.**
+O indicador de segmentos é `aria-hidden`; quem anuncia é a região viva
+com "Foto 2 de 4". Ele leva cor chapada em `--accent` sobre um véu
+(`--scrim-strong`) — degradê ali seria um terceiro significado além de
+fronteira e escolha, e sem o véu os segmentos sumiam no rodapé branco das
+fotos.
 
 ## Acessibilidade
 

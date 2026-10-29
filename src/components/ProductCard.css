@@ -17,10 +17,37 @@
   border: 1px solid var(--line);
 }
 
-.card__link {
+/* O mesmo trilho da página da peça — ver useTrilhoFotos.ts. Aqui ele
+   substituiu os chevrons: o dedo desliza, o ponteiro passa por cima e as
+   setas do teclado rolam o contêiner focado. O tabindex="0" é o que
+   mantém as outras fotos alcançáveis sem controle na tela; não remova. */
+.card__trilho {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.card__trilho::-webkit-scrollbar {
+  display: none;
+}
+
+/* Anel de foco por dentro: o trilho ocupa a mídia inteira, e por fora
+   metade do outline ficaria escondida pelo overflow: hidden dela. */
+.card__trilho:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -4px;
+}
+
+.card__foto {
   display: block;
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
+  scroll-snap-align: center;
 }
 
 .card__media img,
@@ -30,18 +57,11 @@
   object-fit: cover;
 }
 
-.card__media img {
-  transition: transform 0.4s ease;
-}
-
-.card:hover .card__media img {
-  transform: scale(1.03);
-}
-
 .card__flag {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
+  z-index: 2;
   font-family: var(--font-sans);
   font-size: 0.62rem;
   letter-spacing: 0.12em;
@@ -54,6 +74,49 @@
   backdrop-filter: blur(4px);
 }
 
+/* Indicador de posição no trilho, igual ao da página da peça. Cor chapada
+   em --accent, nunca degradê: degradê aqui seria um terceiro significado
+   além de fronteira (filete) e escolha (anel).
+
+   Por cima da onda (z-index) porque a onda é decoração e este diz onde
+   você está. */
+.card__barra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  pointer-events: none;
+  /* Véu atrás dos segmentos. Sem ele o indicador desaparecia: as fotos
+     de produto têm rodapé branco, e sobre branco o --on-photo-line do
+     tema escuro (branco a 22%) simplesmente não existe. Foi visto
+     numa captura — o indicador tinha sumido na foto do card.
+
+     O véu vira com o tema junto com o --on-photo-line, então a dupla
+     funciona nas quatro combinações: foto clara ou escura, tema claro ou
+     escuro. É o mesmo problema que o contorno interno resolve na
+     bolinha de cor.
+
+     É o --scrim-strong, e não o --scrim: com o véu mais fraco o segmento
+     ligado dava 1,60:1 contra o apagado, lendo os pixels da captura. Com
+     este, 3,02:1 no tema escuro e 3,67:1 no claro — acima dos 3:1 que um
+     elemento não-textual precisa. */
+  background: var(--scrim-strong);
+}
+
+.card__barra i {
+  flex: 1;
+  height: 3px;
+  background: var(--on-photo-line);
+  transition: background 0.2s ease;
+}
+
+.card__barra i.is-on {
+  background: var(--accent);
+}
+
 /* ---------- peça esgotada ----------
 
    Só a foto esmaece e dessatura. Nome, preço, tamanhos e a tarja ficam
@@ -63,7 +126,7 @@
 
    A onda acompanha a foto porque fica por cima dela: em contraste cheio
    sobre uma foto apagada, a decoração ficaria mais forte que o produto. */
-.card--esgotada .card__link {
+.card--esgotada .card__foto {
   opacity: 0.55;
   filter: grayscale(0.4);
 }
@@ -76,29 +139,9 @@
   filter: grayscale(0.4) opacity(0.55);
 }
 
-/* O zoom é um convite, e não há o que convidar numa peça esgotada. */
-.card--esgotada:hover .card__media img {
-  transform: none;
-}
-
-/* Seta desabilitada: mudar cor e borda, nunca opacity — os blocos @media
-   abaixo usam opacity para esconder a seta até o hover do card, e um
-   valor fixo aqui venceria por especificidade e deixaria a seta da peça
-   esgotada sempre acesa no desktop. */
-.card__nav:disabled {
-  cursor: default;
-  color: var(--text-faint);
-  border-color: var(--on-photo-line-soft);
-}
-
-/* Sem isto a seta desabilitada herdaria o realce dourado do :hover e do
-   :active mais abaixo, e pareceria viva. */
-.card__nav:disabled:hover,
-.card__nav:disabled:active {
-  background: var(--scrim-soft);
-  border-color: var(--on-photo-line-soft);
-  color: var(--text-faint);
-}
+/* Nada de zoom no hover: quem responde ao ponteiro agora é o trilho, que
+   troca a foto. Dois efeitos de hover na mesma foto brigam, e o zoom
+   mexeria a imagem justamente enquanto ela desliza. */
 
 /* ---------- onda no rodapé da foto ----------
 
@@ -193,74 +236,6 @@
   }
 }
 
-/* Setas de troca de ângulo, sobre a foto. */
-.card__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  /* 36px é o mínimo confortável para toque; abaixo disso erra o alvo. */
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 1px solid var(--on-photo-line);
-  border-radius: 100px;
-  background: var(--scrim);
-  color: var(--text);
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition:
-    opacity 0.18s ease,
-    background 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.card__nav--prev {
-  left: var(--space-2);
-}
-.card__nav--next {
-  right: var(--space-2);
-}
-
-/* No desktop as setas só aparecem quando há intenção — no hover do card
-   ou com foco de teclado. Em telas de toque não existe hover, então
-   ficam sempre visíveis, senão viram um controle invisível.
-   O :hover fica aqui dentro de propósito: no celular ele "gruda" depois
-   do toque e a seta continua destacada até tocar em outro lugar. */
-@media (hover: hover) {
-  .card__nav {
-    opacity: 0;
-  }
-
-  .card:hover .card__nav,
-  .card__nav:focus-visible {
-    opacity: 1;
-  }
-
-  .card__nav:hover {
-    background: var(--scrim-strong);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-}
-
-/* Em telas de toque a seta fica sempre visível, então pesa menos:
-   mantém os 36px de alvo, mas com fundo mais discreto. */
-@media (hover: none) {
-  .card__nav {
-    background: var(--scrim-soft);
-    border-color: var(--on-photo-line);
-  }
-
-  .card__nav:active {
-    background: var(--scrim-strong);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-}
-
 .card__body {
   display: flex;
   flex-direction: column;
@@ -294,76 +269,11 @@
   text-decoration-color: var(--accent);
 }
 
-/* Limita a 2 linhas: descrições de tamanhos muito diferentes desalinham
-   a grade e fazem o catálogo parecer improvisado. */
-.card__desc {
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
 .card__price {
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
   color: var(--accent-text);
-}
-
-/* ---------- fichas de cor ----------
-
-   Texto, não amostras de cor: o admin guarda um nome ("Bege"), nunca um
-   valor. Pedir um hex por cor seria mais um campo para as donas
-   preencherem, e um hex errado engana mais que a palavra certa.
-
-   A borda dourada marca a escolhida — o mesmo dourado da miniatura ativa
-   na página da peça, para "ativo" ter uma cor só no site inteiro. */
-.card__cores {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-}
-
-.card__cor {
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 100px;
-  /* Ficha estreita demais erra o toque; 6px/11px dá um alvo honesto sem
-     a ficha virar botão de formulário. */
-  padding: 4px 11px;
-  cursor: pointer;
-  transition:
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-
-/* A borda do escolhido vem do .brand-ring (global.css), em degradê —
-   o mesmo da página da peça. Aqui fica só a cor do texto. */
-.card__cor.is-active {
-  color: var(--accent-text);
-}
-
-@media (hover: hover) {
-  .card__cor:hover:not(:disabled) {
-    color: var(--text);
-    border-color: var(--line-strong);
-  }
-}
-
-/* Peça esgotada: a ficha continua legível (ainda diz em que cores a peça
-   sai) mas não aceita toque. Sem opacity, que derrubaria o contraste do
-   texto abaixo do mínimo — o mesmo motivo de só a foto esmaecer. */
-.card__cor:disabled {
-  cursor: default;
-  color: var(--text-muted);
 }
 
 .card__sizes {
@@ -418,8 +328,5 @@
 @media (min-width: 768px) {
   .card__name {
     font-size: 1.2rem;
-  }
-  .card__desc {
-    font-size: 0.86rem;
   }
 }

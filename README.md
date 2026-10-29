@@ -23,8 +23,18 @@ npm run dev
 
 | Rota | O que é |
 |---|---|
-| `/` | Hero + catálogo, com seletor de cor e troca de foto no card e scroll infinito |
-| `/produto/:slug` | Página da peça: seletor de cor, galeria da cor, preço, seletor de tamanho com disponibilidade, detalhes |
+| `/` | Hero, catálogo (`#colecao`) e as três seções de texto: `#lookbook`, `#comprar`, `#duvidas` |
+| `/produto/:slug` | Página da peça: trilho de fotos, seletor de cor, preço, grade de tamanhos com disponibilidade, descrição, destaques e acordeões |
+
+O **cabeçalho** é o mesmo em todas as rotas, grudado no alto, com o menu
+apontando para as âncoras da home. Abaixo de 900px o menu some — é por
+isso que a volta para a coleção, na página da peça, mora no corpo.
+
+As três seções de texto existem porque o menu aponta para elas. O que
+veio do protótipo foi ajustado numa coisa: **o site não vende.** O
+protótipo prometia pagamento, frete e troca em 7 dias; aqui esses
+detalhes são remetidos ao WhatsApp, que é onde alguém pode cumpri-los. A
+"Lista VIP" do protótipo ficou de fora pelo mesmo motivo.
 
 O roteamento é no cliente. O arquivo [`public/_redirects`](public/_redirects) faz o servidor devolver o `index.html` em qualquer caminho — **sem ele, abrir `/produto/...` direto ou dar F5 retorna 404** no Cloudflare Pages.
 
@@ -113,14 +123,18 @@ contar, como catalogam antes de precificar.
 renderiza dela, e o tamanho que acabou aparece riscado em vez de sumir.
 Sumindo, ninguém saberia se o tamanho nunca existiu ou se esgotou.
 
-Na página da peça o seletor de cor fica **acima do de tamanho**, na
-ordem em que a escolha acontece: primeiro qual peça, depois se ela
-serve. A opção escolhida — cor, tamanho, miniatura no palco — leva o
-anel com o degradê da marca (`.brand-ring`, em
-[`global.css`](src/styles/global.css)), e o tamanho que acabou leva um
-traço atravessando o botão inteiro.
+Na página da peça cor e tamanho vêm **antes do texto longo**, e o
+seletor de cor fica acima do de tamanho: é a ordem em que a escolha
+acontece, e no celular "o meu tamanho existe nessa cor?" é a pergunta
+que decide. Enterrá-la sob dois parágrafos custaria um scroll inteiro. É
+**uma ordem só**, igual no desktop e no celular — ordem visual diferente
+da do DOM estraga a navegação por teclado.
 
-**No card** a cor troca a foto e apaga os tamanhos que faltam, mas
+A opção escolhida — cor, tamanho — leva o anel com o degradê da marca
+(`.brand-ring`, em [`global.css`](src/styles/global.css)), e o tamanho
+que acabou leva um traço atravessando o botão inteiro.
+
+**No card** a cor troca a galeria e apaga os tamanhos que faltam, mas
 **não** mostra número — número só na página da peça, onde há espaço para
 o aviso de que ele pode estar velho. É um card por peça, com seletor,
 não um card por cor.
@@ -129,10 +143,38 @@ não um card por cor.
 peças que existiam antes das cores foram batizadas de "Única" pelo
 admin, que não diz nada a ninguém.
 
-As fichas de cor são **texto, não amostras**: o admin guarda o nome que
-as donas escreveram ("Bege"), nunca um valor. Um hex seria mais um campo
-por cor para preencherem, e um hex errado engana mais que a palavra
-certa.
+### A bolinha de cor
+
+O seletor é o mesmo componente no card e na página da peça
+([`SeletorCor.tsx`](src/components/SeletorCor.tsx)):
+
+| No dado | No site |
+|---|---|
+| `hex: ["#f4785c"]` | Bolinha chapada |
+| `hex: ["#f4785c", "#f4efe6"]` | Peça bicolor: bolinha dividida na diagonal |
+| sem `hex` | A ficha de texto com o nome escrito |
+
+A parada do degradê é **dura** (`A 0 50%, B 50% 100%`): sem as paradas
+duplas o corte sai esfumaçado e parece defeito de renderização.
+
+A escolha é **no dado**, como `images: []` — cada cor vira bolinha
+sozinha quando a dona preencher o hex no admin, sem flag e sem código
+morto. Até lá as duas formas convivem na mesma fileira, e tudo bem.
+
+Disco de **28px dentro de um alvo de 44px**: os 11px do protótipo não
+comportam diagonal legível nem toque de polegar, e quase todo o tráfego
+vem do Instagram, ou seja, de celular. O contorno interno
+(`box-shadow: inset`) é **obrigatório** — sem ele "Off-white" some no
+tema claro e "Preto" some no escuro, e existem peças com as duas.
+
+E **nunca só cor**: a bolinha leva o nome no nome acessível do botão, e
+o nome da escolhida aparece visível em dois lugares na página da peça —
+a plaquinha sobre a foto e a linha abaixo das bolinhas.
+
+O admin precisa mandar `hex` como lista de **0 a 2** strings `#rrggbb`
+minúsculas. Hex torto derruba o build de propósito, como os outros
+campos. Lista vazia é normalizada para campo ausente, para "não tem" ter
+um significado só.
 
 **O número pode estar velho.** Dar baixa no estoque pelo admin só acende
 o aviso "Há alterações não publicadas" — não republica sozinho. Entre a
@@ -142,9 +184,45 @@ pede confirmação no WhatsApp.
 
 ### Fotos
 
-As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card e na miniatura, `srcGrande` (1200w) na foto grande da página da peça. **As fotos são da cor**, não da peça: cada cor tem a sua lista, e a primeira da cor é a capa.
+As fotos são enviadas pelo admin e ficam no R2, servidas por `fotos.venusoasis.com.br`. Cada uma chega em duas larguras: `src` (600w) no card, `srcGrande` (1200w) na página da peça. **As fotos são da cor**, não da peça: cada cor tem a sua lista, e a primeira da cor é a capa.
 
-**Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N". As miniaturas não têm legenda; quem usa leitor de tela recebe "Foto 2 de 3" ao trocar.
+**Não há rótulo de ângulo.** O que importa é a ordem — a primeira é a capa — e o alt text é "<nome> — foto N".
+
+### O trilho de fotos
+
+As fotos ficam lado a lado num contêiner que rola com encaixe
+(`scroll-snap`), não empilhadas com uma visível por vez. É o mesmo
+mecanismo no card e na página da peça, num hook só
+([`useTrilhoFotos.ts`](src/hooks/useTrilhoFotos.ts)) — ele substituiu a
+tira de miniaturas e os chevrons.
+
+| Quem | Como navega |
+|---|---|
+| Dedo | Desliza, com a inércia do sistema |
+| Mouse | Passar por cima mapeia a posição X para o índice |
+| Teclado | As setas rolam o trilho, que é `tabindex="0"` |
+
+Três coisas que vale preservar:
+
+- **Quem manda no índice é a posição do trilho**, lida no evento
+  `scroll`. Assim o dedo, as setas e a roda horizontal do mouse
+  atualizam o indicador sem um ramo de código para cada um.
+- O mouse só escreve o `scrollLeft` **quando o índice muda**. Escrever a
+  cada pixel de movimento briga com a animação de encaixe e a foto fica
+  tremendo.
+- **O `tabindex="0"` é o que mantém as outras fotos alcançáveis** agora
+  que não há miniaturas. Não tire.
+
+O indicador de segmentos no rodapé da foto é `aria-hidden` e
+`pointer-events: none` — é indicador, não controle. Quem anuncia para
+leitor de tela é a região viva com "Foto 2 de 4". Ele leva cor chapada
+em `--accent` sobre um véu `--scrim-strong`: degradê ali seria um
+terceiro significado além de fronteira e escolha, e sem o véu os
+segmentos sumiam no rodapé branco das fotos de produto (medido: 1,60:1
+sem véu, 3,02:1 com).
+
+Trocar de cor troca a galeria e **volta para a capa**: a foto de índice 3
+da cor anterior não quer dizer nada na nova.
 
 **O repositório não guarda foto de produto.** As do protótipo saíram quando o admin entrou no ar — eram 2,1 MB de JPEG para avaliar o design antes de haver catálogo de verdade. A cópia versionada de `catalogo.json` aponta para duas fotos do **bucket de desenvolvimento** (`venusoasis-fotos-dev`), para `npm run dev` continuar parecido com produção sem peso nenhum no repositório. Se alguém apagar aquelas peças no admin de dev, as URLs quebram: é só rodar `npm run catalogo` de novo contra o admin.
 
@@ -158,12 +236,14 @@ Todos os arquivos saíram do mesmo original (`1254×1254`, JPEG) e vivem em `pub
 
 | Arquivo | Onde aparece |
 |---|---|
-| `logo.png` | Lockup completo — monograma + nome. Só no hero. |
-| `logo-wordmark.png` | Só "VÊNUS OASIS". Cabeçalho das páginas de peça e rodapé. |
+| `logo.png` | Lockup completo — monograma + nome. Hero e rodapé. |
+| `logo-wordmark.png` | Só "VÊNUS OASIS". Cabeçalho de todas as rotas. |
 | `og-image.jpg` | Preview de link (1200×630). |
 | `favicon-32.png`, `favicon-180.png` | Aba do navegador e ícone no celular. |
 
-São duas versões porque o lockup inteiro fica alto demais num cabeçalho: encolhido para caber, o monograma vira um borrão.
+São duas versões porque o lockup inteiro fica alto demais num cabeçalho: ele é quase quadrado (760×704), e numa fileira de 64px sairia com 43px de largura — o nome dentro dele viraria um borrão. O handoff do redesign pedia o lockup a 40px de altura no cabeçalho; esta é a divergência, e o motivo é este.
+
+`Logo.tsx` separa o arquivo (`lockup`) do tamanho (`size`) justamente por isso: o rodapé quer o lockup num tamanho médio, o cabeçalho quer o wordmark pequeno. Nas classes do lockup quem manda é a **altura**, porque numa fileira é a vertical que importa; no wordmark, a largura.
 
 **Sobre o fundo preto.** Os arquivos têm fundo preto chapado, e o site usa `#08090a` — coladas cruas, apareceria um retângulo levemente diferente ao redor da marca. [`Logo.css`](src/components/Logo.css) resolve com `mix-blend-mode: screen`: *screen* com preto devolve exatamente o pixel de baixo, então o fundo some e a arte continua idêntica. Também funciona por cima do brilho do hero, onde um recorte com transparência mostraria borda dura.
 
@@ -226,5 +306,5 @@ push fazem exatamente a mesma coisa.
 
 ## Ainda falta
 
-- **Otimizar as fotos.** Hoje são JPEGs originais, ~2,1 MB no total, e é de longe o maior peso da página. Converter para WebP em duas larguras (uma para card, uma para a página da peça) corta uns 60% — é o maior ganho de performance disponível, e vale fazer antes de o catálogo crescer.
+- **WebP.** As fotos já vêm do admin redimensionadas em 600w e 1200w (o 600w pesa uns 45 KB, contra 250 KB dos JPEGs do protótipo), então o problema encolheu bastante. WebP ainda cortaria uns 60% em cima disso, mas o trabalho agora é no admin (`../venus-admin`, processamento em Go puro), não aqui.
 - Nomes, preços e tamanhos são provisórios. As fotos são do protótipo.

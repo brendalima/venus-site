@@ -1,0 +1,139 @@
+/* As três seções de texto da home. Mesmo ritmo entre si, para a home
+   abaixo da coleção ler como uma página só. */
+.secao__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding-block: var(--space-16);
+}
+
+/* Fundo de superfície e linha lisa em cima e embaixo, nunca o filete: a
+   divisão entre seções é interna à página, e o degradê está reservado às
+   fronteiras cabeçalho/corpo e corpo/rodapé. */
+.secao--realce {
+  background: var(--surface);
+  border-block: 1px solid var(--line);
+}
+
+.secao__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.secao__linha {
+  color: var(--text-muted);
+  max-width: 46ch;
+}
+
+.secao__prosa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.secao__prosa p {
+  color: var(--text-muted);
+  max-width: 56ch;
+  line-height: 1.65;
+}
+
+/* Mesmo desenho do botão "Ver mais peças" do catálogo: no site inteiro
+   "ação secundária" tem uma cara só. */
+.secao__botao {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.7rem 1.75rem;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.secao__botao:hover,
+.secao__botao:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- os três passos ---------- */
+
+.passos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  /* O numeral vem do contador do CSS, não do marcador da lista: é a
+     mesma informação, mas desenhada na serifada da marca. */
+  list-style: none;
+  counter-reset: passo;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.passos li {
+  counter-increment: passo;
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-4);
+}
+
+.passos li::before {
+  content: counter(passo);
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--accent-alt);
+}
+
+.passos h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-block: var(--space-3) var(--space-2);
+}
+
+.passos p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  max-width: 38ch;
+}
+
+/* ---------- dúvidas ---------- */
+
+.duvidas {
+  width: 100%;
+  /* A última pergunta fecha o bloco: sem isto a lista acaba numa linha
+     aberta e parece cortada. */
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.duvidas p {
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+@media (min-width: 768px) {
+  .passos {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+/* Título à esquerda e perguntas à direita, como no protótipo. Abaixo
+   disso empilha, que é a mesma ordem do DOM — ordem visual diferente da
+   do DOM estragaria a navegação por teclado. */
+@media (min-width: 900px) {
+  .secao__inner--duvidas {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-12);
+    align-items: start;
+  }
+}

@@ -14,8 +14,19 @@ export type ProductStock = {
 
 export type ProductColour = {
   id: string;
-  /** O nome que as donas escreveram: "Bege", "Vinho". Não há valor de cor. */
+  /** O nome que as donas escreveram: "Bege", "Vinho". */
   name: string;
+  /**
+   * 1 ou 2 cores em "#rrggbb", para a bolinha do seletor. Duas é peça
+   * bicolor, e a bolinha sai dividida na diagonal.
+   *
+   * **Ausente quando a dona ainda não preencheu**, e aí aquela cor cai na
+   * ficha de texto com o nome escrito. A escolha é no dado, como
+   * `images: []`: a cor vira bolinha sozinha quando o hex chegar, sem
+   * flag e sem código morto. O build normaliza lista vazia para ausente,
+   * para "não tem" ter um significado só.
+   */
+  hex?: string[];
   /** Fotos desta cor. Primeira é a capa. Array vazio cai no placeholder. */
   images: ProductImage[];
   /**
@@ -58,8 +69,18 @@ export type Product = {
    * Trocar de cor troca a galeria: as fotos são da cor, não da peça.
    */
   colours: ProductColour[];
+  /**
+   * A descrição do modelo, em texto longo. Parágrafos separados por linha
+   * em branco — a página da peça quebra em `/\n{2,}/`.
+   *
+   * Já foi a frase curta que o card mostrava; desde que virou texto longo
+   * o card não mostra mais prosa nenhuma.
+   */
   description?: string;
-  /** Texto mais longo, só na página do produto. */
+  /**
+   * Os destaques do modelo: lista livre de quem cadastrou, uma frase
+   * inteira por item.
+   */
   details?: string[];
   soldOut?: boolean;
 };

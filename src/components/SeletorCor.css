@@ -1,0 +1,89 @@
+/* Seletor de cor — o mesmo no card e na página da peça. O espaçamento ao
+   redor é de quem chama; aqui não há margem. */
+.cores {
+  display: flex;
+  flex-wrap: wrap;
+  /* Folga pequena: os alvos de 44px já se separam sozinhos, e gap grande
+     espalha cinco cores em duas fileiras num card de 150px. */
+  gap: var(--space-1);
+  align-items: center;
+}
+
+/* O alvo tem 44px, o disco 28px.
+   Os 11px do protótipo não comportam um corte diagonal legível nem o
+   toque de um polegar, e quase todo o tráfego vem do Instagram, ou seja,
+   de celular. A diferença entre os dois vira a folga entre o anel e o
+   disco quando a cor está escolhida. */
+.cor {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  /* A borda já existe transparente: .brand-ring só troca a cor dela por
+     degradê, então escolher uma cor não muda o tamanho do botão nem
+     empurra as vizinhas. */
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.cor--bolinha {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.cor__disco {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  /* Contorno interno obrigatório. Sem ele "Off-white" desaparece no tema
+     claro e "Preto" desaparece no escuro — e existem peças com as duas. É
+     por dentro (inset) para não comer a folga até o anel. */
+  box-shadow: inset 0 0 0 1px var(--on-photo-line);
+}
+
+/* Cor que ainda não tem hex: a ficha com o nome escrito, que é o seletor
+   de antes das bolinhas. Convive na mesma fileira com as bolinhas
+   enquanto as donas vão preenchendo. */
+.cor--ficha {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  border-color: var(--line);
+  border-radius: 100px;
+  padding: 7px 15px;
+  min-height: 44px;
+}
+
+/* A borda do escolhido vem do .brand-ring (global.css), em degradê; aqui
+   fica só a cor do texto. A bolinha não tem texto, então nada muda nela
+   além do anel. */
+.cor--ficha.is-active {
+  color: var(--accent-text);
+}
+
+@media (hover: hover) {
+  .cor--ficha:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+
+  /* Na bolinha o realce é no contorno interno do disco: a borda do botão
+     é a vaga do anel e mexer nela faria o hover parecer escolha. */
+  .cor--bolinha:hover:not(:disabled) .cor__disco {
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+}
+
+/* Peça esgotada: as opções continuam legíveis — dizem em que cores a peça
+   sai, e isso segue valendo para quem vai perguntar no WhatsApp se ela
+   volta. Só não aceitam toque. Nada de opacity, que derrubaria o
+   contraste do texto; é o mesmo motivo de só a foto esmaecer. */
+.cor:disabled {
+  cursor: default;
+}
+
+.cor--ficha:disabled {
+  color: var(--text-muted);
+}
