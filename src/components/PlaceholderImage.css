@@ -1,18 +1,14 @@
-/* As cores do placeholder vêm do tema, não do JSX.
-
-   Antes estavam cravadas: #08090a no fundo, no véu e nas iniciais, e
-   #f5f5f7 no rótulo. Com o modo claro isso virava um azulejo escuro
-   dentro da grade clara — o único componente que não acompanhava o tema.
+/* As cores vêm do tema, não do JSX: cravadas, o placeholder virava um
+   azulejo escuro dentro da grade clara.
 
    Só a cor saiu daqui; as opacidades continuam nos atributos do SVG,
-   que é onde o desenho do degradê mora. O par de neons da marca
+   que é onde o desenho do degradê mora. O par de tons da marca
    continua no .tsx, porque é o JS que escolhe qual par usar a partir do
    slug. */
 
 .placeholder__fundo,
 .placeholder__iniciais {
-  /* --surface, e não --bg: é a superfície de dentro do card, a mesma do
-     .card__media que fica atrás quando a foto existe. */
+  /* --surface, e não --bg: é a superfície de dentro do card. */
   fill: var(--surface);
 }
 

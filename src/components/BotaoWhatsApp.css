@@ -29,13 +29,12 @@
   transform: translateY(-2px);
 }
 
-/* Abaixo do cabeçalho (z-index 20) de propósito: o cabeçalho é grudado e
-   passa por cima ao rolar, e um botão flutuante cobrindo o menu seria
-   pior que o botão sumir por um instante. */
+/* Abaixo do cabeçalho (z-index 20) de propósito: ele é grudado e passa
+   por cima ao rolar, e um botão flutuante cobrindo o menu seria pior que
+   o botão sumir por um instante. */
 
-/* Em telas estreitas a pastilha ocupa quase um terço da largura e cobre
-   a coluna da direita da grade. Encolhe o bastante para liberar a coluna,
-   mantendo os 44px de altura do alvo. */
+/* Em telas estreitas a pastilha cobre a coluna da direita da grade.
+   Encolhe o bastante para liberá-la, mantendo os 44px de alvo. */
 @media (max-width: 599px) {
   .zap {
     right: var(--space-3);

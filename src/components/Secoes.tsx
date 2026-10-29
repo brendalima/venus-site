@@ -2,16 +2,6 @@ import { Link } from "react-router-dom";
 import { products } from "../data/products";
 import "./Secoes.css";
 
-/**
- * As seções fixas da home, na ordem do protótipo: a faixa de atributos
- * logo abaixo do hero, e depois do catálogo o lookbook, o "como comprar"
- * e as dúvidas.
- *
- * Os textos são os do protótipo, que vieram da dona. A única coisa que
- * este arquivo decide é de onde saem as fotos do lookbook.
- */
-
-/** A faixa de quatro atributos, entre o hero e o catálogo. */
 export function Faixa() {
   return (
     <section className="faixa" aria-label="O que define as peças">
@@ -38,13 +28,11 @@ export function Faixa() {
 }
 
 /**
- * As duas fotos do lookbook saem do próprio catálogo — a capa das duas
- * primeiras peças que têm foto.
+ * A capa das duas primeiras peças que têm foto.
  *
- * É de propósito que não sejam arquivos em `public/`, ao contrário das
- * fotos de campanha do hero: aqui são peças, e peça é dado do admin. A
- * seção acompanha a coleção sozinha, e o repositório continua sem
- * guardar foto de produto.
+ * Não são arquivos em `public/`, ao contrário das fotos de campanha do
+ * hero: assim a seção acompanha a coleção sozinha e o repositório
+ * continua sem guardar foto de produto.
  */
 function fotosDoLookbook() {
   return products
@@ -81,8 +69,8 @@ export function Lookbook() {
           </div>
         </div>
 
-        {/* Some quando o catálogo não tem foto nenhuma — num catálogo
-            recém-criado, meia seção vazia é pior que seção sem foto. */}
+        {/* Some quando o catálogo não tem foto nenhuma: meia seção vazia
+            é pior que seção sem foto. */}
         {fotos.length > 0 && (
           <div className="lookbook__fotos">
             {fotos.map(({ foto, nome, slug }) => (
@@ -108,8 +96,6 @@ export function ComoComprar() {
   return (
     <section className="secao" id="comprar" aria-labelledby="comprar-titulo">
       <div className="page">
-        {/* Título à esquerda e a frase à direita, alinhados pela base —
-            o cabeçalho de seção do protótipo, o mesmo do catálogo. */}
         <div className="secao__cabeca">
           <h2 className="secao__titulo" id="comprar-titulo">
             Comprar é simples
@@ -120,9 +106,8 @@ export function ComoComprar() {
           </p>
         </div>
 
-        {/* Lista ordenada de verdade: são três passos em ordem, e quem usa
-            leitor de tela ouve "1 de 3". O numeral grande é desenhado pelo
-            CSS a partir do contador, não escrito no texto. */}
+        {/* Lista ordenada de verdade, para quem usa leitor de tela ouvir
+            "1 de 3". O numeral grande vem do contador do CSS. */}
         <ol className="passos">
           <li>
             <h3>Escolha a peça</h3>

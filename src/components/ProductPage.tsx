@@ -15,24 +15,20 @@ export function ProductPage() {
   const product = findProduct(slug);
   const [cor, setCor] = useState(0);
   // Nenhum tamanho vem escolhido: a linha de disponibilidade só faz
-  // sentido depois de alguém escolher, e um tamanho pré-selecionado
-  // anunciaria um número que ninguém pediu.
+  // sentido depois de alguém escolher.
   const [tamanho, setTamanho] = useState<string | null>(null);
 
   // As fotos são da cor, não da peça: trocar a cor troca a galeria.
   const corAtual = product?.colours[cor];
   const images = corAtual?.images ?? [];
 
-  // A chave do trilho é a identidade da galeria: muda com a cor e com a
-  // peça, e é o que devolve o trilho à capa. Sem o slug, ir de uma peça
-  // para outra pela mesma rota deixaria o trilho na posição anterior.
+  // A chave inclui o slug: sem ele, ir de uma peça para outra pela mesma
+  // rota deixaria o trilho na posição anterior.
   const { trilhoRef, indice, aoRolar, aoMover, aoSair } = useTrilhoFotos(
     images.length,
     `${slug}-${corAtual?.id ?? ""}`,
   );
 
-  // Trocar de produto sem voltar ao topo deixa a pessoa no meio da página
-  // nova, sem contexto do que está vendo.
   useEffect(() => {
     window.scrollTo(0, 0);
     setCor(0);
@@ -46,9 +42,8 @@ export function ProductPage() {
     };
   }, [product]);
 
-  // A descrição é um texto longo com parágrafos separados por linha em
-  // branco. Os vazios saem: um \n\n\n a mais no admin não deve virar um
-  // parágrafo em branco na página.
+  // Texto longo, com parágrafos separados por linha em branco. Os vazios
+  // saem: um \n\n\n a mais no admin não deve virar parágrafo em branco.
   const paragrafos = useMemo(
     () =>
       (product?.description ?? "")
@@ -65,8 +60,7 @@ export function ProductPage() {
 
   /**
    * A linha de disponibilidade, nas quatro situações que o dado permite.
-   * Esgotado vence tudo: é chave manual das donas, por cima de qualquer
-   * contagem.
+   * `soldOut` é chave manual e vence qualquer contagem.
    */
   function textoDisponibilidade(): string {
     if (soldOut) return "Esgotado";
@@ -84,10 +78,8 @@ export function ProductPage() {
 
   return (
     <div className={`page produto${soldOut ? " produto--esgotada" : ""}`}>
-      {/* A volta mora aqui, no corpo, e não no cabeçalho: o menu do
-          cabeçalho some abaixo de 900px e levaria a volta junto,
-          justamente no celular — que é de onde vem quase todo o tráfego,
-          porque quase todo ele vem do Instagram. */}
+      {/* A volta mora no corpo, e não no cabeçalho: o menu some abaixo de
+          900px e levaria a volta junto, justamente no celular. */}
       <p className="produto__migalha">
         <Link to="/#colecao">← Voltar para a coleção</Link>
       </p>
@@ -97,10 +89,9 @@ export function ProductPage() {
           <figure className="palco">
             <div className="palco__moldura">
               {images.length > 0 ? (
-                /* O trilho é tabindex="0" de propósito: é ele que mantém as
-                   outras fotos alcançáveis por teclado agora que a tira de
-                   miniaturas saiu. As setas rolam um contêiner focado
-                   sozinhas, sem controle na tela. Não remova. */
+                /* O trilho é tabindex="0" de propósito: é ele que mantém
+                   as outras fotos alcançáveis por teclado, sem controle na
+                   tela. Não remova. */
                 <div
                   className="palco__trilho"
                   ref={trilhoRef}
@@ -138,12 +129,9 @@ export function ProductPage() {
 
               {soldOut && <span className="palco__tarja">Esgotado</span>}
 
-              {/* Indicador, não controle: quem navega é o dedo no trilho, o
-                  ponteiro ou as setas. Diz quantas fotos existem e onde
-                  você está, e por isso é aria-hidden e pointer-events:none
-                  — o anúncio para leitor de tela é a região viva abaixo.
-                  Cor chapada em --accent, nunca degradê: degradê aqui seria
-                  um terceiro significado além de fronteira e escolha. */}
+              {/* Indicador, não controle: quem navega é o dedo, o ponteiro
+                  ou as setas. Daí o aria-hidden — o anúncio para leitor de
+                  tela é a região viva abaixo. */}
               {images.length > 1 && (
                 <div className="palco__barra" aria-hidden="true">
                   {images.map((image, i) => (
@@ -156,9 +144,8 @@ export function ProductPage() {
               )}
             </div>
 
-            {/* A plaquinha é o nome da cor escolhida em cima da foto — é o
-                que impede o seletor de bolinhas de ser "só cor". Peça de
-                uma cor só não tem escolha nenhuma, então não tem plaquinha. */}
+            {/* O nome da cor escolhida em cima da foto — é o que impede o
+                seletor de bolinhas de ser "só cor". */}
             {varias && corAtual && (
               <figcaption className="palco__cor">{corAtual.name}</figcaption>
             )}
@@ -170,8 +157,7 @@ export function ProductPage() {
                 Deslize o dedo, ou passe o mouse, para ver os outros ângulos.
               </p>
               {/* As fotos não têm rótulo de ângulo; a posição é o que dá
-                  para anunciar. Sem isto, quem usa leitor de tela rola o
-                  trilho e não recebe retorno nenhum. */}
+                  para anunciar. */}
               <p aria-live="polite" className="visually-hidden">
                 Foto {indice + 1} de {images.length}
               </p>
@@ -182,22 +168,16 @@ export function ProductPage() {
         <div className="produto__info">
           <div className="produto__cabeca">
             <h1 className="produto__nome">{name}</h1>
-            {/* Sem preço, nada aqui: as donas catalogam antes de
-                precificar, e nem "R$ 0,00" nem "Consulte" seriam verdade. */}
             {priceCents !== undefined && (
               <p className="produto__preco">{formatBRL(priceCents)}</p>
             )}
           </div>
 
-          {/* Cor e tamanho vêm antes do texto longo. No celular "o meu
+          {/* Cor e tamanho vêm antes do texto longo: no celular "o meu
               tamanho existe nessa cor?" é a pergunta que decide, e
-              enterrá-la sob dois parágrafos e cinco destaques custa um
-              scroll inteiro. É uma ordem só, igual no desktop e no
-              celular: ordem visual diferente da do DOM estraga a
-              navegação por teclado.
-
-              Peça de uma cor só não ganha seletor: não há escolha, e o
-              backfill do admin chamou essas de "Única". */}
+              enterrá-la sob dois parágrafos custa um scroll inteiro. É
+              uma ordem só nos dois tamanhos de tela — ordem visual
+              diferente da do DOM estraga a navegação por teclado. */}
           {varias && (
             <div className="produto__bloco">
               <h2 className="produto__rotulo">Cor</h2>
@@ -220,9 +200,8 @@ export function ProductPage() {
 
           <div className="produto__bloco">
             <h2 className="produto__rotulo">Grade de tamanhos</h2>
-            {/* A grade inteira vira botão, inclusive o tamanho sem estoque:
-                ele continua clicável de propósito, porque é clicando que a
-                pessoa recebe o "Indisponível" escrito. */}
+            {/* O tamanho sem estoque continua clicável de propósito: é
+                clicando que a pessoa recebe o "Indisponível" escrito. */}
             <div className="produto__tamanhos" role="group" aria-label="Tamanhos">
               {sizes.map((size) => {
                 const tem = corAtual ? disponivel(corAtual, size) : true;
@@ -242,8 +221,8 @@ export function ProductPage() {
                     onClick={() => setTamanho(size)}
                   >
                     {size}
-                    {/* O risco é pista visual e nada mais: sem isto quem usa
-                        leitor de tela ouve a mesma grade de sempre. */}
+                    {/* O risco é pista visual e nada mais: sem isto quem
+                        usa leitor de tela ouve a mesma grade de sempre. */}
                     {!tem && <span className="visually-hidden"> indisponível</span>}
                   </button>
                 );
@@ -252,16 +231,12 @@ export function ProductPage() {
 
             {/* Altura reservada mesmo vazia: sem isso a linha nasce ao
                 escolher um tamanho e empurra o resto para baixo — layout
-                shift disparado por clique, que é o pior tipo. */}
+                shift disparado por clique. */}
             <p className="produto__disponibilidade" aria-live="polite">
               {disponibilidade}
             </p>
           </div>
 
-          {/* "Pedir no WhatsApp" apesar de o site não vender: foi decisão da
-              dona, e a conversa é onde a venda acontece de verdade. A
-              mensagem vai na voz de quem clicou, não na da marca — ela
-              aparece no compositor da cliente. */}
           <a
             className="produto__cta"
             href={linkWhatsApp(mensagemDaPeca(name))}
@@ -295,8 +270,7 @@ export function ProductPage() {
             </div>
           )}
 
-          {/* Texto fixo, não dado do catálogo: vale para toda peça, e seria
-              mais um campo para as donas repetirem em cada cadastro. */}
+          {/* Texto fixo, não dado do catálogo: vale para toda peça. */}
           <div className="produto__ajuda">
             <details className="acordeao">
               <summary>Como escolher o tamanho</summary>
@@ -323,9 +297,8 @@ export function ProductPage() {
               </strong>
             )}
             {/* A baixa de estoque no admin não republica o site sozinha:
-                entre a venda e a publicação o número aqui é o de antes. O
-                aviso é a mitigação barata disso — mais honesto que fingir
-                que a contagem é ao vivo. Não tire. */}
+                entre a venda e a publicação o número aqui é o de antes.
+                Este aviso é a mitigação disso. Não tire. */}
             Catálogo para consulta — este site não realiza vendas. Quantidades e
             preço são informativos e podem mudar; confirme no WhatsApp.
           </p>

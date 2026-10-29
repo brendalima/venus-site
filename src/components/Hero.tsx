@@ -4,15 +4,11 @@ import { linkWhatsApp, MENSAGEM_GERAL } from "../lib/whatsapp";
 import "./Hero.css";
 
 /**
- * As fotos de campanha.
+ * Arquivos de marca em `public/`, como a logo — e não fotos do catálogo,
+ * que vêm do admin pelo R2.
  *
- * São arquivos de marca em `public/`, como a logo — e não fotos do
- * catálogo. A distinção importa: foto de peça vem do admin pelo R2 e
- * muda quando as donas publicam; estas três são a abertura da home e só
- * mudam por decisão de quem desenha a página.
- *
- * O `foco` é o `object-position`: as três foram cortadas em 2:3 e sem
- * ele o corte pega no lugar errado — em duas delas, no rosto.
+ * O `foco` é o `object-position`: as três foram cortadas em 2:3 e sem ele
+ * o corte pega no lugar errado — em duas delas, no rosto.
  */
 const FOTOS = [
   {
@@ -32,18 +28,15 @@ const FOTOS = [
   },
 ];
 
-/** Quanto cada foto fica no ar. */
 const INTERVALO_MS = 2800;
 
 export function Hero() {
   const [atual, setAtual] = useState(0);
-  // Pausa enquanto o ponteiro ou o foco estão dentro da figura: ler a
-  // legenda e a foto trocar embaixo é a forma mais rápida de irritar.
+  // Pausa enquanto o ponteiro ou o foco estão dentro da figura.
   const [visitando, setVisitando] = useState(false);
-  // Quem escolheu uma foto na bolinha assumiu o controle, e o carrossel
-  // não volta a girar. É o que dá a parada definitiva que um conteúdo em
-  // movimento automático precisa ter: só o hover não serve, porque não
-  // existe no teclado nem no toque.
+  // Clicar numa bolinha para o carrossel de vez: é a parada definitiva
+  // que conteúdo em movimento automático precisa ter, e que o hover não
+  // dá, porque não existe no teclado nem no toque.
   const [assumido, setAssumido] = useState(false);
   const temporizador = useRef<number | undefined>(undefined);
 
@@ -52,9 +45,8 @@ export function Hero() {
   }, []);
 
   useEffect(() => {
-    // Quem pediu menos movimento não leva um carrossel girando sozinho.
-    // As bolinhas continuam trocando a foto no clique, então nada fica
-    // inalcançável.
+    // Quem pediu menos movimento não leva um carrossel girando sozinho;
+    // as bolinhas continuam trocando a foto no clique.
     const parado = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (parado || visitando || assumido) return;
 
@@ -96,9 +88,9 @@ export function Hero() {
         onFocusCapture={() => setVisitando(true)}
         onBlurCapture={() => setVisitando(false)}
       >
-        {/* Travessia por opacidade, e não um trilho que rola: aqui não há
-            "foto 2 de 4" para navegar, é a abertura da marca passando
-            sozinha. O trilho é das galerias de peça (useTrilhoFotos). */}
+        {/* Travessia por opacidade, e não o trilho que rola das galerias
+            de peça: aqui não há foto para navegar, só a abertura
+            passando sozinha. */}
         <div className="hero__slides">
           {FOTOS.map((foto, i) => (
             <img
@@ -110,7 +102,7 @@ export function Hero() {
               width={1000}
               height={1500}
               /* A primeira é a maior imagem da primeira dobra; as outras
-                 só aparecem depois de 2,8s, tempo de sobra para carregar. */
+                 só aparecem depois do intervalo, com tempo de carregar. */
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}
               decoding="async"

@@ -1,9 +1,4 @@
-/* A abertura da home: texto à esquerda, campanha à direita.
-
-   Não é mais .faixa-escura. A logo saiu daqui para o cabeçalho, e era só
-   ela que obrigava o bloco a ficar preto nos dois temas (ver a nota do
-   mix-blend-mode em Logo.css). Agora o hero acompanha o tema do corpo,
-   como o resto da página. */
+/* A abertura da home: texto à esquerda, campanha à direita. */
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -43,8 +38,6 @@
   gap: var(--space-3);
 }
 
-/* ---------- a campanha ---------- */
-
 .hero__figura {
   position: relative;
   margin: 0;
@@ -53,15 +46,14 @@
 
 .hero__slides {
   position: relative;
-  /* 2:3, e não o 4/5 do protótipo: é a proporção das fotos da marca, e
-     misturar duas proporções na mesma página faz o corte parecer
-     acidente. Duas das três já vêm em 2:3; a terceira é 5:6 e perde uma
-     tira, que é o que o object-position de cada uma acerta. */
+  /* 2:3 é a proporção das fotos da marca. Duas das três já vêm assim; a
+     terceira é 5:6 e perde uma tira, que é o que o object-position de
+     cada uma acerta. */
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border-radius: var(--radius);
   /* Preto, e não --surface: é o que fica à mostra no instante entre uma
-     foto sumir e a outra aparecer, e as fotos são de praia ao sol. */
+     foto sumir e a outra aparecer. */
   background: #000;
 }
 
@@ -69,8 +61,8 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  /* height concreto: com os atributos width/height no <img>, o
-     aspect-ratio seria ignorado enquanto height tivesse valor. Quem dá a
+  /* height concreto: com os atributos width/height no <img> o
+     aspect-ratio é ignorado enquanto height tiver valor. Quem dá a
      proporção aqui é o .hero__slides. */
   height: 100%;
   object-fit: cover;
@@ -82,8 +74,8 @@
   opacity: 1;
 }
 
-/* A moldura deslocada, do protótipo. Decoração: atrás e sem ponteiro.
-   Avança 12px para fora, que cabe dentro do --page-pad até em 360px. */
+/* Moldura deslocada, decorativa: atrás e sem ponteiro. Avança 12px para
+   fora, que cabe dentro do --page-pad até em 360px. */
 .hero__figura::after {
   content: "";
   position: absolute;
@@ -109,9 +101,8 @@
   line-height: 1.2;
 }
 
-/* As bolinhas do carrossel. O disco tem 11px, como no protótipo, mas o
-   botão tem 44px: o desenho fica delicado e o dedo ainda acerta. É a
-   mesma solução das bolinhas de cor — ver SeletorCor.css. */
+/* O disco tem 11px e o botão 44px: o desenho fica delicado e o dedo
+   ainda acerta. Mesma solução das bolinhas de cor. */
 .hero__bolinhas {
   position: absolute;
   right: var(--space-2);

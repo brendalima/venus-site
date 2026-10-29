@@ -5,27 +5,19 @@ import type { PointerEvent } from "react";
  * O trilho de fotos: um só mecanismo para o dedo, o mouse e o teclado.
  *
  * As fotos ficam lado a lado num contêiner que rola com encaixe
- * (`scroll-snap`), em vez de empilhadas com uma visível por vez. A
- * diferença não é de aparência:
- *
- * - **dedo** desliza com a inércia do sistema, que nenhuma conta nossa
- *   reproduz. Era isso ou calcular a posição do toque, que fica pior em
- *   qualquer celular;
- * - **teclado** ganha as setas de graça: o trilho é `tabindex="0"` e o
- *   navegador rola um contêiner focado sozinho. É o que permitiu tirar a
- *   tira de miniaturas sem deixar as outras fotos inalcançáveis — não
- *   tire o `tabindex`;
- * - **mouse** não tem deslizar, então a posição do ponteiro vira índice e
- *   a gente escreve o `scrollLeft`. É o "passa o mouse e troca a foto".
+ * (`scroll-snap`), em vez de empilhadas com uma visível por vez. Assim o
+ * dedo desliza com a inércia do sistema e as setas do teclado rolam o
+ * contêiner focado sem controle na tela — o trilho é `tabindex="0"`, e é
+ * isso que mantém as outras fotos alcançáveis.
  *
  * Quem manda no índice é sempre a posição do trilho, lida no `scroll`.
  * Assim o dedo, as setas e a roda horizontal do mouse atualizam o
- * indicador sem um ramo de código para cada um.
+ * indicador sem um ramo de código para cada um. O mouse é o único caso
+ * especial, porque não desliza.
  *
  * @param total Quantas fotos o trilho tem.
- * @param chave Identidade da lista — o id da cor. Quando muda, a galeria
- *   é outra e o trilho volta para a capa: a foto de índice 3 da cor
- *   anterior não quer dizer nada na nova.
+ * @param chave Identidade da lista. Quando muda, a galeria é outra e o
+ *   trilho volta para a capa.
  */
 export function useTrilhoFotos(total: number, chave: string) {
   const trilhoRef = useRef<HTMLDivElement>(null);
@@ -35,18 +27,14 @@ export function useTrilhoFotos(total: number, chave: string) {
     setIndice(0);
     const el = trilhoRef.current;
     // Direto, sem animação: é troca de conteúdo, não navegação dentro da
-    // mesma galeria, e um deslize de volta pareceria que a cor antiga
-    // ainda está ali.
+    // mesma galeria.
     if (el) el.scrollLeft = 0;
   }, [chave]);
 
   const aoRolar = useCallback(() => {
     const el = trilhoRef.current;
-    // clientWidth zero acontece enquanto o elemento está escondido; a
-    // divisão daria NaN e o indicador apagaria todos os segmentos. Com
-    // total zero o trilho nem é renderizado, mas o `total - 1` abaixo
-    // daria índice -1 — e esse é o tipo de armadilha que só aparece
-    // quando alguém reusa o hook em outro lugar.
+    // clientWidth zero acontece enquanto o elemento está escondido, e a
+    // divisão daria NaN. Com total zero o `total - 1` abaixo daria -1.
     if (!el || el.clientWidth === 0 || total < 1) return;
 
     const i = Math.round(el.scrollLeft / el.clientWidth);
@@ -76,9 +64,7 @@ export function useTrilhoFotos(total: number, chave: string) {
   );
 
   const aoSair = useCallback((e: PointerEvent<HTMLDivElement>) => {
-    // Volta para a capa, que é a foto que representa a peça. Sem isto o
-    // card do grid fica mostrando a terceira foto depois de o ponteiro
-    // passar por cima de raspão.
+    // Volta para a capa, que é a foto que representa a peça.
     if (e.pointerType === "mouse" && trilhoRef.current) {
       trilhoRef.current.scrollLeft = 0;
     }

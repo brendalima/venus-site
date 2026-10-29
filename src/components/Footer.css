@@ -1,12 +1,10 @@
 .footer {
   /* Sem margem acima: a seção anterior já traz o próprio padding, e o
-     filete da marca que marca a fronteira corpo/rodapé precisa encostar
-     no conteúdo para dizer "aqui muda de contexto". */
+     filete precisa encostar no conteúdo para marcar a fronteira. */
   padding-block: var(--space-12) var(--space-16);
 }
 
-/* Lockup à esquerda, textos à direita. Em telas estreitas empilha e
-   centraliza, que é a mesma ordem do DOM. */
+/* Lockup à esquerda, textos à direita; em telas estreitas empilha. */
 .footer__inner {
   display: flex;
   flex-wrap: wrap;
@@ -59,7 +57,7 @@
 }
 
 /* Em telas estreitas o botão flutuante do WhatsApp fica em cima do canto
-   do rodapé. O espaço extra é o que mantém a última linha legível. */
+   do rodapé: o espaço extra mantém a última linha legível. */
 @media (max-width: 599px) {
   .footer__inner {
     flex-direction: column;

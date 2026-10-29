@@ -1,17 +1,13 @@
-/* Grudado no alto. A altura é a de --altura-cabecalho (tokens.css), que o
-   `scroll-padding-top` do html e a galeria grudada da página da peça
-   também leem — três lugares, um valor.
+/* Grudado no alto, com a altura de --altura-cabecalho (tokens.css).
 
-   O fundo é chapado (vem de .faixa-escura) e não translúcido com blur
-   como no protótipo: a logo depende de mix-blend-mode: screen sobre preto
-   de verdade, e por cima de um fundo meio transparente ela deixaria
-   aparecer o que está passando embaixo. */
-/* A especificidade dobrada (.cabecalho.brand-rule) não é enfeite: o
-   `.brand-rule` de global.css também declara `position`, com a mesma
-   especificidade, e o pacote de CSS entra com o global depois dos
-   componentes — então `position: relative` vencia e o cabeçalho rolava
-   junto com a página. Aconteceu. Qualquer componente grudado que também
-   leve o filete precisa do mesmo cuidado. */
+   O fundo é chapado, e não translúcido com blur: a logo depende de
+   mix-blend-mode: screen sobre preto de verdade, e sobre fundo meio
+   transparente ela deixaria aparecer o que passa embaixo. */
+/* A especificidade dobrada (.cabecalho.brand-rule) é obrigatória: o
+   `.brand-rule` de global.css também declara `position` com a mesma
+   especificidade, e o global entra depois dos componentes no pacote —
+   então `position: relative` vence e o cabeçalho rola junto com a página.
+   Vale para qualquer componente grudado que leve o filete. */
 .cabecalho.brand-rule {
   position: sticky;
   top: 0;
@@ -54,8 +50,7 @@
 }
 
 /* Abaixo de 900px o menu sai: quatro itens mais a logo e o botão de tema
-   não cabem numa fileira de 360px, e um menu sanfona seria o primeiro
-   componente do site a precisar de estado para navegação.
+   não cabem numa fileira de 360px.
 
    O que o menu dá acesso continua alcançável: as seções estão todas na
    home, uma embaixo da outra, e a volta para a coleção mora no corpo da

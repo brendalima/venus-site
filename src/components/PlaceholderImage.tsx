@@ -1,12 +1,11 @@
 /**
  * Placeholder gerado para produto sem foto.
  *
- * Determinístico: o mesmo slug produz sempre o mesmo par de neons e o
- * mesmo ângulo, então o catálogo parece intencional em vez de aleatório,
- * e screenshots continuam comparáveis entre execuções.
+ * Determinístico: o mesmo slug dá sempre o mesmo par de tons e o mesmo
+ * ângulo, então o catálogo parece intencional e screenshots continuam
+ * comparáveis entre execuções.
  *
- * É de propósito que NÃO pareça uma foto. Placeholder que passa por
- * produto real é o tipo de coisa que chega em produção sem ninguém notar.
+ * É de propósito que NÃO pareça uma foto.
  */
 
 import "./PlaceholderImage.css";
@@ -43,17 +42,16 @@ function initials(name: string): string {
 type Props = {
   slug: string;
   name: string;
-  /** Posição no catálogo — define a cor base, ver nota abaixo. */
+  /** Posição no catálogo — define a cor base. */
   index: number;
 };
 
 export function PlaceholderImage({ slug, name, index }: Props) {
   const h = hash(slug);
 
-  // A cor base vem do índice, não do hash: hash puro colide e dois cards
-  // vizinhos acabam com a mesma cor, o que parece defeito. Percorrer a
-  // paleta garante que cards adjacentes nunca repitam. O hash ainda
-  // define a segunda cor e o ângulo, então cada produto continua único.
+  // A cor base vem do índice, não do hash: percorrer a paleta garante
+  // que cards vizinhos nunca repitam, o que o hash puro não dá. O hash
+  // ainda define a segunda cor e o ângulo.
   const from = BRAND[index % BRAND.length];
   const to = BRAND[(index + 1 + (h % 3)) % BRAND.length];
   const angle = h % 360;
@@ -73,10 +71,9 @@ export function PlaceholderImage({ slug, name, index }: Props) {
           <stop offset="100%" stopColor={to} stopOpacity="0.12" />
         </linearGradient>
 
-        {/* Afasta o rodapé do rótulo para ele ficar legível mesmo sobre
-            gradientes claros, como o âmbar. A cor vem do tema (ver
-            PlaceholderImage.css): no escuro escurece, no claro clareia —
-            nos dois casos abre contraste para o rótulo. */}
+        {/* Véu no rodapé, para o rótulo ficar legível mesmo sobre os
+            gradientes claros. A cor vem do tema — ver
+            PlaceholderImage.css. */}
         <linearGradient id={`${gradientId}-scrim`} x1="0" y1="0" x2="0" y2="1">
           <stop className="placeholder__veu" offset="60%" stopOpacity="0" />
           <stop className="placeholder__veu" offset="100%" stopOpacity="0.8" />
