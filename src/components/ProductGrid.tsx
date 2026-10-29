@@ -1,5 +1,5 @@
 import type { Product } from "../types";
-import { colecaoPrincipal } from "../lib/colecao";
+import { tituloDoCatalogo } from "../lib/colecao";
 import { ProductCard } from "./ProductCard";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import "./ProductGrid.css";
@@ -15,10 +15,9 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
   const shown = products.slice(0, visible);
 
-  // O nome vem do dado. Sem coleção nenhuma no catálogo — peça que não
-  // está em nenhuma, ou admin mais velho que o site —, o título cai em
-  // "Coleção", que é o que o catálogo dizia antes de haver coleções.
-  const colecao = colecaoPrincipal(products) ?? "Coleção";
+  // O nome vem do dado, com a palavra "Coleção" na frente — ver
+  // lib/colecao.ts, que é quem cuida do nome que já a traz consigo.
+  const colecao = tituloDoCatalogo(products);
 
   // id="colecao" é a âncora do menu do cabeçalho e do "← Voltar para a
   // coleção" da página da peça.

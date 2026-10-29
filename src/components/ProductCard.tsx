@@ -5,6 +5,7 @@ import { formatBRL } from "../lib/format";
 import { disponivel } from "../lib/estoque";
 import { linkWhatsApp, mensagemDaPeca } from "../lib/whatsapp";
 import { useTrilhoFotos } from "../hooks/useTrilhoFotos";
+import { useTransbordo } from "../hooks/useTransbordo";
 import { PlaceholderImage } from "./PlaceholderImage";
 import { SeletorCor } from "./SeletorCor";
 import "./ProductCard.css";
@@ -34,6 +35,12 @@ export function ProductCard({ product, index, priority = false }: Props) {
     images.length,
     corAtual?.id ?? "",
   );
+
+  // A grade de tamanhos rola na horizontal quando não cabe, para o card
+  // não crescer uma fileira a mais que os vizinhos. Vira parada de
+  // teclado só quando há mesmo o que rolar — ver useTransbordo.ts.
+  const { ref: refTamanhos, transborda: tamanhosTransbordam } =
+    useTransbordo<HTMLUListElement>();
 
   return (
     <article className={soldOut ? "card card--esgotada" : "card"}>
@@ -99,7 +106,10 @@ export function ProductCard({ product, index, priority = false }: Props) {
         {images.length > 1 && (
           <div className="card__barra" aria-hidden="true">
             {images.map((image, i) => (
-              <i key={`${image.src}-${i}`} className={i === indice ? "is-on" : ""} />
+              <i
+                key={`${image.src}-${i}`}
+                className={i === indice ? "is-on" : ""}
+              />
             ))}
           </div>
         )}
@@ -136,15 +146,23 @@ export function ProductCard({ product, index, priority = false }: Props) {
               Peça de uma cor só não ganha seletor — não há o que escolher,
               e o backfill do admin batizou essas de "Única", que não diz
               nada a ninguém. */}
+          {/* A fileira de cores rola na horizontal quando a peça tem
+              cores demais para a largura do card: todos os cards da
+              linha têm a mesma altura, e uma peça de seis cores não pode
+              empurrar o pé de todos para baixo. Aqui não há tabindex
+              porque as bolinhas são botões — rolar seguindo o foco é o
+              próprio navegador que faz. */}
           {colours.length > 1 && (
-            <SeletorCor
-              colours={colours}
-              escolhida={cor}
-              onEscolher={setCor}
-              label={`Cores de ${name}`}
-              desabilitado={soldOut}
-              delicada
-            />
+            <div className="card__cores">
+              <SeletorCor
+                colours={colours}
+                escolhida={cor}
+                onEscolher={setCor}
+                label={`Cores de ${name}`}
+                desabilitado={soldOut}
+                delicada
+              />
+            </div>
           )}
 
           {/* Tamanhos continuam informativos — sem número, que é coisa da
@@ -152,6 +170,8 @@ export function ProductCard({ product, index, priority = false }: Props) {
               apagados. */}
           <ul
             className="card__sizes"
+            ref={refTamanhos}
+            tabIndex={tamanhosTransbordam ? 0 : undefined}
             aria-label={
               corAtual && colours.length > 1
                 ? `Tamanhos de ${name} em ${corAtual.name}`
@@ -168,7 +188,9 @@ export function ProductCard({ product, index, priority = false }: Props) {
                   {size}
                   {/* Riscado é pista visual e nada mais: sem isto, quem
                       usa leitor de tela ouve a mesma lista de sempre. */}
-                  {!tem && <span className="visually-hidden"> indisponível</span>}
+                  {!tem && (
+                    <span className="visually-hidden"> indisponível</span>
+                  )}
                 </li>
               );
             })}
